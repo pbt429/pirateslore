@@ -1,0 +1,1346 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Duel for the Swallow</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IM+Fell+English+SC&display=swap">
+<style>
+/* Layout: one narrow column; the deck scene on top, the fighting controls under it, the key card last. */
+:root {
+  --bg: #e9eef0;
+  --surface: #f7f9fa;
+  --ink: #142128;
+  --muted: #4a5a62;
+  --line: #c3ced3;
+  --accent: #8a5a12;
+  --accent-ink: #ffffff;
+  --you: #1f6f8b;
+  --foe: #a3322a;
+  --good: #2c7a3f;
+  --focus: #c27c0e;
+  --display: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", Verdana, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0d161b; --surface: #15222a; --ink: #e6ecee; --muted: #a2b2b9; --line: #2c3f49;
+    --accent: #e3ab4a; --accent-ink: #1a1206; --you: #5fb8d6; --foe: #ef7a6e; --good: #6cc983; --focus: #f0b54f;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0d161b; --surface: #15222a; --ink: #e6ecee; --muted: #a2b2b9; --line: #2c3f49;
+  --accent: #e3ab4a; --accent-ink: #1a1206; --you: #5fb8d6; --foe: #ef7a6e; --good: #6cc983; --focus: #f0b54f;
+  color-scheme: dark;
+}
+body {
+  background: var(--bg); color: var(--ink);
+  font-family: var(--body); font-size: 1.05rem; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+main { max-width: 920px; margin: 0 auto; padding-block: 28px 48px; display: flex; flex-direction: column; gap: 22px; }
+h1, h2 { font-family: var(--display); font-weight: 400; text-wrap: balance; margin: 0; letter-spacing: 0.01em; }
+h1 { font-size: clamp(2rem, 5vw, 2.9rem); line-height: 1.05; }
+h2 { font-size: 1.5rem; }
+.subhead { font-family: var(--display); font-weight: 400; font-size: 1.3rem; margin: 6px 0 0; }
+p { margin: 0; max-width: 65ch; }
+.eyebrow { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.12em; color: var(--accent); font-weight: 700; }
+header { display: flex; flex-direction: column; gap: 8px; }
+.story { display: flex; flex-direction: column; gap: 10px; color: var(--ink); }
+.story p.date { color: var(--muted); font-style: italic; }
+
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 18px; display: flex; flex-direction: column; gap: 16px; }
+fieldset { border: 0; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+legend { font-weight: 700; margin-bottom: 6px; padding: 0; }
+.choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 8px; }
+.choice { display: flex; gap: 10px; align-items: flex-start; border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; cursor: pointer; background: var(--bg); }
+.choice:has(input:checked) { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
+.choice input { margin-top: 4px; accent-color: var(--accent); }
+.choice b { display: block; }
+.choice small { color: var(--muted); font-size: 0.88rem; }
+.choice:has(input:disabled) { opacity: 0.5; cursor: not-allowed; }
+.namefield { display: flex; flex-direction: column; gap: 6px; }
+.namefield label { font-weight: 700; }
+.namerow { display: flex; gap: 8px; flex-wrap: wrap; }
+.namerow input { font-family: var(--body); font-size: 1.1rem; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); flex: 1 1 14rem; min-width: 0; max-width: 22rem; }
+.check { display: flex; gap: 10px; align-items: center; }
+.check input { accent-color: var(--accent); width: 18px; height: 18px; }
+
+button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
+a.primary { text-decoration: none; display: inline-block; }
+.primary { background: var(--accent); color: var(--accent-ink); border: 0; border-radius: 8px; padding: 12px 22px; font-weight: 700; font-size: 1.1rem; align-self: flex-start; }
+.secondary { background: transparent; color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 10px 16px; }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+.hud { display: grid; grid-template-columns: 1fr auto 1fr; gap: 12px; align-items: end; }
+.side { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.side.foe { text-align: right; align-items: flex-end; }
+.side .name { font-family: var(--display); font-size: 1.25rem; }
+.you .name { color: var(--you); }
+.foe .name { color: var(--foe); }
+.bar { width: 100%; max-width: 260px; height: 10px; border-radius: 5px; background: var(--line); overflow: hidden; }
+.bar > i { display: block; height: 100%; transition: width .25s; }
+.you .bar > i { background: var(--you); }
+.foe .bar > i { background: var(--foe); margin-left: auto; }
+.flags { display: flex; gap: 3px; }
+.flags span { width: 12px; height: 9px; clip-path: polygon(0 0, 100% 50%, 0 100%); background: var(--line); }
+.you .flags span.on { background: var(--you); }
+.foe .flags { flex-direction: row-reverse; }
+.foe .flags span { clip-path: polygon(100% 0, 0 50%, 100% 100%); }
+.foe .flags span.on { background: var(--foe); }
+.stat { font-size: 0.9rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+.paces { text-align: center; font-variant-numeric: tabular-nums; }
+.paces b { font-family: var(--display); font-size: 2rem; font-weight: 400; display: block; line-height: 1; }
+.paces span { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--muted); }
+
+#game { position: relative; border-radius: 10px; overflow: hidden; border: 2px solid var(--line); background: #0b1620; }
+#game:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; border-color: var(--focus); }
+#game canvas { display: block; width: 100%; height: auto; }
+.focus-tip { position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%); background: rgba(10,18,24,.85); color: #f3e3c0; padding: 6px 12px; border-radius: 6px; font-size: 0.9rem; pointer-events: none; white-space: nowrap; }
+#game:focus .focus-tip { display: none; }
+
+.announce { min-height: 3.2em; font-size: 1.25rem; font-weight: 700; padding: 10px 14px; border-left: 4px solid var(--accent); background: var(--surface); border-radius: 0 8px 8px 0; }
+
+.pad { display: grid; grid-template-columns: 4.5rem repeat(4, 1fr); gap: 6px; align-items: stretch; }
+.pad .rowlabel { align-self: center; font-weight: 700; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); }
+.pad .colhead { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); text-align: center; }
+.pad button, .moves button { background: var(--surface); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; padding: 12px 4px; font-weight: 700; min-width: 0; }
+.pad button:active, .moves button:active { background: var(--line); }
+.moves { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+
+.keys { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+.keys dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; }
+.keys dt { font-weight: 700; font-variant-numeric: tabular-nums; }
+.keys dd { margin: 0; color: var(--muted); }
+.keys h3 { margin: 0 0 6px; font-size: 1rem; }
+.note { color: var(--muted); font-size: 0.95rem; }
+[hidden] { display: none !important; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.endbox { display: flex; gap: 10px; flex-wrap: wrap; }
+@media (max-width: 520px) {
+  .pad { grid-template-columns: 3.4rem repeat(4, 1fr); gap: 4px; }
+  .pad button { padding: 10px 2px; font-size: 0.85rem; }
+  .hud { grid-template-columns: 1fr 1fr; }
+  .paces { grid-column: 1 / -1; order: -1; }
+}
+@media (prefers-reduced-motion: reduce) { .bar > i { transition: none; } }
+</style>
+
+<main>
+  <header>
+    <span class="eyebrow"><a href="index.html" style="color:inherit">Pirates Lore</a>, back to the title screen</span>
+    <h1>Duel for the Swallow</h1>
+  </header>
+
+  <section id="setup" class="panel" aria-labelledby="setup-h">
+    <h2 id="setup-h">Start a new career</h2>
+    <div id="board-intro" class="story" hidden>
+      <p class="date" id="board-date"></p>
+      <p id="board-text"></p>
+      <p id="board-odds" class="note"></p>
+    </div>
+    <p class="note career-part">First choose who you sail for and when. These set where you begin, your rival, your crew and your purse. You are never bound to serve your nation.</p>
+
+    <fieldset class="career-part">
+      <legend>Choose your nation</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="nation" value="english" checked><span><b>English Buccaneer</b><small>Good for a first career. The Crown backs privateers and English ports grow strong later. Spain hunts you everywhere.</small></span></label>
+        <label class="choice"><input type="radio" name="nation" value="french"><span><b>French Buccaneer</b><small>The most freedom. Tortuga becomes a pirate haven. Little help from the Crown and few French ports early on.</small></span></label>
+        <label class="choice"><input type="radio" name="nation" value="dutch"><span><b>Dutch Trader</b><small>The biggest purse and friends with the English and French. A small crew of traders, not fighters. Not open in 1560.</small></span></label>
+        <label class="choice"><input type="radio" name="nation" value="spanish"><span><b>Spanish Renegade</b><small>The hardest start. Rich Spanish towns everywhere, but you are an outcast with a thin crew and an empty purse. In 1680 you sail as a Costa Guarda.</small></span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="career-part">
+      <legend>Choose your time period</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="era" value="1560" id="era-1560"><span><b>1560, The Silver Empire</b><small>Very hard. Spain at her peak and owns nearly every port. Rich treasure fleets, few friendly harbors.</small></span></label>
+        <label class="choice"><input type="radio" name="era" value="1600"><span><b>1600, Merchants and Smugglers</b><small>Hard. Still a Spanish sea, a little weaker. Dutch smugglers everywhere.</small></span></label>
+        <label class="choice"><input type="radio" name="era" value="1620"><span><b>1620, The New Colonists</b><small>Fairly hard. The first English and French colonies take root while Spain slips.</small></span></label>
+        <label class="choice"><input type="radio" name="era" value="1640"><span><b>1640, War for Profit</b><small>Good for any skill. Spain at her weakest, new colonies thrive, the heyday of the small buccaneer.</small></span></label>
+        <label class="choice"><input type="radio" name="era" value="1660" checked><span><b>1660, The Buccaneer Heroes</b><small>Good for any skill, and the classic start. Spanish gold is back but her navy is weak. Ports everywhere.</small></span></label>
+        <label class="choice"><input type="radio" name="era" value="1680"><span><b>1680, Pirates' Sunset</b><small>Tough. Navies patrol the islands, governors have little patience, and letters of marque are hard to get.</small></span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="career-part">
+      <legend>Choose your special skill</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="skill" value="fencing" checked><span><b>Fencing</b><small>Quicker blows and a longer parry. The only skill that helps in this duel.</small></span></label>
+        <label class="choice"><input type="radio" name="skill" value="navigation"><span><b>Navigation</b><small>Your ships sail faster. Helps at sea and in a chase.</small></span></label>
+        <label class="choice"><input type="radio" name="skill" value="gunnery"><span><b>Gunnery</b><small>Your cannons fire faster and hit harder in ship battles.</small></span></label>
+        <label class="choice"><input type="radio" name="skill" value="wit"><span><b>Wit and Charm</b><small>Governors, merchants and their families like you better. Better prices and rewards.</small></span></label>
+        <label class="choice"><input type="radio" name="skill" value="medicine"><span><b>Medicine</b><small>You stay healthy longer as the years pass, so your career lasts longer.</small></span></label>
+      </div>
+    </fieldset>
+
+    <h3 class="subhead career-part">The challenge</h3>
+    <div class="story career-part" id="story">
+      <p class="date" id="story-date">Port Royal, Jamaica, in the year 1660.</p>
+      <p id="story-text"></p>
+      <p id="story-win"></p>
+      <p id="story-start" class="note"></p>
+    </div>
+
+    <fieldset class="career-part">
+      <legend>Your pirate</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="gender" value="male" checked><span><b>A man</b><small>You may court a governor's daughter.</small></span></label>
+        <label class="choice"><input type="radio" name="gender" value="female"><span><b>A woman</b><small>Women such as Grace O'Malley and Anne Dieu-le-Veut commanded ships and crews. You may court a governor's son. Everything else plays the same.</small></span></label>
+      </div>
+    </fieldset>
+
+    <div class="namefield career-part">
+      <label for="pirate-name">Your pirate's name</label>
+      <div class="namerow">
+        <input id="pirate-name" type="text" maxlength="30" autocomplete="off" spellcheck="false" aria-describedby="name-hint">
+        <button class="secondary" id="suggest" type="button">Suggest a name</button>
+      </div>
+      <p class="sr" id="setup-say" aria-live="assertive" aria-atomic="true"></p>
+      <p class="note" id="name-hint">The crew will cheer this name if you win. Leave it blank and they'll call you Sailor.</p>
+    </div>
+
+    <fieldset>
+      <legend>Choose your blade</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="weapon" id="w-rapier" value="rapier"><span><b>Rapier</b><small>Longest reach, fastest, lightest wounds.</small></span></label>
+        <label class="choice"><input type="radio" name="weapon" id="w-longsword" value="longsword" checked><span><b>Longsword</b><small>Middle reach, middle speed, solid wounds.</small></span></label>
+        <label class="choice"><input type="radio" name="weapon" id="w-cutlass" value="cutlass"><span><b>Cutlass</b><small>Short reach, slow, by far the deepest wounds.</small></span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="career-part">
+      <legend>Difficulty, for the duel and the whole game</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="level" id="l-apprentice" value="apprentice" checked><span><b>Apprentice</b><small>Your rival is slow and easy to read. At sea, enemy gunners miss more and the crew is patient. Your share of the plunder: 7 percent.</small></span></label>
+        <label class="choice"><input type="radio" name="level" id="l-journeyman" value="journeyman"><span><b>Journeyman</b><small>A fair fight, at sea and on land. Your share: 12 percent.</small></span></label>
+        <label class="choice"><input type="radio" name="level" id="l-adventurer" value="adventurer"><span><b>Adventurer</b><small>Quicker blows, better parries. Sharper gunners and soldiers, a less patient crew. Your share: 17 percent.</small></span></label>
+        <label class="choice"><input type="radio" name="level" id="l-swashbuckler" value="swashbuckler"><span><b>Swashbuckler</b><small>Fast, cunning and cruel. Deadly gunners and an unruly crew. Your share: 22 percent.</small></span></label>
+      </div>
+    </fieldset>
+
+    <label class="check"><input type="checkbox" id="voice"> Also speak with the browser's own voice (leave off if your screen reader is running)</label>
+
+    <div class="endbox">
+      <button class="primary" id="start" type="button">Start the duel</button>
+      <button class="secondary career-part" id="train" type="button">Train with Old Tom first</button>
+      <button class="secondary" id="bells" type="button">Hear the warning bells</button>
+    </div>
+    <p class="note career-part">New to the bells? Old Tom, the Swallow's gray-haired bosun, will drill you on deck first. He calls out each blow, then swings slower than your rival ever will, and speeds up as you get the hang of it.</p>
+    <p class="note">Starting moves you into the duel area. With JAWS or NVDA it switches to application mode by itself so your keys go to the game. Press H at any time for the keys.</p>
+  </section>
+
+  <section id="expeditions" class="panel career-part" aria-labelledby="exp-h">
+    <h2 id="exp-h">Famous Expeditions</h2>
+    <p class="note">Or skip the duel and sail with a famous captain from history. Each expedition is a short game that ends when you divide the plunder. It uses the difficulty and special skill you chose above.</p>
+    <fieldset>
+      <legend>Choose an expedition</legend>
+      <div class="choices">
+        <label class="choice"><input type="radio" name="exp" value="hawkins" checked><span><b>John Hawkins, 1569</b><small>English. A slow galleon, a merchantman, four pinnaces, 308 men. Trade peacefully, or raid with nowhere friendly to sell.</small></span></label>
+        <label class="choice"><input type="radio" name="exp" value="drake"><span><b>Francis Drake, 1573</b><small>English. A merchantman, a pinnace, 73 men, and the Silver Train on the road in February. Very hard.</small></span></label>
+        <label class="choice"><input type="radio" name="exp" value="heyn"><span><b>Piet Heyn, 1628</b><small>Dutch. Four fast galleons, two sloops, 700 men. It's June: catch the Treasure Fleet before it leaves Havana.</small></span></label>
+        <label class="choice"><input type="radio" name="exp" value="lolonnais"><span><b>L'Olonnais, 1666</b><small>French. A sloop, five pinnaces, 400 impatient men. Attack towns, avoid sea battles. England is your enemy too.</small></span></label>
+        <label class="choice"><input type="radio" name="exp" value="morgan"><span><b>Henry Morgan, 1671</b><small>English. Seven ships, 600 men. Strong on land and sea, but hard to feed and keep happy.</small></span></label>
+        <label class="choice"><input type="radio" name="exp" value="pointis"><span><b>Baron de Pointis, 1697</b><small>French. Five frigates, a sloop, 1200 men. The mightiest force ever seen on the Main. Try it on Swashbuckler.</small></span></label>
+      </div>
+    </fieldset>
+    <div class="endbox"><button class="primary" id="exp-go" type="button">Set sail on this expedition</button></div>
+  </section>
+
+  <section id="arena" aria-labelledby="arena-h" hidden>
+    <h2 id="arena-h" class="sr">The duel</h2>
+    <div class="panel">
+      <div class="hud" id="hud">
+        <div class="side you">
+          <span class="name" id="you-name">You</span>
+          <div class="bar" aria-hidden="true"><i id="you-bar" style="width:100%"></i></div>
+          <div class="flags" id="you-flags" aria-hidden="true"></div>
+          <span class="stat" id="you-stat">Health 100 of 100, morale 5 of 10</span>
+        </div>
+        <div class="paces"><b id="paces-n">5</b><span>paces apart</span></div>
+        <div class="side foe">
+          <span class="name" id="foe-name">Your rival</span>
+          <div class="bar" aria-hidden="true"><i id="foe-bar" style="width:100%"></i></div>
+          <div class="flags" id="foe-flags" aria-hidden="true"></div>
+          <span class="stat" id="foe-stat">Health 100 of 100, morale 5 of 10</span>
+        </div>
+      </div>
+
+      <div id="game" role="application" tabindex="0" aria-roledescription="sword duel" aria-label="Duel on the deck. Your rival is to your right. Press H for keys, Space for status.">
+        <canvas id="scene" width="920" height="440" aria-hidden="true"></canvas>
+        <span class="focus-tip" aria-hidden="true">Click here or tap a move to fight</span>
+      </div>
+
+      <div class="announce" id="announce" aria-live="assertive" aria-atomic="true"></div>
+      <div class="sr" id="polite" aria-live="polite" aria-atomic="true"></div>
+
+      <div class="endbox" id="endbox" hidden>
+        <a class="primary" id="sail" href="sea.html" hidden>Set sail in the Swallow</a>
+        <a class="primary" id="back-aboard" href="sea.html" hidden>Back to your ship</a>
+        <button class="primary" type="button" id="again">Fight again</button>
+        <button class="secondary" type="button" id="again-train" hidden>Train again</button>
+        <button class="secondary" type="button" id="change">Change nation, period, blade or difficulty</button>
+      </div>
+
+      <div role="group" aria-label="Touch and mouse controls">
+        <div class="pad">
+          <span></span>
+          <span class="colhead">Thrust</span><span class="colhead">Slash</span><span class="colhead">Parry</span><span class="colhead">Parry back</span>
+          <span class="rowlabel">High</span>
+          <button type="button" data-a="thrust" data-h="high" aria-label="Thrust high">Thrust</button>
+          <button type="button" data-a="slash" data-h="high" aria-label="Slash high">Slash</button>
+          <button type="button" data-a="parry" data-h="high" aria-label="Parry high">Parry</button>
+          <button type="button" data-a="parryBack" data-h="high" aria-label="Parry high and step back">Back</button>
+          <span class="rowlabel">Middle</span>
+          <button type="button" data-a="thrust" data-h="mid" aria-label="Thrust middle">Thrust</button>
+          <button type="button" data-a="slash" data-h="mid" aria-label="Slash middle">Slash</button>
+          <button type="button" data-a="parry" data-h="mid" aria-label="Parry middle">Parry</button>
+          <button type="button" data-a="parryBack" data-h="mid" aria-label="Parry middle and step back">Back</button>
+          <span class="rowlabel">Low</span>
+          <button type="button" data-a="thrust" data-h="low" aria-label="Thrust low">Thrust</button>
+          <button type="button" data-a="slash" data-h="low" aria-label="Slash low">Slash</button>
+          <button type="button" data-a="parry" data-h="low" aria-label="Parry low">Parry</button>
+          <button type="button" data-a="parryBack" data-h="low" aria-label="Parry low and step back">Back</button>
+        </div>
+      </div>
+      <div class="moves" role="group" aria-label="Footwork and information">
+        <button type="button" data-a="back" aria-label="Step back">Step back</button>
+        <button type="button" data-a="forward" aria-label="Step forward">Step forward</button>
+        <button type="button" data-a="status" aria-label="Status report">Status</button>
+        <button type="button" data-a="pause" aria-label="Pause or resume">Pause</button>
+      </div>
+      <div class="moves" role="group" aria-label="Practice">
+        <button type="button" data-a="bells" aria-label="Hear the warning bells">Hear the bells</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="panel" aria-labelledby="keys-h">
+    <h2 id="keys-h">Keys</h2>
+    <p class="note">Your rival always warns you before he strikes. You hear a bell: a quick high double ring means high, one middle ring means middle, a low buzz means low. A rushing whoosh before the bell means a slash. Parry at the same height to block him, then strike back while he recovers.</p>
+    <div class="keys">
+      <div>
+        <h3>Letter keys</h3>
+        <dl>
+          <dt>Q, A, Z</dt><dd>Thrust high, middle, low</dd>
+          <dt>W, S, X</dt><dd>Slash high, middle, low</dd>
+          <dt>E, D, C</dt><dd>Parry high, middle, low</dd>
+          <dt>R, F, V</dt><dd>Parry and step back, high, middle, low</dd>
+        </dl>
+      </div>
+      <div>
+        <h3>Number pad</h3>
+        <dl>
+          <dt>7, 4, 1</dt><dd>Thrust high, middle, low</dd>
+          <dt>Slash, Star, Minus</dt><dd>Slash high, middle, low</dd>
+          <dt>8, 5, 2</dt><dd>Parry high, middle, low</dd>
+          <dt>9, 6, 3</dt><dd>Parry and step back</dd>
+        </dl>
+      </div>
+      <div>
+        <h3>Everything else</h3>
+        <dl>
+          <dt>Right Arrow</dt><dd>Step toward your rival</dd>
+          <dt>Left Arrow</dt><dd>Step back. Back off the deck edge to flee</dd>
+          <dt>Space</dt><dd>Status: distance, health, morale</dd>
+          <dt>H</dt><dd>Hear the keys</dd>
+          <dt>L</dt><dd>Listen to the three warning bells, named</dd>
+          <dt>P</dt><dd>Pause or resume</dd>
+          <dt>M</dt><dd>Sound on or off</dd>
+          <dt>Enter</dt><dd>Fight again after a duel ends</dd>
+          <dt>S</dt><dd>After you win, set sail in the Swallow</dd>
+        </dl>
+      </div>
+    </div>
+    <p class="note">If JAWS keeps the number pad for itself, use the letter keys instead. Every hit you land lifts your crew's morale and lowers his. When a fighter's morale runs out, the next hit makes him yield.</p>
+  </section>
+</main>
+
+<script>
+(function () {
+  "use strict";
+
+  // ---------- Rules ----------
+  var WEAPONS = {
+    rapier:    { name: "rapier",    reach: 1.0, dmg: 0.7, speed: 0.85, len: 64 },
+    longsword: { name: "longsword", reach: 0.5, dmg: 1.0, speed: 1.0,  len: 56 },
+    cutlass:   { name: "cutlass",   reach: 0.0, dmg: 1.5, speed: 1.2,  len: 46 }
+  };
+  // Base reach in paces and windup in milliseconds for each move.
+  var MOVES = {
+    thrust: { high: { reach: 2.5, wind: 360 }, mid: { reach: 2.0, wind: 280 }, low: { reach: 1.5, wind: 220 }, dmg: 9 },
+    slash:  { high: { reach: 2.5, wind: 560 }, mid: { reach: 1.5, wind: 460 }, low: { reach: 1.0, wind: 380 }, dmg: 18 }
+  };
+  var LEVELS = {
+    apprentice:   { wind: 1350, parry: 0.12, hurt: 0.6, rest: [700, 1500] },
+    journeyman:   { wind: 1050, parry: 0.22, hurt: 0.8, rest: [550, 1200] },
+    adventurer:   { wind: 820,  parry: 0.32, hurt: 1.0, rest: [400, 950] },
+    swashbuckler: { wind: 640,  parry: 0.42, hurt: 1.2, rest: [300, 750] }
+  };
+  var HNAME = { high: "high", mid: "middle", low: "low" };
+
+  // ---------- Career: nation and time period ----------
+  var NATIONS = {
+    english: { title: "English Buccaneer", foe: "Ramsay", foeTitle: "Captain Ramsay", crew: 40, gold: 600,
+      ship: "the sloop Swallow",
+      ports: { 1560: "A hidden cove on the Isle of Pines, off Cuba", 1600: "A hidden cove on the Isle of Pines, off Cuba", 1620: "Saint Kitts", 1640: "Bridgetown, Barbados", 1660: "Port Royal, Jamaica", 1680: "Port Royal, Jamaica" } },
+    french: { title: "French Buccaneer", foe: "Rambert", foeTitle: "Captain Rambert", crew: 45, gold: 450,
+      ship: "the sloop Hirondelle, the Swallow",
+      ports: { 1560: "A smugglers' cove on western Hispaniola", 1600: "A smugglers' cove on western Hispaniola", 1620: "Saint Kitts", 1640: "Tortuga", 1660: "Tortuga", 1680: "Petit-Goave, Hispaniola" } },
+    dutch: { title: "Dutch Trader", foe: "Roos", foeTitle: "Captain Roos", crew: 30, gold: 1100,
+      ship: "the sloop Zwaluw, the Swallow",
+      ports: { 1600: "The salt pans of Punta de Araya, on the Spanish Main", 1620: "The salt pans of Punta de Araya, on the Spanish Main", 1640: "Willemstad, Curacao", 1660: "Willemstad, Curacao", 1680: "Willemstad, Curacao" } },
+    spanish: { title: "Spanish Renegade", foe: "Ramirez", foeTitle: "Captain Ramirez", crew: 25, gold: 250,
+      ship: "the sloop Golondrina, the Swallow",
+      ports: { 1560: "Havana, Cuba", 1600: "Santo Domingo, Hispaniola", 1620: "Cartagena, on the Spanish Main", 1640: "Havana, Cuba", 1660: "San Juan, Puerto Rico", 1680: "Havana, Cuba" } }
+  };
+  var ERAS = {
+    1560: { name: "The Silver Empire", crew: -10, gold: -100, mood: "Spain rules nearly every port, and her silver fleets are guarded like never before." },
+    1600: { name: "Merchants and Smugglers", crew: -5, gold: 0, mood: "Spain still rules the sea, but smugglers slip in and out of every harbor." },
+    1620: { name: "The New Colonists", crew: 0, gold: 0, mood: "New colonies are taking root, and Spain cannot guard them all." },
+    1640: { name: "War for Profit", crew: 10, gold: 100, mood: "Spain is at her weakest, and every island seems to have a new captain looking for a crew." },
+    1660: { name: "The Buccaneer Heroes", crew: 5, gold: 100, mood: "Spanish gold flows again, her navy is thin, and the Brotherhood of the Coast is at its height." },
+    1680: { name: "Pirates' Sunset", crew: -5, gold: 0, mood: "Warships now patrol the islands, and the governors are hanging pirates." }
+  };
+  var SKILLS = { fencing: "Fencing", navigation: "Navigation", gunnery: "Gunnery", wit: "Wit and Charm", medicine: "Medicine" };
+  function gender() { return (document.querySelector('input[name="gender"]:checked') || {}).value === "female" ? "female" : "male"; }
+  function skill() { return (document.querySelector('input[name="skill"]:checked') || {}).value || "fencing"; }
+  function career() {
+    var n = (document.querySelector('input[name="nation"]:checked') || {}).value || "english";
+    var e = (document.querySelector('input[name="era"]:checked') || {}).value || "1660";
+    if (n === "dutch" && e === "1560") e = "1600";
+    var N = NATIONS[n], E = ERAS[e];
+    var title = (n === "spanish" && e === "1680") ? "Spanish Costa Guarda" : N.title;
+    return { nation: n, era: e, title: title, eraName: E.name, port: N.ports[e], foe: N.foe, foeTitle: N.foeTitle, ship: N.ship,
+      crew: N.crew + E.crew, gold: N.gold + E.gold, mood: E.mood, skill: skill(), skillName: SKILLS[skill()], gender: gender() };
+  }
+  function foeName() { return BOARD ? BOARD.captain : career().foe; }
+  // ---------- Boarding: the sea game sends the fight here and gets the result back ----------
+  var BOARD = null;
+  try { var bm = /board=([^&]+)/.exec(location.hash || ""); if (bm) BOARD = JSON.parse(decodeURIComponent(bm[1])); } catch (e) { BOARD = null; }
+  if (BOARD && !BOARD.captain) BOARD = null;
+  function boardMorale() {
+    // The crews fight while the captains duel. A bigger crew starts you with more heart.
+    var r = Math.max(0.05, BOARD.yourCrew) / Math.max(1, BOARD.theirCrew);
+    var m = Math.round(5 + Math.log(r) / Math.LN2 * 1.5);
+    return Math.max(1, Math.min(9, m));
+  }
+  function boardLevel(l) {
+    var order = ["apprentice", "journeyman", "adventurer", "swashbuckler"], i = order.indexOf(l);
+    if (i < 0) i = 0;
+    if (BOARD.fight >= 1.1) i++; else if (BOARD.fight <= 0.7) i--;
+    return order[Math.max(0, Math.min(3, i))];
+  }
+  function returnLink(result) {
+    var out = { r: result, v: BOARD.v, b: BOARD.b };
+    return "sea.html#resume=" + encodeURIComponent(JSON.stringify(out));
+  }
+  function setupBoarding() {
+    document.querySelectorAll(".career-part").forEach(function (el) { el.hidden = true; });
+    $("board-intro").hidden = false;
+    document.querySelector("header h1").textContent = BOARD.who === "defend" ? "Boarded by the " + BOARD.kind : "Boarding the " + BOARD.kind;
+    document.querySelector("header .eyebrow").textContent = "Pirates Lore, boarding action";
+    document.title = BOARD.who === "defend" ? "Boarded by the " + BOARD.kind : "Boarding the " + BOARD.kind;
+    $("setup-h").textContent = "Boarding action";
+    $("board-date").textContent = "Aboard the " + BOARD.kind + ", flying " + BOARD.colors + ".";
+    if (BOARD.who === "defend") $("board-text").textContent = "Her grappling hooks bite into your rail, and her " + BOARD.theirCrew + " men pour over it to meet your " + BOARD.yourCrew + ". " + BOARD.captainTitle.charAt(0).toUpperCase() + BOARD.captainTitle.slice(1) + " comes straight for you. Beat him and his ship is yours. Lose, and you lose everything. Your crew fights harder when you're winning.";
+    else $("board-text").textContent = "The ships crash together and grappling hooks fly. Your " + BOARD.yourCrew + " men swarm over her rail to meet her " + BOARD.theirCrew + ". Through the smoke, " + BOARD.captainTitle + " draws his cutlass and comes for you. Beat him and the ship is yours. Your crew fights harder when you're winning.";
+    var capT = BOARD.captainTitle.charAt(0).toUpperCase() + BOARD.captainTitle.slice(1);
+    if (BOARD.who === "spaniard") {
+      document.querySelector("header h1").textContent = "The Evil Spaniard";
+      document.querySelector("header .eyebrow").textContent = "Pirates Lore, a tavern duel";
+      document.title = "The Evil Spaniard";
+      $("setup-h").textContent = "A duel in the tavern";
+      $("board-date").textContent = "The tavern in " + BOARD.place + ".";
+      $("board-text").textContent = capT + " sneers at you from a corner table. He was there the day your family was taken, and he knows where one of them is held. You kick the table aside and draw. Beat him, and he'll talk.";
+      $("board-odds").textContent = "This is a fair fight, one against one, but he is a fine swordsman.";
+      $("back-aboard").textContent = "Back to the tavern";
+      $("start").textContent = "Fight " + BOARD.captainTitle;
+      var w0 = store("duel-weapon"); if (w0) { var e0 = document.querySelector('input[name="weapon"][value="' + w0 + '"]'); if (e0) e0.checked = true; }
+      return;
+    }
+    if (BOARD.who === "landtown") {
+      document.querySelector("header h1").textContent = "At the Gate of " + BOARD.place;
+      document.querySelector("header .eyebrow").textContent = "Pirates Lore, a land attack";
+      document.title = "The Gate of " + BOARD.place;
+      $("setup-h").textContent = "The last stand at the gate";
+      $("board-date").textContent = "Before the gate of " + BOARD.place + ".";
+      $("board-text").textContent = "Your " + BOARD.yourCrew + " men have driven the soldiers back to the town gate, where " + BOARD.theirCrew + " of them still stand. " + capT + " steps out to face you. Beat him, and the town is yours.";
+      $("back-aboard").textContent = "Back to your men";
+    }
+    if (BOARD.who === "guard") {
+      document.querySelector("header h1").textContent = "Caught in " + BOARD.place;
+      document.querySelector("header .eyebrow").textContent = "Pirates Lore, a street fight";
+      document.title = "Caught in " + BOARD.place;
+      $("setup-h").textContent = "Fight your way out";
+      $("board-date").textContent = "A dark street in " + BOARD.place + ".";
+      $("board-text").textContent = "You were recognized sneaking into town. " + capT + " blocks the street, and more of the watch are coming. Beat him and run for your boats, or it's the jail for you.";
+      $("board-odds").textContent = "One against one, but you must win quickly.";
+      $("back-aboard").textContent = "Run for the boats";
+      $("start").textContent = "Fight " + BOARD.captainTitle;
+      var w1 = store("duel-weapon"); if (w1) { var e1 = document.querySelector('input[name="weapon"][value="' + w1 + '"]'); if (e1) e1.checked = true; }
+      return;
+    }
+    if (BOARD.who === "silver") {
+      document.querySelector("header h1").textContent = "The Silver Train";
+      document.querySelector("header .eyebrow").textContent = "Pirates Lore, an ambush";
+      document.title = "The Silver Train";
+      $("setup-h").textContent = "Ambush on the road";
+      $("board-date").textContent = "On the coast road of the Spanish Main.";
+      $("board-text").textContent = "Your " + BOARD.yourCrew + " men burst from the trees as the mule train passes, and " + BOARD.theirCrew + " Spanish soldiers turn to meet them. " + capT + " spurs his horse at you and leaps down, sword in hand. Beat him, and the silver is yours.";
+      $("back-aboard").textContent = "Back to your ship";
+    }
+    if (BOARD.who === "mutiny") {
+      document.querySelector("header h1").textContent = "Mutiny!";
+      document.querySelector("header .eyebrow").textContent = "Pirates Lore, mutiny";
+      document.title = "Mutiny";
+      $("setup-h").textContent = "Mutiny aboard the " + BOARD.kind;
+      $("board-date").textContent = "On the deck of the " + BOARD.kind + ", at sea.";
+      $("board-text").textContent = "The crew is angry. They say the voyage has gone on too long and the plunder is too thin. " + capT + " leads " + BOARD.theirCrew + " mutineers aft with cutlasses drawn, and " + BOARD.yourCrew + " loyal men stand with you. By the articles, you must beat him to stay captain.";
+    }
+    var m = boardMorale();
+    $("board-odds").textContent = BOARD.who === "mutiny" || BOARD.who === "silver" || BOARD.who === "landtown" ? "Your morale starts at " + m + " of 10." : m >= 7 ? "Your crew far outnumbers hers. Your morale starts high, " + m + " of 10." : m >= 5 ? "The crews are about even. Your morale starts at " + m + " of 10." : m >= 3 ? "Her crew outnumbers yours. Your morale starts low, " + m + " of 10." : "Her crew vastly outnumbers yours. Your morale starts at only " + m + " of 10. One or two hits could make you yield.";
+    $("start").textContent = "Fight " + BOARD.captainTitle;
+    var w = store("duel-weapon"); if (w) { var el = document.querySelector('input[name="weapon"][value="' + w + '"]'); if (el) el.checked = true; }
+  }
+  // ---------- Famous Expeditions ----------
+  function ships(list) { return list.map(function (x) { return { kind: x[0], name: x[1], guns: x[2], dmg: 0 }; }); }
+  var EXPEDITIONS = {
+    hawkins: { title: "John Hawkins", nation: "english", era: 1569, month: 2, port: "Off Rio de la Hacha", crew: 308, gold: 2500, food: 60,
+      fleet: ships([["Spanish galleon", "Jesus of Lubeck", 26], ["merchantman", "Minion", 14], ["pinnace", "Judith", 6], ["pinnace", "Angel", 4], ["pinnace", "Swallow", 4], ["pinnace", "William and John", 4]]),
+      wars: [], allies: [], goods: { cloth: 40 },
+      history: "Hawkins was an English merchant and privateer. In 1568 a large Spanish fleet caught him at anchor near Vera Cruz and destroyed most of his ships. He limped home to England in the Minion with about 15 survivors." },
+    drake: { title: "Francis Drake", nation: "english", era: 1573, month: 0, port: "Off Puerto Bello", crew: 73, gold: 300, food: 20,
+      fleet: ships([["merchantman", "Pasha", 12], ["pinnace", "Swan", 5]]), wars: [], allies: [],
+      history: "Drake raided Nombre de Dios, then joined with escaped slaves called Cimarrons and ambushed the Silver Train in 1573, though he had to leave much of the heavy silver behind. He later sailed around the world, and England made him an admiral." },
+    heyn: { title: "Piet Heyn", nation: "dutch", era: 1628, month: 5, port: "Off Havana", crew: 700, gold: 1000, food: 120,
+      fleet: ships([["fast galleon", "Amsterdam", 28], ["fast galleon", "Hollandia", 26], ["fast galleon", "Gelderland", 26], ["fast galleon", "Utrecht", 24], ["sloop", "Haring", 8], ["sloop", "Kat", 8]]),
+      wars: [], allies: ["English"],
+      history: "Heyn caught the Spanish treasure fleet near Cuba in 1628, chased its galleons into the shallow bay of Matanzas, and took about 46 tons of silver, nearly bankrupting Spain." },
+    lolonnais: { title: "L'Olonnais", nation: "french", era: 1666, month: 2, port: "Tortuga", crew: 400, gold: 500, food: 50,
+      fleet: ships([["sloop", "La Vengeance", 10], ["pinnace", "Le Loup", 6], ["pinnace", "La Fortune", 6], ["pinnace", "Le Diable", 5], ["pinnace", "La Sirene", 5], ["pinnace", "Le Corbeau", 4]]),
+      wars: [["French", "English"], ["English", "Dutch"]], allies: ["Dutch"],
+      history: "L'Olonnais was one of the cruelest pirates who ever lived. He sacked Maracaibo and Gibraltar in 1666, and was finally killed during a raid on a native village." },
+    morgan: { title: "Henry Morgan", nation: "english", era: 1671, month: 2, port: "Port Royal, Jamaica", crew: 600, gold: 1500, food: 70,
+      fleet: ships([["frigate", "Satisfaction", 22], ["merchantman", "Lilly", 14], ["merchantman", "Mayflower", 12], ["barque", "Dolphin", 10], ["sloop", "Prosperous", 8], ["sloop", "Fortune", 8], ["pinnace", "Port Royal", 4]]),
+      wars: [], allies: [],
+      history: "Morgan sacked Puerto Principe, Puerto Bello, Maracaibo and Gibraltar, and finally Panama, the richest Spanish city. He was knighted, and retired to Jamaica, where he died at 53." },
+    pointis: { title: "Baron de Pointis", nation: "french", era: 1697, month: 2, port: "Petit-Goave, Hispaniola", crew: 1200, gold: 2000, food: 160,
+      fleet: ships([["frigate", "Sceptre", 28], ["frigate", "Fort", 28], ["frigate", "Vermandois", 26], ["frigate", "Pontchartrain", 26], ["frigate", "Saint Louis", 24], ["sloop", "Marie", 8]]),
+      wars: [["French", "English"]], allies: [],
+      history: "De Pointis joined French troops with Caribbean buccaneers and took Cartagena in 1697, sailing home with some 20 million livres. It was the last great pirate expedition in the Caribbean." }
+  };
+  var NAT_TITLE = { english: "English", french: "French", dutch: "Dutch", spanish: "Spanish" };
+  function expeditionLink() {
+    var id = (document.querySelector('input[name="exp"]:checked') || {}).value || "hawkins", E = EXPEDITIONS[id];
+    var skill = (document.querySelector('input[name="skill"]:checked') || {}).value || "fencing";
+    var holds = { food: E.food }; if (E.goods) for (var g in E.goods) holds[g] = E.goods[g];
+    var data = { nation: E.nation, title: E.title + "'s Expedition", era: E.era, month: E.month, port: E.port, crew: E.crew, gold: E.gold, skill: skill,
+      guns: E.fleet[0].guns, dmg: 0, fleet: E.fleet, holds: holds, wars: E.wars, allies: E.allies, name: E.title,
+      expedition: { id: id, title: E.title, history: E.history }, t: Date.now(),
+      level: (document.querySelector('input[name="level"]:checked') || {}).value || "apprentice" };
+    store("duel-level", data.level);
+    try { localStorage.setItem("pirates-career", JSON.stringify(data)); } catch (e) {}
+    return "sea.html#career=" + encodeURIComponent(JSON.stringify(data));
+  }
+  // The sailing game reads the career from this link, and from this browser's storage as a backup.
+  function sailLink() {
+    var C = (S && S.career) || career();
+    var data = { nation: C.nation, title: C.title, era: C.era, port: C.port, crew: C.crew, gold: C.gold, skill: C.skill, gender: C.gender || gender(), guns: 8, dmg: 0, t: Date.now(),
+      level: (document.querySelector('input[name="level"]:checked') || {}).value || "apprentice" };
+    return "sea.html#career=" + encodeURIComponent(JSON.stringify(data));
+  }
+  function updateStory() {
+    var C = career();
+    var guard = C.title === "Spanish Costa Guarda";
+    $("story-date").textContent = C.port + ", in the year " + C.era + ". " + C.eraName + ".";
+    $("story-text").textContent = C.mood + " You signed aboard " + C.ship + (C.ship.indexOf(",") > -1 ? "," : "") + " as a common sailor. " +
+      (guard ? "She is a coast guard sloop, but her master, " + C.foeTitle + ", plunders any ship he likes and keeps it all for himself. "
+             : "Her master, " + C.foeTitle + ", keeps the plunder for himself and feeds the crew weevils. ") +
+      "Tonight the men have had enough. By the old articles, a captain who will not step down must be beaten in a fair fight, and the crew has chosen you to do it.";
+    $("story-win").textContent = "Win, and the Swallow is yours. " + C.foe + " fights with a heavy cutlass.";
+    $("story-start").textContent = "Your start as " + (/^[AEIOU]/.test(C.title) ? "an " : "a ") + C.title + ": a sloop, " + C.crew + " crew, " + C.gold + " pieces of eight, and a special skill in " + C.skillName + ".";
+  }
+  var DECK = 10; // deck runs from 0 to 10 paces
+  // Training with Old Tom: slow at first, quicker with every block.
+  var TRAIN = { startWind: 2200, minWind: 1000, stage2: 5, stage3: 10, done: 15 };
+  var PARRY_KEY = { high: "E, or 8", mid: "D, or 5", low: "C, or 2" };
+
+  // ---------- Elements ----------
+  var $ = function (id) { return document.getElementById(id); };
+  var setup = $("setup"), arena = $("arena"), game = $("game"), canvas = $("scene");
+  var ctx = canvas.getContext("2d");
+  var announceEl = $("announce"), politeEl = $("polite");
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // Remember setup choices on this browser only.
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  ["weapon", "level", "nation", "era", "skill", "gender"].forEach(function (n) {
+    var v = store("duel-" + n);
+    if (v) { var el = document.querySelector('input[name="' + n + '"][value="' + v + '"]'); if (el) el.checked = true; }
+  });
+  if (store("duel-voice") === "1") $("voice").checked = true;
+  function eraRules(announce) {
+    var dutch = ((document.querySelector('input[name="nation"]:checked') || {}).value === "dutch");
+    var e1560 = $("era-1560");
+    e1560.disabled = dutch;
+    if (dutch && e1560.checked) {
+      e1560.checked = false;
+      document.querySelector('input[name="era"][value="1600"]').checked = true;
+      if (announce) say("The Dutch have no role in 1560, so your time period is now 1600, Merchants and Smugglers.");
+    }
+    updateStory();
+    store("duel-nation", (document.querySelector('input[name="nation"]:checked') || {}).value);
+    store("duel-era", (document.querySelector('input[name="era"]:checked') || {}).value);
+    store("duel-skill", skill());
+    store("duel-gender", gender());
+  }
+  document.querySelectorAll('input[name="nation"], input[name="era"], input[name="skill"], input[name="gender"]').forEach(function (r) {
+    r.addEventListener("change", function () { eraRules(true); });
+  });
+  var savedName = store("duel-name"); if (savedName) $("pirate-name").value = savedName;
+  var FIRST_M = ["Jack", "William", "Henry", "Thomas", "Diego", "Pierre", "Jan", "Edward", "Bartholomew", "Nicolas", "Francis", "Rafael"];
+  var FIRST_F = ["Anne", "Mary", "Grace", "Charlotte", "Isabel", "Jacquotte", "Elena", "Marie", "Margaret", "Catalina", "Griet", "Rachel"];
+  var LAST = ["Blackwood", "Hawke", "Larkin", "Moreau", "de Graaf", "Vane", "Cutler", "Ravenscroft", "Delgado", "Teague", "Bonnet", "Quill", "Marsh", "Fairweather"];
+  var SURNAME_ONLY = ["Red", "Gentleman", "Long", "Black", "Calico", "Mad"];
+  function suggestName() {
+    var r = Math.random(), n, FIRST = gender() === "female" ? FIRST_F : FIRST_M;
+    if (r < 0.2) n = SURNAME_ONLY[Math.floor(Math.random() * SURNAME_ONLY.length)] + " " + FIRST[Math.floor(Math.random() * FIRST.length)];
+    else n = FIRST[Math.floor(Math.random() * FIRST.length)] + " " + LAST[Math.floor(Math.random() * LAST.length)];
+    $("pirate-name").value = n;
+    say("How about " + n + "? Press Suggest again for another, or type your own.");
+  }
+
+  // ---------- Speech ----------
+  var lastSpoken = "";
+  function say(text) {
+    lastSpoken = text;
+    var el = arena.hidden ? $("setup-say") : announceEl;
+    el.textContent = "";
+    setTimeout(function () { el.textContent = text; }, 20);
+    if ($("voice").checked && window.speechSynthesis) {
+      try {
+        speechSynthesis.cancel();
+        var u = new SpeechSynthesisUtterance(text); u.rate = 1.35;
+        speechSynthesis.speak(u);
+      } catch (e) {}
+    }
+  }
+  function sayQuiet(text) {
+    politeEl.textContent = "";
+    setTimeout(function () { politeEl.textContent = text; }, 20);
+  }
+
+  // ---------- Sound (all made in the browser, nothing to download) ----------
+  var ac = null, master = null, soundOn = true, seaGain = null;
+  function audioInit() {
+    if (ac) { if (ac.state === "suspended") ac.resume(); return; }
+    try {
+      ac = new (window.AudioContext || window.webkitAudioContext)();
+      master = ac.createGain(); master.gain.value = 0.8; master.connect(ac.destination);
+      startSea();
+    } catch (e) { ac = null; }
+  }
+  function out(pan) {
+    if (!ac) return null;
+    var g = ac.createGain();
+    if (ac.createStereoPanner) { var p = ac.createStereoPanner(); p.pan.value = pan || 0; g.connect(p); p.connect(master); }
+    else g.connect(master);
+    return g;
+  }
+  function noiseBuffer(sec) {
+    var b = ac.createBuffer(1, Math.floor(ac.sampleRate * sec), ac.sampleRate), d = b.getChannelData(0);
+    for (var i = 0; i < d.length; i++) d[i] = Math.random() * 2 - 1;
+    return b;
+  }
+  function tone(freq, dur, pan, vol, type, delay) {
+    if (!ac || !soundOn) return;
+    var t = ac.currentTime + (delay || 0), o = ac.createOscillator(), g = out(pan);
+    o.type = type || "sine"; o.frequency.value = freq;
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol || 0.3, t + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    o.connect(g); o.start(t); o.stop(t + dur + 0.05);
+  }
+  function noise(dur, pan, vol, ftype, f1, f2, q, delay) {
+    if (!ac || !soundOn) return;
+    var t = ac.currentTime + (delay || 0), s = ac.createBufferSource(), f = ac.createBiquadFilter(), g = out(pan);
+    s.buffer = noiseBuffer(dur + 0.1); f.type = ftype; f.Q.value = q || 1;
+    f.frequency.setValueAtTime(f1, t); if (f2) f.frequency.exponentialRampToValueAtTime(f2, t + dur);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(vol, t + Math.min(0.05, dur / 3));
+    g.gain.exponentialRampToValueAtTime(0.0001, t + dur);
+    s.connect(f); f.connect(g); s.start(t); s.stop(t + dur + 0.1);
+  }
+  var SFX = {
+    step: function (pan, vol) { noise(0.09, pan, vol || 0.25, "lowpass", 900, 300, 1); tone(110, 0.08, pan, (vol || 0.25) * 0.6, "sine"); },
+    whoosh: function (pan) { noise(0.32, pan, 0.35, "bandpass", 500, 2600, 1.4); },
+    clash: function (pan) {
+      noise(0.05, pan, 0.5, "highpass", 3000, 0, 0.7);
+      [2093, 3151, 4402, 5873].forEach(function (f, i) { tone(f, 0.55 - i * 0.08, pan, 0.16 - i * 0.025, "sine"); });
+    },
+    hit: function (pan) { noise(0.22, pan, 0.6, "lowpass", 700, 120, 1); tone(95, 0.25, pan, 0.45, "sine"); tone(70, 0.3, pan, 0.3, "triangle", 0.03); },
+    miss: function (pan) { noise(0.18, pan, 0.18, "bandpass", 1800, 900, 2); },
+    // Ramsay's warning bells: rhythm and pitch both mark the height.
+    cue: function (h, pan) {
+      if (h === "high") { tone(1320, 0.12, pan, 0.32, "triangle"); tone(1320, 0.12, pan, 0.32, "triangle", 0.13); }
+      else if (h === "mid") { tone(784, 0.3, pan, 0.36, "triangle"); }
+      else { tone(196, 0.34, pan, 0.28, "square"); tone(98, 0.34, pan, 0.25, "sine"); }
+    },
+    opening: function () { tone(988, 0.1, 0, 0.25, "sine"); tone(1319, 0.16, 0, 0.25, "sine", 0.09); },
+    edge: function () { tone(330, 0.12, -0.9, 0.25, "sawtooth"); },
+    cheer: function () {
+      for (var i = 0; i < 6; i++) noise(0.6, (Math.random() - 0.5) * 1.6, 0.18, "bandpass", 700 + Math.random() * 900, 0, 0.8, i * 0.12);
+      [523, 659, 784, 1047].forEach(function (f, i) { tone(f, 0.5, 0, 0.18, "triangle", 0.4 + i * 0.14); });
+    },
+    groan: function () { [392, 330, 262, 196].forEach(function (f, i) { tone(f, 0.45, 0, 0.2, "triangle", i * 0.22); }); }
+  };
+  function startSea() {
+    if (!ac) return;
+    var s = ac.createBufferSource(); s.buffer = noiseBuffer(4); s.loop = true;
+    var f = ac.createBiquadFilter(); f.type = "lowpass"; f.frequency.value = 420;
+    seaGain = ac.createGain(); seaGain.gain.value = 0.0;
+    var lfo = ac.createOscillator(), lg = ac.createGain(); lfo.frequency.value = 0.12; lg.gain.value = 0.025;
+    lfo.connect(lg); lg.connect(seaGain.gain);
+    s.connect(f); f.connect(seaGain); seaGain.connect(master); s.start(); lfo.start();
+  }
+  function sea(on) { if (seaGain) seaGain.gain.setTargetAtTime(on && soundOn ? 0.045 : 0, ac.currentTime, 0.6); }
+
+  // ---------- State ----------
+  var S = null, clock = 0, last = 0, running = false;
+  function newFight(mode) {
+    var w = (document.querySelector('input[name="weapon"]:checked') || {}).value || "longsword";
+    var l = (document.querySelector('input[name="level"]:checked') || {}).value || "apprentice";
+    var nm = ($("pirate-name").value || "").replace(/\s+/g, " ").trim().slice(0, 30);
+    if (BOARD) {
+      store("duel-weapon", w); store("duel-voice", $("voice").checked ? "1" : "0");
+      var L = boardLevel(store("duel-level") || l), m0 = boardMorale();
+      clock = 0;
+      S = {
+        name: BOARD.name || "Captain", mode: "duel", foeName: BOARD.captain,
+        career: { foe: BOARD.captain, foeTitle: BOARD.captainTitle, skill: BOARD.skill, crew: BOARD.yourCrew, gold: 0 },
+        train: null, weapon: WEAPONS[w], level: LEVELS[L], levelName: L, paused: false, over: null,
+        you: { x: 2, hp: 100, morale: m0, act: null, busy: 0, parry: null, flash: 0, history: [] },
+        foe: { x: 7, hp: 100, morale: 10 - m0, act: null, busy: 0, parry: null, flash: 0, think: 1600, plan: null, opening: 0, inRange: false },
+        text: null
+      };
+      return;
+    }
+    store("duel-name", nm);
+    store("duel-weapon", w); store("duel-level", l); store("duel-voice", $("voice").checked ? "1" : "0");
+    var C = career();
+    store("pirates-career", JSON.stringify({ nation: C.nation, title: C.title, era: C.era, port: C.port, crew: C.crew, gold: C.gold, skill: C.skill, ship: "sloop Swallow" }));
+    clock = 0;
+    var train = mode === "train";
+    S = {
+      name: nm || "Sailor", mode: train ? "train" : "duel", foeName: train ? "Old Tom" : C.foe, career: C,
+      train: train ? { stage: 1, blocks: 0, wind: TRAIN.startWind, called: false } : null,
+      weapon: WEAPONS[w], level: LEVELS[l], levelName: l, paused: false, over: null,
+      you: { x: 2, hp: 100, morale: 5, act: null, busy: 0, parry: null, flash: 0, history: [] },
+      foe: { x: 7, hp: 100, morale: 5, act: null, busy: 0, parry: null, flash: 0, think: 1600, plan: null, opening: 0, inRange: false },
+      text: null
+    };
+    if (train) { S.you.x = 3; S.foe.x = 5; S.foe.think = 2500; S.foe.inRange = true; }
+  }
+  function dist() { return S.foe.x - S.you.x; }
+  function foePan() { return Math.min(0.9, 0.25 + dist() * 0.12); }
+  function stepVol() { return Math.max(0.12, 0.4 - dist() * 0.05); }
+  function pacesText(d) { return d === 1 ? "1 pace" : d + " paces"; }
+
+  function updateHud() {
+    var y = S.you, f = S.foe;
+    $("you-bar").style.width = Math.max(0, y.hp) + "%";
+    $("foe-bar").style.width = Math.max(0, f.hp) + "%";
+    $("you-stat").textContent = "Health " + Math.max(0, Math.round(y.hp)) + " of 100, morale " + y.morale + " of 10";
+    $("you-name").textContent = S.name;
+    $("foe-name").textContent = S.mode === "train" ? "Old Tom, bosun" : S.career.foeTitle;
+    if (S.mode === "train") {
+      $("foe-stat").textContent = "Blocks " + S.train.blocks + " of " + TRAIN.done + ", lesson " + S.train.stage + " of 3";
+      $("you-stat").textContent = "Training, no wounds";
+    } else
+    $("foe-stat").textContent = "Health " + Math.max(0, Math.round(f.hp)) + " of 100, morale " + f.morale + " of 10";
+    $("paces-n").textContent = dist();
+    flags("you-flags", y.morale); flags("foe-flags", f.morale);
+  }
+  function flags(id, n) {
+    var el = $(id), html = "";
+    for (var i = 0; i < 10; i++) html += '<span class="' + (i < n ? "on" : "") + '"></span>';
+    el.innerHTML = html;
+  }
+
+  // ---------- Player actions ----------
+  function playerDo(a, h) {
+    if (!S) return;
+    if (a === "bells") return bellDemo();
+    if (a === "status") return status();
+    if (a === "pause") return togglePause();
+    if (S.over || S.paused) return;
+    var y = S.you;
+    if (a === "parry" || a === "parryBack") {
+      // A parry can always cut short your own windup.
+      y.act = null;
+      y.parry = { h: h, until: clock + (S.career.skill === "fencing" ? 650 : 520) };
+      y.busy = clock + 300;
+      y.pose = { kind: "parry", h: h, until: clock + 520 };
+      if (a === "parryBack") stepBack(true);
+      return;
+    }
+    if (clock < y.busy) return;
+    if (a === "forward") {
+      if (dist() <= 1) { say("Toe to toe already."); return; }
+      y.x += 1; y.busy = clock + 260; SFX.step(0, 0.3); distanceNews(); return;
+    }
+    if (a === "back") { stepBack(false); return; }
+    if (a === "thrust" || a === "slash") {
+      var m = MOVES[a][h];
+      var wind = m.wind * S.weapon.speed * (S.career.skill === "fencing" ? 0.85 : 1);
+      y.act = { type: a, h: h, start: clock, hitAt: clock + wind, end: clock + wind + 220 };
+      y.busy = y.act.end;
+      y.pose = null;
+      if (a === "slash") SFX.whoosh(-0.2); else noise(0.12, -0.2, 0.15, "bandpass", 1500, 2500, 2);
+    }
+  }
+  function stepBack(withParry) {
+    var y = S.you;
+    if (y.x <= 0) { finish("fled"); return; }
+    y.x -= 1; y.busy = Math.max(y.busy, clock + 260); SFX.step(-0.2, 0.3);
+    if (y.x === 0) { SFX.edge(); say("At the rail. One more step back and you flee the fight."); }
+    else if (!withParry) distanceNews();
+  }
+  function distanceNews() {
+    var d = dist();
+    var r = MOVES.thrust.high.reach + S.weapon.reach;
+    sayQuiet(pacesText(d) + (d <= r ? ", in reach" : ""));
+    updateHud();
+  }
+  function status() {
+    if (!S) return;
+    var d = dist(), y = S.you, f = S.foe;
+    if (S.mode === "train") { say(pacesText(d) + " apart. Lesson " + S.train.stage + " of 3. " + S.train.blocks + " of " + TRAIN.done + " blocks." + (S.paused ? " Paused." : "")); return; }
+    say(pacesText(d) + " apart. You: health " + Math.max(0, Math.round(y.hp)) + ", morale " + y.morale + ". " + S.foeName + ": health " + Math.max(0, Math.round(f.hp)) + ", morale " + f.morale + "." + (S.paused ? " Paused." : ""));
+  }
+  function help() {
+    say("Q A Z thrust high, middle, low. W S X slash. E D C parry. R F V parry and step back. Arrows step. Space status. L bells. P pause. M sound.");
+  }
+  function togglePause() {
+    if (!S || S.over) return;
+    S.paused = !S.paused;
+    sea(!S.paused);
+    say(S.paused ? "Paused. Press P to fight on." : "En garde.");
+  }
+
+  // ---------- Resolving blows ----------
+  function playerStrike() {
+    var y = S.you, f = S.foe, a = y.act;
+    a.resolved = true;
+    y.pose = { kind: "strike", h: a.h, type: a.type, until: clock + 220 };
+    var reach = MOVES[a.type][a.h].reach + S.weapon.reach;
+    var d = dist();
+    if (d > reach + 0.01) { SFX.miss(foePan()); say("Short. He is " + pacesText(d) + " away."); return; }
+
+    // Predictable fencers get read.
+    var same = y.history.filter(function (h) { return h === a.h; }).length;
+    y.history.push(a.h); if (y.history.length > 3) y.history.shift();
+
+    if (S.mode === "train") {
+      var caughtT = f.act && !f.act.resolved;
+      if (caughtT) { f.act = null; f.busy = clock + 500; f.think = clock + 1400; S.train.called = false; }
+      f.flash = clock + 250; SFX.hit(foePan());
+      say(f.opening > clock ? "Good riposte! " + HNAME[a.h] + " " + a.type + "." : caughtT ? "Ha! You caught me mid swing." : "Good hit, " + HNAME[a.h] + " " + a.type + ".");
+      return;
+    }
+    var fp = f.parry && clock <= f.parry.until;
+    if (fp && f.parry.h === a.h) { SFX.clash(foePan()); say("Parried!"); f.pose = { kind: "parry", h: a.h, until: clock + 300 }; return; }
+
+    var caught = f.act && !f.act.resolved;
+    if (!caught && f.opening < clock && !fp) {
+      var chance = S.level.parry + same * 0.15;
+      if (Math.random() < chance) {
+        f.parry = { h: a.h, until: clock + 300 };
+        f.pose = { kind: "parry", h: a.h, until: clock + 300 };
+        SFX.clash(foePan());
+        say(same >= 2 ? "Parried. He is reading you, mix it up." : "Parried!");
+        f.busy = Math.max(f.busy, clock + 250);
+        return;
+      }
+    }
+    var dmg = MOVES[a.type].dmg * S.weapon.dmg;
+    if (caught) { f.act = null; f.busy = clock + 500; f.think = clock + 600; }
+    f.hp -= dmg; f.flash = clock + 250; SFX.hit(foePan());
+    var yielded = shiftMorale(y, f);
+    if (f.hp <= 0) { finish("won"); return; }
+    if (yielded) { finish("won"); return; }
+    say((caught ? "You catch him mid swing! " : "Hit! ") + HNAME[a.h] + " " + a.type + ".");
+    updateHud();
+  }
+  function foeStrike() {
+    var y = S.you, f = S.foe, a = f.act;
+    a.resolved = true; f.act = null;
+    f.pose = { kind: "strike", h: a.h, type: a.type, until: clock + 220 };
+    var reach = MOVES[a.type][a.h].reach + WEAPONS.cutlass.reach;
+    var d = dist();
+    var rest = rand(S.level.rest[0], S.level.rest[1]);
+    if (d > reach + 0.01) { SFX.miss(foePan()); say("He swings short."); f.busy = clock + 300; f.think = clock + rest; return; }
+    if (y.parry && clock <= y.parry.until && y.parry.h === a.h) {
+      SFX.clash(foePan());
+      f.opening = clock + 900; f.busy = clock + 900; f.think = clock + 900 + rest * 0.5;
+      setTimeout(SFX.opening, 160);
+      if (S.mode === "train") { trainResult(a, true, rest); return; }
+      say("Blocked! Strike now.");
+      return;
+    }
+    if (S.mode === "train") { trainResult(a, false, rest); return; }
+    var dmg = MOVES[a.type].dmg * S.level.hurt;
+    y.hp -= dmg; y.flash = clock + 250; SFX.hit(-0.1);
+    f.busy = clock + 350; f.think = clock + rest;
+    var yielded = shiftMorale(f, y);
+    if (y.hp <= 0 || yielded) { finish("lost"); return; }
+    var hint = y.parry && clock <= y.parry.until ? " Wrong height." : "";
+    say("You're hit! His " + HNAME[a.h] + " " + a.type + "." + hint);
+    updateHud();
+  }
+  // Each hit lifts the striker's side and shakes the other. Returns true if the struck fighter yields.
+  function shiftMorale(striker, struck) {
+    var yields = struck.morale <= 1;
+    striker.morale = Math.min(10, striker.morale + 1);
+    struck.morale = Math.max(0, struck.morale - 1);
+    return yields;
+  }
+  function rand(a, b) { return a + Math.random() * (b - a); }
+
+  // ---------- Ramsay's mind ----------
+  function foeThink() {
+    var f = S.foe, d = dist();
+    if (clock < f.busy || clock < f.think || f.act) return;
+    if (!f.plan) {
+      var type = (S.mode === "train" && S.train.stage < 3) ? "thrust" : Math.random() < 0.6 ? "thrust" : "slash";
+      var r = Math.random(), h = r < 0.34 ? "high" : r < 0.7 ? "mid" : "low";
+      f.plan = { type: type, h: h };
+    }
+    var reach = MOVES[f.plan.type][f.plan.h].reach + WEAPONS.cutlass.reach;
+    if (d > reach) {
+      if (f.x - 1 > S.you.x) {
+        f.x -= 1; f.busy = clock + 480; f.think = clock + 480;
+        SFX.step(foePan(), stepVol());
+        var myReach = MOVES.thrust.high.reach + S.weapon.reach;
+        if (!f.inRange && dist() <= myReach) { f.inRange = true; sayQuiet("He closes to " + pacesText(dist()) + ". In reach."); }
+        else sayQuiet(pacesText(dist()));
+        updateHud();
+      }
+      return;
+    }
+    // Sometimes he gives ground when crowded.
+    if (S.mode === "duel" && d <= 1 && Math.random() < 0.25 && f.x < DECK) {
+      f.x += 1; f.busy = clock + 480; f.think = clock + 600; SFX.step(foePan(), stepVol()); sayQuiet("He gives ground, " + pacesText(dist())); updateHud(); return;
+    }
+    var train = S.mode === "train";
+    if (train && S.train.stage === 1 && !S.train.called) {
+      // Lesson one: Tom names the blow and the parry before he swings.
+      S.train.called = true;
+      say("Here comes a " + HNAME[f.plan.h] + " " + f.plan.type + ". Parry " + HNAME[f.plan.h] + ", " + PARRY_KEY[f.plan.h] + ".");
+      f.think = clock + 2600;
+      return;
+    }
+    var wind = train ? S.train.wind : S.level.wind;
+    wind *= (f.plan.type === "slash" ? 1.25 : 1);
+    f.act = { type: f.plan.type, h: f.plan.h, start: clock, hitAt: clock + wind };
+    f.plan = null;
+    if (f.act.type === "slash") SFX.whoosh(foePan());
+    setTimeout(function () { if (S && f.act) SFX.cue(f.act.h, foePan()); }, f.act.type === "slash" ? 160 : 0);
+    if (!train) say(HNAME[f.act.h] + " " + f.act.type + "!");
+    else if (S.train.stage === 1) say("Now!");
+  }
+
+  // ---------- Training ----------
+  function trainResult(a, blocked, rest) {
+    var T = S.train, f = S.foe, what = HNAME[a.h] + " " + a.type;
+    T.called = false;
+    if (blocked) {
+      T.blocks += 1;
+      T.wind = Math.max(TRAIN.minWind, T.wind * 0.88);
+      var msg = "Blocked! " + (T.stage > 1 ? "That was " + what + ". " : "") + "Strike back now.";
+      if (T.blocks >= TRAIN.done) { updateHud(); setTimeout(function () { if (S && S.mode === "train" && !S.over) finish("trained"); }, 1200); say("Blocked! That was " + what + "."); return; }
+      if (T.blocks === TRAIN.stage2) { T.stage = 2; msg += " Lesson two. From now on I won't call my blows. Listen for the bell."; f.think = clock + 4200; f.busy = clock + 4200; }
+      else if (T.blocks === TRAIN.stage3) { T.stage = 3; msg += " Lesson three. I'll mix in slashes and swing faster. Listen for the whoosh."; f.think = clock + 4200; f.busy = clock + 4200; }
+      say(msg);
+    } else {
+      T.wind = Math.min(TRAIN.startWind, T.wind * 1.1);
+      f.busy = clock + 350; f.think = clock + 1800;
+      SFX.miss(-0.1);
+      say("Touch! That was a " + what + ". Parry " + HNAME[a.h] + " with " + PARRY_KEY[a.h] + ".");
+    }
+    updateHud();
+  }
+
+  // Plays the three bells with their names. Pauses a running fight first.
+  var demoTimers = [];
+  function bellDemo() {
+    audioInit();
+    demoTimers.forEach(clearTimeout); demoTimers = [];
+    var paused = false;
+    if (S && !S.over && !S.paused && !arena.hidden) { S.paused = true; sea(false); paused = true; }
+    var steps = [
+      [0, function () { say("The warning bells. High."); }],
+      [1600, function () { SFX.cue("high", 0.5); }],
+      [2600, function () { say("Middle."); }],
+      [3400, function () { SFX.cue("mid", 0.5); }],
+      [4400, function () { say("Low."); }],
+      [5200, function () { SFX.cue("low", 0.5); }],
+      [6300, function () { say("A slash adds a whoosh first. Middle slash."); }],
+      [9000, function () { SFX.whoosh(0.5); }],
+      [9160, function () { SFX.cue("mid", 0.5); }],
+      [10400, function () { say(S && S.paused && !S.over && !arena.hidden ? "Press P to fight on." : "That's all three bells."); }]
+    ];
+    steps.forEach(function (st) { demoTimers.push(setTimeout(st[1], st[0])); });
+    return paused;
+  }
+
+  // ---------- Endings ----------
+  function finish(how) {
+    S.over = how; sea(false);
+    updateHud();
+    var text;
+    $("again").textContent = "Fight again";
+    $("again-train").hidden = true;
+    $("sail").hidden = true;
+    if (how === "trained") {
+      SFX.cheer();
+      text = "Old Tom lowers his blade and grins. You read every blow, " + S.name + ". You're ready for " + foeName() + ". Press Enter to face him now.";
+      $("again").textContent = "Face " + foeName() + " now";
+      $("again-train").hidden = false;
+      say(text); $("endbox").hidden = false; return;
+    }
+    if (BOARD) {
+      if (how === "won") SFX.cheer(); else SFX.groan();
+      var res = { how: how, hp: Math.max(0, Math.round(S.you.hp)), morale: S.you.morale };
+      text = BOARD.who === "spaniard" ? (how === "won" ? BOARD.captain + " drops his sword and begs for his life. He'll tell you what he knows. Press Enter to go back to the tavern." : how === "lost" ? "You go down on the tavern floor, and " + BOARD.captain + " slips out the door laughing. Press Enter to go back to the tavern." : "You back away and let him go. Press Enter to go back to the tavern.")
+        : BOARD.who === "landtown" ? (how === "won" ? BOARD.captain + " yields, and " + BOARD.place + " surrenders! Press Enter to see what you've won." : "You are beaten at the gate, and your men fall back. Press Enter to see what becomes of them.")
+        : BOARD.who === "guard" ? (how === "won" ? "The sergeant goes down, and you run for the gate before the rest of the watch arrives. Press Enter." : "The watch overpowers you and drags you off to jail. Press Enter.")
+        : BOARD.who === "silver" ? (how === "won" ? BOARD.captain + " yields, and his soldiers scatter into the jungle. Press Enter to see what you've won." : "Your men break and run for the boats. Press Enter to go back to your ship.")
+        : BOARD.who === "mutiny" ? (how === "won" ? BOARD.captain + " yields, and the mutineers throw down their cutlasses. You are still captain. Press Enter to go back to the helm." : "The mutineers take the ship. Press Enter to see what becomes of you.")
+        : how === "won" ? BOARD.captain + " throws down his sword and yields! His men see it and lay down their arms. The " + BOARD.kind + " is yours. Press Enter to go back to your ship."
+        : BOARD.who === "defend" ? (how === "lost" ? "You go down on your own deck. " + BOARD.captain + "'s men take your ship. Press Enter to see what becomes of you." : "You try to break away, but there's nowhere to run on your own ship. Press Enter to see what becomes of you.")
+        : how === "lost" ? "You go down on the deck. Your men drag you back over the rail as " + BOARD.captain + "'s crew drives them off. Press Enter to go back to your ship."
+        : "You leap back to your own deck, and your men follow you. The boarding has failed. Press Enter to go back to your ship.";
+      $("again").hidden = true; $("change").hidden = true;
+      $("back-aboard").href = returnLink(res); $("back-aboard").hidden = false;
+      BOARD.result = res;
+      say(text); $("endbox").hidden = false; return;
+    }
+    if (how === "won") {
+      SFX.cheer();
+      text = S.foeName + " drops his cutlass and yields. The crew roars, Captain " + S.name + "! The Swallow is yours, with " + S.career.crew + " men and " + S.career.gold + " pieces of eight in her strongbox. Press S to set sail, or Enter to fight again.";
+      store("pirates-career-won", "1");
+      $("sail").href = sailLink();
+      $("sail").hidden = false;
+    } else if (how === "lost") {
+      SFX.groan();
+      text = "You go down on the planks. " + S.foeName + " laughs and the crew looks away. Press Enter to try again.";
+    } else {
+      SFX.groan();
+      text = "You leap the rail and swim for the docks. You live, but no crew will follow you now. Press Enter to try again.";
+    }
+    say(text);
+    $("endbox").hidden = false;
+  }
+
+  // ---------- Loop ----------
+  function frame(t) {
+    if (!running) return;
+    var dt = last ? Math.min(100, t - last) : 16; last = t;
+    if (S && !S.paused && !S.over) {
+      clock += dt;
+      if (S.you.act && !S.you.act.resolved && clock >= S.you.act.hitAt) playerStrike();
+      if (S.you.act && clock >= S.you.act.end) S.you.act = null;
+      if (!S.over && S.foe.act && !S.foe.act.resolved && clock >= S.foe.act.hitAt) foeStrike();
+      if (S && !S.over) foeThink();
+    }
+    draw(t);
+    requestAnimationFrame(frame);
+  }
+
+  // ---------- Drawing ----------
+  var W = canvas.width, H = canvas.height;
+  function px(x) { var m = 120; return m + (x / DECK) * (W - 2 * m); }
+  function draw(t) {
+    var deckY = H * 0.78;
+    // Night sky
+    var g = ctx.createLinearGradient(0, 0, 0, H * 0.55);
+    g.addColorStop(0, "#0a1a2a"); g.addColorStop(1, "#24405a");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    // Moon
+    ctx.fillStyle = "rgba(244,228,180,0.9)"; ctx.beginPath(); ctx.arc(W * 0.8, H * 0.15, 26, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "rgba(244,228,180,0.08)"; ctx.beginPath(); ctx.arc(W * 0.8, H * 0.15, 60, 0, Math.PI * 2); ctx.fill();
+    // Sea
+    var sy = H * 0.5;
+    ctx.fillStyle = "#123049"; ctx.fillRect(0, sy, W, H - sy);
+    ctx.strokeStyle = "rgba(160,200,225,0.25)"; ctx.lineWidth = 2;
+    var ph = reduceMotion ? 0 : t / 900;
+    for (var r = 0; r < 4; r++) {
+      ctx.beginPath();
+      for (var x = 0; x <= W; x += 12) {
+        var yy = sy + 10 + r * 14 + Math.sin(x / 40 + ph + r) * 3;
+        x === 0 ? ctx.moveTo(x, yy) : ctx.lineTo(x, yy);
+      }
+      ctx.stroke();
+    }
+    // Moonlight on water
+    ctx.fillStyle = "rgba(244,228,180,0.12)"; ctx.fillRect(W * 0.8 - 30, sy, 60, 60);
+    // Mast and rigging behind
+    ctx.fillStyle = "#3a2717"; ctx.fillRect(W * 0.5 - 7, 0, 14, deckY);
+    ctx.strokeStyle = "rgba(200,170,120,0.35)"; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.moveTo(W * 0.5, 30); ctx.lineTo(30, deckY - 60); ctx.moveTo(W * 0.5, 30); ctx.lineTo(W - 30, deckY - 60); ctx.stroke();
+    // Rail
+    ctx.fillStyle = "#4a3220"; ctx.fillRect(0, deckY - 70, W, 10);
+    for (var p = 20; p < W; p += 46) ctx.fillRect(p, deckY - 62, 6, 62);
+    // Lantern glow
+    var lx = W * 0.5 + 30, ly = deckY - 110;
+    var lg = ctx.createRadialGradient(lx, ly, 2, lx, ly, 120);
+    lg.addColorStop(0, "rgba(255,190,90,0.55)"); lg.addColorStop(1, "rgba(255,190,90,0)");
+    ctx.fillStyle = lg; ctx.fillRect(lx - 120, ly - 120, 240, 240);
+    ctx.fillStyle = "#ffcf7a"; ctx.fillRect(lx - 5, ly - 7, 10, 14);
+    // Deck planks
+    ctx.fillStyle = "#6b4a2b"; ctx.fillRect(0, deckY, W, H - deckY);
+    ctx.strokeStyle = "rgba(30,18,8,0.5)"; ctx.lineWidth = 2;
+    for (var k = deckY + 14; k < H; k += 16) { ctx.beginPath(); ctx.moveTo(0, k); ctx.lineTo(W, k); ctx.stroke(); }
+    // Pace marks on the deck
+    ctx.fillStyle = "rgba(255,220,160,0.18)";
+    for (var i = 0; i <= DECK; i++) ctx.fillRect(px(i) - 1, deckY + 4, 2, 8);
+
+    if (!S) return;
+    var you = S.you, foe = S.foe;
+    // Telegraph: glowing band where his blow will land.
+    if (foe.act && !foe.act.resolved) {
+      var prog = Math.min(1, (clock - foe.act.start) / (foe.act.hitAt - foe.act.start));
+      var hy = bandY(foe.act.h, deckY);
+      ctx.fillStyle = "rgba(255,120,90," + (0.15 + prog * 0.35) + ")";
+      ctx.fillRect(px(you.x) - 40, hy - 12, 80, 24);
+      ctx.font = "bold 22px 'Atkinson Hyperlegible', sans-serif"; ctx.textAlign = "center";
+      ctx.fillStyle = "#ffd9a0";
+      ctx.fillText(HNAME[foe.act.h].toUpperCase() + " " + foe.act.type.toUpperCase(), px(foe.x), deckY - 175);
+    }
+    if (foe.opening > clock && !S.over) {
+      ctx.font = "bold 22px 'Atkinson Hyperlegible', sans-serif"; ctx.textAlign = "center";
+      ctx.fillStyle = "#b8f0c4"; ctx.fillText("OPENING", px(foe.x), deckY - 175);
+    }
+    drawFencer(px(you.x), deckY, 1, you, S.weapon.len, "#2b7d9c", "#173f4f", false);
+    if (S.mode === "train") drawFencer(px(foe.x), deckY, -1, foe, WEAPONS.cutlass.len, "#6f7a3c", "#353b1c", true, true);
+    else drawFencer(px(foe.x), deckY, -1, foe, WEAPONS.cutlass.len, "#9c2f28", "#4f1712", true);
+    if (S.paused || S.over) {
+      ctx.fillStyle = "rgba(5,10,15,0.55)"; ctx.fillRect(0, 0, W, H);
+      ctx.fillStyle = "#f3e3c0"; ctx.textAlign = "center";
+      ctx.font = "44px 'IM Fell English SC', Georgia, serif";
+      var msg = S.paused ? "Paused" : S.over === "won" ? "Captain " + S.name : S.over === "trained" ? "Ready for " + foeName() : S.over === "lost" ? "Defeated" : "You fled";
+      ctx.fillText(msg, W / 2, H * 0.42);
+    }
+  }
+  function bandY(h, deckY) { return h === "high" ? deckY - 150 : h === "mid" ? deckY - 110 : deckY - 50; }
+  function drawFencer(x, deckY, face, f, blade, coat, dark, isFoe, isTom) {
+    var s = 1.6;
+    var lunge = 0, handDY = 0, handDX = 0, bladeA = -0.35, armLen = 26;
+    var pose = f.pose && f.pose.until > clock ? f.pose : null;
+    if (f.act && !f.act.resolved) {
+      var h = f.act.h;
+      handDX = -12; armLen = 18;
+      handDY = h === "high" ? -26 : h === "mid" ? -2 : 18;
+      bladeA = h === "high" ? -1.1 : h === "mid" ? -0.15 : 0.55;
+      if (f.act.type === "slash") bladeA -= 0.9;
+    } else if (pose && pose.kind === "strike") {
+      lunge = 10; armLen = 34;
+      handDY = pose.h === "high" ? -14 : pose.h === "mid" ? 0 : 16;
+      bladeA = pose.h === "high" ? -0.3 : pose.h === "mid" ? 0 : 0.35;
+    } else if (pose && pose.kind === "parry") {
+      armLen = 22; handDX = 4;
+      handDY = pose.h === "high" ? -30 : pose.h === "mid" ? -6 : 20;
+      bladeA = pose.h === "low" ? 1.35 : -1.45;
+    }
+    ctx.save();
+    ctx.translate(x + lunge * face * s, deckY);
+    ctx.scale(face * s, s);
+    // Shadow
+    ctx.fillStyle = "rgba(0,0,0,0.3)"; ctx.beginPath(); ctx.ellipse(0, 0, 22, 4, 0, 0, Math.PI * 2); ctx.fill();
+    var hit = f.flash > clock;
+    // Legs
+    ctx.strokeStyle = dark; ctx.lineWidth = 6; ctx.lineCap = "round";
+    ctx.beginPath(); ctx.moveTo(0, -40); ctx.lineTo(14, 0); ctx.moveTo(0, -40); ctx.lineTo(-12, 0); ctx.stroke();
+    // Boots
+    ctx.fillStyle = "#1a1210"; ctx.fillRect(10, -6, 10, 6); ctx.fillRect(-16, -6, 10, 6);
+    // Coat
+    ctx.fillStyle = hit ? "#ffe0d0" : coat;
+    ctx.beginPath(); ctx.moveTo(-10, -84); ctx.lineTo(10, -84); ctx.lineTo(14, -36); ctx.lineTo(-14, -36); ctx.closePath(); ctx.fill();
+    // Belt
+    ctx.fillStyle = "#2a1a0c"; ctx.fillRect(-12, -52, 25, 4);
+    // Head and hat
+    ctx.fillStyle = "#e0b48a"; ctx.beginPath(); ctx.arc(2, -94, 9, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = "#15100c";
+    ctx.beginPath(); ctx.moveTo(-14, -100); ctx.lineTo(18, -100); ctx.lineTo(2, -116); ctx.closePath(); ctx.fill();
+    if (isFoe && !isTom) { ctx.fillStyle = "#15100c"; ctx.fillRect(4, -97, 7, 3); } // eye patch
+    if (isTom) { ctx.fillStyle = "#d8d4c8"; ctx.beginPath(); ctx.arc(2, -86, 6, 0, Math.PI); ctx.fill(); } // gray beard
+    // Arm and sword
+    var sx = 6, sy = -78;
+    var hx = sx + handDX + armLen, hy = sy + 10 + handDY;
+    ctx.strokeStyle = hit ? "#ffe0d0" : coat; ctx.lineWidth = 6;
+    ctx.beginPath(); ctx.moveTo(sx, sy); ctx.lineTo(hx, hy); ctx.stroke();
+    ctx.strokeStyle = "#d9dee2"; ctx.lineWidth = isFoe ? 4 : 3;
+    ctx.beginPath(); ctx.moveTo(hx, hy);
+    var bx = hx + Math.cos(bladeA) * blade, by = hy + Math.sin(bladeA) * blade;
+    if (isFoe) ctx.quadraticCurveTo(hx + Math.cos(bladeA - 0.3) * blade * 0.6, hy + Math.sin(bladeA - 0.3) * blade * 0.6, bx, by);
+    else ctx.lineTo(bx, by);
+    ctx.stroke();
+    ctx.fillStyle = "#c9a24a"; ctx.fillRect(hx - 3, hy - 3, 6, 6);
+    ctx.restore();
+  }
+
+  // ---------- Input ----------
+  var KEYS = {
+    KeyQ: ["thrust", "high"], KeyA: ["thrust", "mid"], KeyZ: ["thrust", "low"],
+    KeyW: ["slash", "high"], KeyS: ["slash", "mid"], KeyX: ["slash", "low"],
+    KeyE: ["parry", "high"], KeyD: ["parry", "mid"], KeyC: ["parry", "low"],
+    KeyR: ["parryBack", "high"], KeyF: ["parryBack", "mid"], KeyV: ["parryBack", "low"],
+    Numpad7: ["thrust", "high"], Numpad4: ["thrust", "mid"], Numpad1: ["thrust", "low"],
+    NumpadDivide: ["slash", "high"], NumpadMultiply: ["slash", "mid"], NumpadSubtract: ["slash", "low"],
+    Numpad8: ["parry", "high"], Numpad5: ["parry", "mid"], Numpad2: ["parry", "low"],
+    Numpad9: ["parryBack", "high"], Numpad6: ["parryBack", "mid"], Numpad3: ["parryBack", "low"],
+    ArrowRight: ["forward"], ArrowLeft: ["back"], Space: ["status"], KeyP: ["pause"], KeyL: ["bells"]
+  };
+  game.addEventListener("keydown", function (e) {
+    if (e.ctrlKey || e.altKey || e.metaKey) return;
+    audioInit();
+    if (e.code === "KeyH") { e.preventDefault(); help(); return; }
+    if (e.code === "KeyM") { e.preventDefault(); soundOn = !soundOn; sea(soundOn && S && !S.over && !S.paused); say(soundOn ? "Sound on." : "Sound off."); return; }
+    if (e.code === "KeyS" && S && S.over === "won" && !BOARD) { e.preventDefault(); say("Setting sail."); setTimeout(function () { location.href = sailLink(); }, 400); return; }
+    if ((e.code === "Enter" || e.code === "NumpadEnter") && BOARD && BOARD.result && S && S.over) { e.preventDefault(); say("Back to your ship."); setTimeout(function () { location.href = returnLink(BOARD.result); }, 300); return; }
+    if (e.code === "Enter" || e.code === "NumpadEnter") { if (S && S.over) { e.preventDefault(); begin(S.over === "trained" ? "duel" : S.mode); } return; }
+    var k = KEYS[e.code];
+    if (!k) return;
+    e.preventDefault();
+    if (e.repeat && k[0] !== "forward" && k[0] !== "back") return;
+    if (k[0] !== "bells") { demoTimers.forEach(clearTimeout); demoTimers = []; }
+    playerDo(k[0], k[1]);
+  });
+  game.addEventListener("pointerdown", function () { audioInit(); game.focus(); });
+  arena.querySelectorAll("button[data-a]").forEach(function (b) {
+    b.addEventListener("click", function () { audioInit(); playerDo(b.getAttribute("data-a"), b.getAttribute("data-h")); });
+  });
+  document.addEventListener("visibilitychange", function () { if (document.hidden && S && !S.paused && !S.over) togglePause(); });
+
+  function begin(mode) {
+    audioInit();
+    demoTimers.forEach(clearTimeout); demoTimers = [];
+    newFight(mode === "train" ? "train" : "duel");
+    game.setAttribute("aria-label", "Duel on the deck. " + (S.mode === "train" ? "Old Tom" : S.career.foeTitle) + " is to your right. Press H for keys, Space for status.");
+    setup.hidden = true; arena.hidden = false; $("endbox").hidden = true;
+    updateHud(); sea(true);
+    if (!running) { running = true; last = 0; requestAnimationFrame(frame); }
+    game.focus();
+    if (S.mode === "train") say("Old Tom faces you " + pacesText(dist()) + " to your right. Steady, " + S.name + ". Lesson one. I'll tell you every blow before I swing. Parry at the height I name, then strike back. No real wounds here, lad.");
+    else if (BOARD) say("En garde, " + S.name + "! " + BOARD.captainTitle.charAt(0).toUpperCase() + BOARD.captainTitle.slice(1) + " stands " + pacesText(dist()) + " to your right, cutlass drawn. Your morale is " + S.you.morale + ", his is " + S.foe.morale + ". Right Arrow steps toward him. H for keys.");
+    else say("En garde, " + S.name + "! " + S.foeName + " stands " + pacesText(dist()) + " to your right, cutlass drawn. Right Arrow steps toward him. H for keys.");
+  }
+  $("start").addEventListener("click", function () { begin("duel"); });
+  $("exp-go").addEventListener("click", function () { location.href = expeditionLink(); });
+  $("train").addEventListener("click", function () { begin("train"); });
+  $("bells").addEventListener("click", function () { bellDemo(); });
+  $("suggest").addEventListener("click", suggestName);
+  $("pirate-name").addEventListener("keydown", function (e) { if (e.key === "Enter") { e.preventDefault(); $("start").focus(); } });
+  $("again").addEventListener("click", function () { begin(S && S.over === "trained" ? "duel" : S ? S.mode : "duel"); });
+  $("again-train").addEventListener("click", function () { begin("train"); });
+  $("change").addEventListener("click", function () {
+    if (S) S.over = S.over || "stopped";
+    sea(false);
+    arena.hidden = true; setup.hidden = false; $("start").focus();
+  });
+
+  flags("you-flags", 5); flags("foe-flags", 5);
+  eraRules(false);
+  if (BOARD) setupBoarding();
+  draw(0);
+  function padHelp() {
+    say("Controller, sword fight. Left and right step. A thrusts, B slashes, C or X parries. Hold up for high, down for low, or neither for middle. Y, status. Left shoulder, hear the bells. Start pauses. After a duel, A goes on.");
+  }
+  function padPress(k, st, repeat) {
+    if (arena.hidden) {
+      if (k === "up" || k === "left") padFocusMove(-1);
+      else if (k === "down" || k === "right") padFocusMove(1);
+      else if (k === "b0" || k === "b9") padActivate();
+      else if (k === "b8") say("Controller. Up and down move between the choices, A picks one. In the fight: A thrusts, B slashes, C or X parries, with up for high and down for low.");
+      return;
+    }
+    audioInit();
+    if (document.activeElement !== game && !(S && S.over)) game.focus();
+    var hgt = st.up ? 0 : st.down ? 2 : 1;
+    var TH = ["KeyQ", "KeyA", "KeyZ"], SL = ["KeyW", "KeyS", "KeyX"], PA = ["KeyE", "KeyD", "KeyC"];
+    if (S && S.over) {
+      if (k === "b0" || k === "b9") { if (document.activeElement && document.activeElement !== game && /BUTTON|A/.test(document.activeElement.tagName)) padActivate(); else padSend("Enter", game); }
+      else if (k === "up" || k === "left") padFocusMove(-1); else if (k === "down" || k === "right") padFocusMove(1);
+      return;
+    }
+    if (k === "left") padSend("ArrowLeft", game);
+    else if (k === "right") padSend("ArrowRight", game);
+    else if (k === "up" || k === "down") return;
+    else if (k === "b0") padSend(TH[hgt], game);
+    else if (k === "b1") padSend(SL[hgt], game);
+    else if (k === "b2" || k === "b5" || k === "b7") padSend(PA[hgt], game);
+    else if (k === "b3") padSend("Space", game);
+    else if (k === "b4") padSend("KeyL", game);
+    else if (k === "b9") padSend("KeyP", game);
+    else if (k === "b8") padHelp();
+    else if (!repeat) say("Button " + k.slice(1) + (PADN[k.slice(1)] ? ", " + PADN[k.slice(1)] : "") + ", has no job in the duel.");
+  }
+  // ---------- Game controller (8BitDo M30 and other standard pads) ----------
+  // Six-button layout: A, B and C along the bottom, X, Y and Z along the top, Start, and the direction pad.
+  // Buttons are read through the browser's standard gamepad mapping. Any button that has no job says its number.
+  var PADN = { 0: "A", 1: "B", 2: "X", 3: "Y", 4: "left shoulder", 5: "right shoulder", 6: "left trigger", 7: "right trigger", 8: "Select", 9: "Start" };
+  var PAD = { prev: {}, holdAt: {}, id: "" };
+  function padState(gp) {
+    var st = {};
+    gp.buttons.forEach(function (b, i) { st["b" + i] = b && (b.pressed || b.value > 0.5); });
+    var ax = gp.axes || [];
+    var up = !!st.b12 || ax[1] < -0.5, down = !!st.b13 || ax[1] > 0.5, left = !!st.b14 || ax[0] < -0.5, right = !!st.b15 || ax[0] > 0.5;
+    // Some pads in DirectInput mode report the direction pad as a single hat axis.
+    if (ax.length > 9 && ax[9] >= -1.05 && ax[9] <= 1.05) {
+      var h = Math.round((ax[9] + 1) / (2 / 7));
+      if (h === 0 || h === 1 || h === 7) up = true;
+      if (h >= 1 && h <= 3) right = true;
+      if (h >= 3 && h <= 5) down = true;
+      if (h >= 5 && h <= 7) left = true;
+    }
+    st.up = up; st.down = down; st.left = left; st.right = right;
+    return st;
+  }
+  function padSend(code, target) {
+    var el = target || document.activeElement || document.body;
+    el.dispatchEvent(new KeyboardEvent("keydown", { code: code, key: code, bubbles: true, cancelable: true }));
+  }
+  function padFocusMove(dir) {
+    var list = Array.prototype.filter.call(document.querySelectorAll("button, a[href], input, [tabindex='0']"), function (el) {
+      return !el.disabled && el.offsetParent !== null && !el.closest("[hidden]");
+    });
+    if (!list.length) return;
+    var i = list.indexOf(document.activeElement);
+    var n = list[(i + dir + list.length) % list.length];
+    n.focus();
+  }
+  function padActivate() {
+    var el = document.activeElement;
+    if (!el || el === document.body) return;
+    if (el.tagName === "INPUT" && (el.type === "radio" || el.type === "checkbox")) { el.click(); return; }
+    if (el.tagName === "BUTTON" || el.tagName === "A") { el.click(); return; }
+  }
+  function padPoll() {
+    var gps = navigator.getGamepads ? navigator.getGamepads() : [], gp = null;
+    for (var i = 0; i < gps.length; i++) if (gps[i] && gps[i].connected !== false) { gp = gps[i]; break; }
+    if (!gp) { PAD.prev = {}; return; }
+    if (gp.id !== PAD.id) { PAD.id = gp.id; say("Controller connected. Press any button to start. Select hears the controller buttons."); }
+    var st = padState(gp), now = performance.now();
+    Object.keys(st).forEach(function (k) {
+      var was = PAD.prev[k];
+      if (st[k] && !was) { PAD.holdAt[k] = now + 420; padPress(k, st); }
+      else if (st[k] && was && (k === "left" || k === "right") && now >= PAD.holdAt[k]) { PAD.holdAt[k] = now + 260; padPress(k, st, true); }
+    });
+    PAD.prev = st;
+  }
+  window.addEventListener("gamepadconnected", function () { padPoll(); });
+  setInterval(padPoll, 40);
+})();
+</script>
+
+</body></html>

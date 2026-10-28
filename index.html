@@ -1,0 +1,96 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+<title>Pirates Lore</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=IM+Fell+English+SC&display=swap">
+<style>
+/* Layout: one narrow column, like a ship's articles: the name, a horizon, then the ways aboard. */
+:root {
+  --bg: #e9eef0; --surface: #f7f9fa; --ink: #142128; --muted: #4a5a62; --line: #c3ced3;
+  --brass: #8a5a12; --brass-ink: #ffffff; --sea: #1f4f68; --sky: #cfe0e8; --focus: #c27c0e;
+  --display: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", Verdana, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0b161c; --surface: #13212a; --ink: #e6ecee; --muted: #a2b2b9; --line: #2c3f49;
+  --brass: #e3ab4a; --brass-ink: #1a1206; --sea: #173a4e; --sky: #0f2532; --focus: #f0b54f; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --bg: #0b161c; --surface: #13212a; --ink: #e6ecee; --muted: #a2b2b9; --line: #2c3f49;
+  --brass: #e3ab4a; --brass-ink: #1a1206; --sea: #173a4e; --sky: #0f2532; --focus: #f0b54f; color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1.08rem; line-height: 1.55;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 760px; margin: 0 auto; padding-block: 40px 56px; display: flex; flex-direction: column; gap: 26px; }
+.where { font-size: 0.8rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--brass); font-weight: 700; font-variant-numeric: tabular-nums; }
+h1 { font-family: var(--display); font-weight: 400; font-size: clamp(3rem, 11vw, 5.6rem); line-height: 0.95; margin: 6px 0 0; letter-spacing: 0.01em; text-wrap: balance; }
+.tag { font-size: 1.2rem; margin: 0; max-width: 34ch; }
+.horizon { width: 100%; height: auto; display: block; border-radius: 10px; border: 1px solid var(--line); }
+p { margin: 0; max-width: 62ch; }
+.ways { display: flex; flex-direction: column; gap: 10px; }
+.way { display: flex; flex-direction: column; gap: 2px; text-decoration: none; color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
+.way b { font-family: var(--display); font-weight: 400; font-size: 1.45rem; color: var(--ink); }
+.way span { color: var(--muted); font-size: 0.98rem; }
+.way.first { background: var(--brass); border-color: var(--brass); }
+.way.first b, .way.first span { color: var(--brass-ink); }
+.way:hover { border-color: var(--brass); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 3px; }
+.notes { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 14px 22px; border-top: 1px solid var(--line); padding-top: 18px; }
+.notes h2 { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; }
+.notes p { font-size: 0.98rem; }
+.by { color: var(--muted); font-size: 0.95rem; }
+[hidden] { display: none !important; }
+</style>
+
+</head><body>
+<main>
+  <header>
+    <div class="where">The Spanish Main, 1560 to 1697</div>
+    <h1>Pirates Lore</h1>
+  </header>
+  <p class="tag">A pirate's life in the Caribbean, built from the start to be played by ear.</p>
+
+  <svg class="horizon" viewBox="0 0 760 170" role="img" aria-label="A small sloop under full sail on the horizon at sunset, a distant island to the left.">
+    <rect width="760" height="170" fill="var(--sky)"/>
+    <circle cx="590" cy="104" r="34" fill="var(--brass)" opacity="0.55"/>
+    <rect y="104" width="760" height="66" fill="var(--sea)"/>
+    <path d="M40 104 q40 -26 90 -14 q30 -16 60 14 z" fill="var(--sea)" opacity="0.8"/>
+    <g transform="translate(330 58)" fill="var(--ink)">
+      <path d="M0 46 h88 l-12 14 h-64 z"/>
+      <path d="M44 46 v-50" stroke="var(--ink)" stroke-width="2.5"/>
+      <path d="M46 -2 q30 22 26 46 h-26 z" opacity="0.85"/>
+      <path d="M42 2 q-22 18 -20 42 h20 z" opacity="0.7"/>
+      <path d="M44 -4 l12 4 l-12 4 z" fill="var(--brass)"/>
+    </g>
+    <path d="M0 132 q60 -8 120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0" stroke="var(--sky)" stroke-width="2" fill="none" opacity="0.5"/>
+  </svg>
+
+  <p>Win your first ship in a sword fight. Then sail where you like: trade, take prizes, sack Spanish towns, court the governor's daughter, hunt for buried treasure and your lost family, and chase the Treasure Fleet. When you're old and rich, or broke and marooned, the game tells you how your life turned out.</p>
+
+  <nav class="ways" aria-label="Start playing">
+    <a class="way first" href="duel.html" id="w-new"><b>Start a new career</b><span>Choose your nation, time period and skill, then win the Swallow in a duel.</span></a>
+    <a class="way" href="sea.html" id="w-continue" hidden><b>Continue your voyage</b><span id="w-continue-note">Pick up where you left off.</span></a>
+    <a class="way" href="duel.html#expeditions" id="w-exp"><b>Famous Expeditions</b><span>Sail with Drake, Morgan, Piet Heyn and other captains from history.</span></a>
+    <a class="way" href="manual.html" id="w-manual"><b>How to play</b><span>The full guide to the duel, the sea, towns, battles and the controller.</span></a>
+  </nav>
+
+  <section class="notes" aria-label="About the game">
+    <div><h2>Built for screen readers</h2><p>Every sight on screen is also a sound or a spoken line. Made and tested with JAWS, and works with NVDA and VoiceOver.</p></div>
+    <div><h2>Play your way</h2><p>Keyboard, touch, mouse, or a game controller such as the 8BitDo M30. Headphones help: ships and coasts sound from their direction.</p></div>
+    <div><h2>Your game is saved</h2><p>Your voyage saves itself in this browser on this device, so you can stop and come back.</p></div>
+  </section>
+
+  <p class="by">A game by Paul Trujillo Jr.</p>
+</main>
+
+<script>
+(function () {
+  try {
+    var v = JSON.parse(localStorage.getItem("pirates-voyage") || "null");
+    if (v && v.fleet && v.fleet.length) {
+      document.getElementById("w-continue").hidden = false;
+      document.getElementById("w-continue-note").textContent = "The " + v.fleet[0].name + ", " + v.crew + " men and " + v.gold + " pieces of eight.";
+    }
+  } catch (e) {}
+})();
+</script>
+
+</body></html>

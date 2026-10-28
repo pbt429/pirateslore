@@ -1,0 +1,781 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}[hidden]{display:none!important}</style>
+<title>Pirates Lore Guide</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=IM+Fell+English+SC&display=swap">
+<style>
+/* Layout: a single reading column with the contents first, like a ship's handbook. */
+:root {
+  --bg: #e9eef0; --surface: #f7f9fa; --ink: #142128; --muted: #4a5a62; --line: #c3ced3; --brass: #8a5a12; --focus: #c27c0e;
+  --display: "IM Fell English SC", "Iowan Old Style", Georgia, serif;
+  --body: "Atkinson Hyperlegible", "Segoe UI", Verdana, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --bg: #0b161c; --surface: #13212a; --ink: #e6ecee; --muted: #a2b2b9; --line: #2c3f49; --brass: #e3ab4a; --focus: #f0b54f; color-scheme: dark; } }
+:root[data-theme="dark"] { --bg: #0b161c; --surface: #13212a; --ink: #e6ecee; --muted: #a2b2b9; --line: #2c3f49; --brass: #e3ab4a; --focus: #f0b54f; color-scheme: dark; }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 1.05rem; line-height: 1.6;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+main { max-width: 760px; margin: 0 auto; padding-block: 32px 56px; display: flex; flex-direction: column; gap: 18px; }
+a { color: var(--brass); }
+:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+.back { font-size: 0.85rem; letter-spacing: 0.12em; text-transform: uppercase; font-weight: 700; }
+h1, h2, h3 { font-family: var(--display); font-weight: 400; text-wrap: balance; margin: 0; }
+h1 { font-size: clamp(2.2rem, 7vw, 3.4rem); line-height: 1.05; }
+h2 { font-size: 2rem; color: var(--brass); padding-top: 18px; border-top: 2px solid var(--line); }
+h3 { font-size: 1.45rem; margin-top: 18px; }
+h4 { font-size: 0.82rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 12px 0 0; }
+p, li { max-width: 66ch; }
+p { margin: 0; }
+.part { display: flex; flex-direction: column; gap: 10px; }
+ol { margin: 0; padding-left: 1.5em; display: flex; flex-direction: column; gap: 4px; }
+nav.toc { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 14px 18px; }
+nav.toc > ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+nav.toc ul ul { margin: 4px 0 0; padding-left: 1.2em; columns: 2 220px; column-gap: 20px; }
+nav.toc ul ul li { break-inside: avoid; }
+</style>
+</head><body>
+<main>
+  <a class="back" href="index.html">Pirates Lore, back to the title screen</a>
+  <h1>How to Play</h1>
+  <p>The guide has three parts: the duel, where every career begins; everything at sea and ashore; and the controller. Each part opens with its contents, and each section is a heading, so a screen reader can jump between them.</p>
+  <nav class="toc" aria-label="Contents"><ul><li><a href="#duel"><b>The Duel</b></a><ul><li><a href="#duel-1">The Story</a></li><li><a href="#duel-2">Your Nation, Time Period and Special Skill</a></li><li><a href="#duel-3">Getting Started</a></li><li><a href="#duel-4">The Opening Screen</a></li><li><a href="#duel-5">How a Fight Works</a></li><li><a href="#duel-6">The Warning Bells</a></li><li><a href="#duel-7">Keys</a></li><li><a href="#duel-8">Touch and Mouse Controls</a></li><li><a href="#duel-9">Training with Old Tom</a></li><li><a href="#duel-10">Health, Morale and Winning</a></li><li><a href="#duel-11">The Three Blades</a></li><li><a href="#duel-12">The Four Difficulty Levels</a></li><li><a href="#duel-13">Tips</a></li><li><a href="#duel-14">Troubleshooting</a></li><li><a href="#duel-15">Boarding Actions</a></li></ul></li><li><a href="#sea"><b>At Sea and Ashore</b></a><ul><li><a href="#sea-1">The Story</a></li><li><a href="#sea-2">Getting Started</a></li><li><a href="#sea-3">Steering by Compass</a></li><li><a href="#sea-4">Wind and Speed</a></li><li><a href="#sea-5">Sails</a></li><li><a href="#sea-6">Finding Your Way</a></li><li><a href="#sea-7">What You Hear</a></li><li><a href="#sea-8">Ships at Sea</a></li><li><a href="#sea-9">Towns</a></li><li><a href="#sea-10">Land and Shoals</a></li><li><a href="#sea-11">Keys</a></li><li><a href="#sea-12">Tips</a></li><li><a href="#sea-14">Ship Battles</a></li><li><a href="#sea-15">Boarding, Prizes and Your Fleet</a></li><li><a href="#sea-16">Saving Your Voyage</a></li><li><a href="#sea-17">Marooned</a></li><li><a href="#sea-18">Attacking Towns</a></li><li><a href="#sea-19">Visiting Towns</a></li><li><a href="#sea-20">Nations, Rank and Marriage</a></li><li><a href="#sea-21">The Captain&#x27;s Cabin</a></li><li><a href="#sea-22">Crew Morale, the Bank and Retiring</a></li><li><a href="#sea-23">Treasure Maps</a></li><li><a href="#sea-24">Your Lost Family</a></li><li><a href="#sea-25">The Treasure Fleet and the Silver Train</a></li><li><a href="#sea-26">Secret Missions</a></li><li><a href="#sea-27">Sneaking Into Towns</a></li><li><a href="#sea-28">Landing Parties and Land Battles</a></li><li><a href="#sea-29">Difficulty</a></li><li><a href="#sea-30">Famous Expeditions</a></li><li><a href="#sea-31">Playing with a Controller</a></li></ul></li><li><a href="#controller"><b>Controller Guide</b></a><ul></ul></li></ul></nav>
+<section class="part" aria-labelledby="duel"><h2 id="duel">The Duel</h2>
+<p>This part covers the sword duel, where every career begins.</p>
+<h3 id="duel-1">The Story</h3>
+<p>Port Royal, Jamaica, in the year 1660. You signed aboard the sloop Swallow as a common sailor. Her master, Captain Ramsay, keeps the plunder for himself and feeds the crew weevils. Tonight the crew has had enough. By the old articles of the Brotherhood, a captain who will not step down must be beaten in a fair fight, and the crew has chosen you to do it. Win, and the Swallow is yours. Ramsay fights with a heavy cutlass.</p>
+<p>That is the story for an English buccaneer in 1660. Your nation and time period change the port, the year and your rival. In this manual, Ramsay means whichever rival captain you face.</p>
+<h3 id="duel-2">Your Nation, Time Period and Special Skill</h3>
+<p>You start a new career by choosing who you sail for and when. They come first on the opening screen. Your choice sets your home port, your rival captain, your crew and your money. You are never bound to serve your nation.</p>
+<h4>The four nations</h4>
+<p>English Buccaneer. Good for a first career. The Crown backs privateers and English ports grow strong later. Spain hunts you everywhere. Rival: Captain Ramsay. Start: 40 crew, 600 pieces of eight, before the time period changes them.</p>
+<p>French Buccaneer. The most freedom. Tortuga becomes a pirate haven. Little help from the Crown and few French ports early on. Rival: Captain Rambert. Start: 45 crew, 450 pieces of eight.</p>
+<p>Dutch Trader. The biggest purse, and friends with the English and French. A small crew of traders, not fighters. There is no Dutch role in 1560, so that period is turned off when you pick Dutch. If you pick Dutch while 1560 is chosen, the game moves you to 1600 and tells you. Rival: Captain Roos. Start: 30 crew, 1100 pieces of eight.</p>
+<p>Spanish Renegade. The hardest start. Rich Spanish towns are everywhere, but you are an outcast with a thin crew and an empty purse. In 1680 you sail as a Costa Guarda, a Spanish coast guard who acts like a pirate. Rival: Captain Ramirez. Start: 25 crew, 250 pieces of eight.</p>
+<h4>The six time periods</h4>
+<ol>
+<li>The Silver Empire. Very hard. Spain is at her peak and owns nearly every port. Rich treasure fleets, few friendly harbors. 10 fewer crew and 100 less gold.</li>
+<li>Merchants and Smugglers. Hard. Still a Spanish sea, a little weaker, with Dutch smugglers everywhere. 5 fewer crew.</li>
+<li>The New Colonists. Fairly hard. The first English and French colonies take root while Spain slips. No change.</li>
+<li>War for Profit. Good for any skill. Spain is at her weakest, new colonies thrive, and it is the heyday of the small buccaneer. 10 more crew and 100 more gold.</li>
+<li>The Buccaneer Heroes. Good for any skill, and the classic start. Spanish gold is back but her navy is weak, and there are ports everywhere. 5 more crew and 100 more gold. This is the default.</li>
+<li>Pirates&#x27; Sunset. Tough. Navies patrol the islands, governors have little patience, and letters of marque are hard to get. 5 fewer crew.</li>
+</ol>
+<h4>The five special skills</h4>
+<p>You pick one special skill. Fencing is the default.</p>
+<p>Fencing. Your blows wind up 15 percent faster and each parry stays up a quarter longer, so it is easier to block. This is the only skill that helps in the duel.</p>
+<p>Navigation. Your ships sail faster. It will help at sea and in a chase.</p>
+<p>Gunnery. Your cannons fire faster and hit harder in ship battles.</p>
+<p>Wit and Charm. Governors, merchants and their families like you better, for better prices and rewards.</p>
+<p>Medicine. You stay healthy longer as the years pass, so your career lasts longer.</p>
+<p>The other four skills are saved with your career and will matter once those parts of the game are built.</p>
+<h4>Home ports</h4>
+<p>English: the Isle of Pines off Cuba in 1560 and 1600, Saint Kitts in 1620, Barbados in 1640, Port Royal in 1660 and 1680.</p>
+<p>French: a smugglers&#x27; cove on western Hispaniola in 1560 and 1600, Saint Kitts in 1620, Tortuga in 1640 and 1660, Petit-Goave in 1680.</p>
+<p>Dutch: the salt pans of Punta de Araya in 1600 and 1620, Curacao from 1640 on.</p>
+<p>Spanish: Havana in 1560, 1640 and 1680, Santo Domingo in 1600, Cartagena in 1620, San Juan in 1660.</p>
+<p>Under the choices, the story updates to match, and a line tells you your start, for example: Your start as an English Buccaneer: a sloop, 45 crew, 700 pieces of eight, and a special skill in Fencing. The game remembers your nation and time period for next time, and saves your career so the later parts of the game can use it. For now the duel itself plays the same in every nation and period.</p>
+<h3 id="duel-3">Getting Started</h3>
+<ol>
+<li>On the title screen, choose Start a new career.</li>
+<li>Sound needs a working speaker or headphones. Headphones are best, because Ramsay&#x27;s footsteps and blows come from your right.</li>
+</ol>
+<h3 id="duel-4">The Opening Screen</h3>
+<p>The opening screen has these parts, in order:</p>
+<ol>
+<li>Choose your nation, Choose your time period and Choose your special skill. See <a href="#duel-2">Your Nation, Time Period and Special Skill</a>.</li>
+<li>The challenge, the story for the choices you made, with your starting crew and money.</li>
+<li>Your pirate: a man or a woman. A man may court a governor&#x27;s daughter, and a woman may court a governor&#x27;s son. Everything else plays the same. Real women such as Grace O&#x27;Malley in the late 1500s and Anne Dieu-le-Veut in the 1680s commanded ships and crews. The Suggest a name button gives names to match.</li>
+<li>Your pirate&#x27;s name. Type any name. Press Enter in the box to jump to the Start button. The Suggest a name button reads out a period style name; press it again for another. If you leave the box blank, the crew calls you Sailor. The browser remembers your name.</li>
+<li>Choose your blade: rapier, longsword or cutlass. See <a href="#duel-11">The Three Blades</a>.</li>
+<li>Difficulty: Apprentice, Journeyman, Adventurer or Swashbuckler. See <a href="#duel-12">The Four Difficulty Levels</a>.</li>
+<li>A checkbox to also speak with the browser&#x27;s own voice. Leave it off when JAWS or NVDA is running, or you will hear everything twice.</li>
+<li>Three buttons:</li>
+</ol>
+<p>Start the duel. Fight Captain Ramsay.</p>
+<p>Train with Old Tom first. Practice with no wounds. See <a href="#duel-9">Training with Old Tom</a>.</p>
+<p>Hear the warning bells. Plays the three bells with their names.</p>
+<p>When the fight starts, the game moves you into the duel area and your screen reader should switch to application mode by itself, so your keys go to the game. Press H at any time to hear the keys.</p>
+<h3 id="duel-5">How a Fight Works</h3>
+<p>You start on the left side of the deck. Ramsay starts 5 paces away, to your right. The deck is 10 paces long.</p>
+<ol>
+<li>Closing in. Ramsay walks toward you, and you hear his footsteps get louder. The game tells you the distance as it changes, and says &quot;in reach&quot; when you are close enough to hit him. Right Arrow steps toward him, Left Arrow steps back.</li>
+<li>His attack. Before every blow, Ramsay gives a warning: a bell that tells you the height, and the game announces the move, for example &quot;high slash.&quot; See <a href="#duel-6">The Warning Bells</a>.</li>
+<li>Your defense. Parry at the same height as his attack. A good parry makes a ringing clash, and the game says &quot;Blocked! Strike now.&quot;</li>
+<li>Your opening. After a block, a bright two note chime means Ramsay is open for about a second. Strike now. He cannot parry during an opening.</li>
+<li>Your attack. You can also attack any time. A thrust is quick but does less damage. A slash is slower but does twice the damage. If you strike while he is winding up his own blow, you catch him mid swing and cancel his attack.</li>
+<li>Reach. Every attack has a reach. Too far away and you hear &quot;Short.&quot; High attacks reach farthest, low attacks the shortest. Your blade adds or takes away reach.</li>
+<li>Reading you. If you attack at the same height over and over, Ramsay learns your pattern and parries more often. The game warns you: &quot;He is reading you, mix it up.&quot;</li>
+<li>Fleeing. Step back to the rail and the game warns you. One more step back and you jump overboard. You live, but you lose the ship.</li>
+</ol>
+<p>Space gives you a status report at any time: the distance, and both fighters&#x27; health and morale.</p>
+<h3 id="duel-6">The Warning Bells</h3>
+<p>High attack: a quick, high double ring. Ding ding.</p>
+<p>Middle attack: one single ring in the middle.</p>
+<p>Low attack: a low buzz.</p>
+<p>Slash: a rushing whoosh comes just before the bell. No whoosh means a thrust.</p>
+<p>Press L at any time to hear all three bells with their names, followed by a middle slash. If you press L during a fight, the fight pauses first. Press P to fight on.</p>
+<h3 id="duel-7">Keys</h3>
+<h4>Letter keys</h4>
+<p>Q: thrust high</p>
+<p>A: thrust middle</p>
+<p>Z: thrust low</p>
+<p>W: slash high</p>
+<p>S: slash middle</p>
+<p>X: slash low</p>
+<p>E: parry high</p>
+<p>D: parry middle</p>
+<p>C: parry low</p>
+<p>R: parry high and step back</p>
+<p>F: parry middle and step back</p>
+<p>V: parry low and step back</p>
+<p>An easy way to remember the letters: each column on the keyboard is one move, and top, middle and bottom rows are high, middle and low. Q A Z is thrust, W S X is slash, E D C is parry, R F V is parry and step back.</p>
+<h4>Number pad</h4>
+<p>7: thrust high</p>
+<p>4: thrust middle</p>
+<p>1: thrust low</p>
+<p>Slash key: slash high</p>
+<p>Star key: slash middle</p>
+<p>Minus key: slash low</p>
+<p>8: parry high</p>
+<p>5: parry middle</p>
+<p>2: parry low</p>
+<p>9: parry high and step back</p>
+<p>6: parry middle and step back</p>
+<p>3: parry low and step back</p>
+<p>If JAWS keeps the number pad for itself, use the letter keys.</p>
+<h4>Other keys</h4>
+<p>Right Arrow: step toward your opponent</p>
+<p>Left Arrow: step back</p>
+<p>Space: status report</p>
+<p>H: hear the keys</p>
+<p>L: listen to the warning bells</p>
+<p>P: pause or resume</p>
+<p>M: sound on or off</p>
+<p>Enter: fight again after a duel ends</p>
+<p>S: after you win, set sail in the Swallow. This opens the sailing game with your career.</p>
+<p>The game also pauses by itself if you switch to another window.</p>
+<h3 id="duel-8">Touch and Mouse Controls</h3>
+<p>For a phone, tablet or mouse, there are buttons under the fight scene:</p>
+<ol>
+<li>A grid of 12 buttons. The rows are high, middle and low. The columns are Thrust, Slash, Parry, and Back, which is parry and step back.</li>
+<li>Step back, Step forward, Status and Pause buttons.</li>
+<li>A Hear the bells button.</li>
+</ol>
+<p>With VoiceOver on an iPhone, each button reads its full name, for example &quot;Parry high and step back.&quot;</p>
+<h3 id="duel-9">Training with Old Tom</h3>
+<p>Old Tom is the Swallow&#x27;s gray bearded bosun. He stands 2 paces away and fights with no real wounds. Training has three lessons and takes 15 good blocks.</p>
+<p>Lesson 1, blocks 1 to 5. Tom names every blow and the key that parries it, for example &quot;Here comes a high thrust. Parry high, E, or 8.&quot; Then he says &quot;Now!&quot; and swings slowly with the bell. Thrusts only.</p>
+<p>Lesson 2, blocks 6 to 10. Tom stops calling his blows. Parry by the bell alone. After each one, he tells you what it was, so you can check your ear.</p>
+<p>Lesson 3, blocks 11 to 15. Tom mixes in slashes, so listen for the whoosh, and swings faster.</p>
+<p>Every block makes Tom a little quicker. Every miss slows him back down and reminds you of the right key. You can strike back after a block to practice your riposte, but in training only your blocks count.</p>
+<p>When you finish, Tom says you are ready. Press Enter, or the Face Ramsay now button, to go straight into the real fight. The Train again button starts the lessons over.</p>
+<h3 id="duel-10">Health, Morale and Winning</h3>
+<p>Health: both fighters start at 100. Each hit takes some away, depending on the move and the blade.</p>
+<p>Morale: both fighters start at 5 out of 10. Each hit you land raises your morale by 1 and lowers his by 1. Each hit he lands does the opposite. Sighted players see morale as a row of small flags.</p>
+<p>You win when:</p>
+<ol>
+<li>Ramsay&#x27;s health runs out, or</li>
+<li>His morale is down to the bottom and you hit him again. He yields.</li>
+</ol>
+<p>You lose the same way, if your health or morale runs out. You also lose the ship if you flee overboard.</p>
+<p>When you win, the crew cheers &quot;Captain&quot; and your name, and the Swallow is yours.</p>
+<h3 id="duel-11">The Three Blades</h3>
+<p>Rapier: the longest reach and the fastest attacks, but the lightest wounds. It takes many hits to win.</p>
+<p>Longsword: middle reach, middle speed, solid wounds. The best all round blade for learning.</p>
+<p>Cutlass: the shortest reach and the slowest attacks, but by far the deepest wounds. You have to get in close.</p>
+<h3 id="duel-12">The Four Difficulty Levels</h3>
+<p>Each level gives Ramsay a shorter windup, so you have less time to react after the bell. He also parries more often, hits harder and rests less between blows.</p>
+<p>Apprentice: slow and easy to read. The best place to start.</p>
+<p>Journeyman: a fair fight.</p>
+<p>Adventurer: quicker blows and better parries.</p>
+<p>Swashbuckler: fast, cunning and cruel. About half the reaction time of Apprentice.</p>
+<p>The game remembers your blade and level for next time.</p>
+<h3 id="duel-13">Tips</h3>
+<ol>
+<li>Let him come to you. Wait for the bell, parry, then strike during the opening.</li>
+<li>A thrust is the safest strike during an opening, because it is fast. A slash does more damage but may not land in time on the harder levels.</li>
+<li>Mix up your heights. If you always attack high, he will start blocking you.</li>
+<li>Middle parry, D or 5, is a good guess when you are not sure, but the right height is always better.</li>
+<li>Watch your morale. If yours is low, one more hit can make you yield, so play it safe and block.</li>
+<li>Practice with Old Tom and the L key whenever the bells feel fuzzy.</li>
+</ol>
+<h3 id="duel-14">Troubleshooting</h3>
+<p>No sound: click or press a key in the game first. Browsers only allow sound after you interact with the page. Also check that M has not turned the sound off.</p>
+<p>Keys do nothing: make sure focus is on the duel area. Press Tab until you reach it, or click it. JAWS should go into application mode. If it does not, press Insert plus Z to turn the virtual cursor off.</p>
+<p>Number pad does nothing: JAWS may be using it. Use the letter keys instead.</p>
+<p>Everything is spoken twice: turn off &quot;Also speak with the browser&#x27;s own voice&quot; on the opening screen.</p>
+<h3 id="duel-15">Boarding Actions</h3>
+<p>The same duel is used when you board a ship in the sailing game. You fight her captain instead of your rival, and the opening screen shows only the boarding story, your blade and the fight button. Your crew size against hers sets your starting morale, and your difficulty is one step harder against warships and pirates, one step easier against merchants. When the duel ends, press Enter to go back to your ship. See the sea part of this guide. for what you win.</p>
+<h4>Other duels</h4>
+<p>The same duel also comes up in the sailing game for: the evil Spaniard in a tavern, a mutiny aboard your ship, an ambush on the Silver Train, the captain of the guard at a town gate, and a sergeant of the watch when you&#x27;re caught sneaking into a town. Each has its own screen title and story, and Enter takes you back when it ends.</p>
+<h4>Game-wide difficulty and famous expeditions</h4>
+<p>The difficulty you choose here now also sets the whole sailing game, and your share of the plunder: 7, 12, 17 or 22 percent. Below the career choices, a Famous Expeditions section lets you skip the duel and sail with Hawkins, Drake, Piet Heyn, L&#x27;Olonnais, Morgan or de Pointis. See the sea part of this guide.</p>
+<h4>Playing with a controller</h4>
+<p>Left and right step, A thrusts, B slashes, C or X parries. Hold up for high, down for low, or neither for middle. Y is status, the left shoulder plays the warning bells, Start pauses, and Select reads the buttons. On the setup screen, up and down move between the choices and A picks one. See the controller guide.</p>
+</section>
+<section class="part" aria-labelledby="sea"><h2 id="sea">At Sea and Ashore</h2>
+<p>This part covers everything at sea and ashore.</p>
+<h3 id="sea-1">The Story</h3>
+<p>Off Port Royal, Jamaica, in the year 1660. You beat Captain Ramsay and the sloop Swallow is yours: 8 guns, 40 men, quick in a light breeze, and shallow enough to ride over most reefs. England and Spain are at war. Spanish towns will not welcome you, and Spanish warships hunt English captains. French and English towns are friendly, and the Dutch are neutral.</p>
+<p>That is the story for an English buccaneer in 1660. The sea game now follows the career you chose in the duel:</p>
+<ol>
+<li>Nation. Sets which towns welcome you. English and French players are welcome in English and French towns and turned away from Spanish ones. A Dutch player is welcome in Dutch, English and French towns. A Spanish player is the other way around: Spanish towns welcome you, English and French towns fire on you, and English frigates hunt you instead of Spanish war galleons. Ships of your enemy&#x27;s nation will not give you news.</li>
+<li>Time period. Only towns that existed then are on the chart. Tortuga, Curacao, Barbados, Martinique and St. Eustatius appear from 1640, Port Royal and Petit Goave from 1660, and St. Kitts from 1620. In 1560 and 1600 there is no friendly town at all for an English, French or Dutch captain, and ships other than Spanish ones are rare. In 1680 pirate hunters are twice as common.</li>
+<li>Home port. You start just offshore from your home port or anchorage, for example the Isle of Pines in 1560 or Tortuga for the French in 1640, with your bow pointed somewhere you can sail.</li>
+<li>Crew and gold. The story tells you your crew and the gold in your strongbox. The opening message tells you your crew again.</li>
+<li>Special skill. Navigation makes the Swallow 15 percent faster. The other skills wait for later pieces.</li>
+<li>Name. Your pirate&#x27;s name from the duel is filled in for you.</li>
+</ol>
+<h4>How the career gets here</h4>
+<p>Win the duel, then press S, or use the Set sail in the Swallow link, and the sea game opens with your career. The browser also remembers your last career, so choosing Continue your voyage on the title screen uses it too. If you have never won the duel, you sail as an English buccaneer in 1660, and the story says so.</p>
+<h3 id="sea-2">Getting Started</h3>
+<ol>
+<li>Win the duel and press S, or choose Continue your voyage on the title screen.</li>
+<li>Type your captain&#x27;s name, or leave it blank.</li>
+<li>Press Take command. The game moves you to the sea chart, and JAWS should switch to application mode by itself.</li>
+<li>You start just offshore from your home port, with sails furled. For an English buccaneer in 1660, that is just south of Port Royal, heading south.</li>
+<li>Press Up Arrow twice for full sail, and you are under way.</li>
+</ol>
+<p>Headphones help, because ships, coasts and the guide beacon all come from their own direction.</p>
+<h3 id="sea-3">Steering by Compass</h3>
+<p>The compass is split into 16 points: north, north northeast, northeast, east northeast, east, and so on around. Each press of Left Arrow or Right Arrow turns you one point. Hold the key to keep turning. After you stop turning, the game tells you your new heading, your point of sail and your speed. Four presses is a quarter turn, and eight presses turns you right around.</p>
+<h3 id="sea-4">Wind and Speed</h3>
+<p>The trade wind usually blows from the east, and it shifts now and then. The game tells you quietly when it shifts. Press W for the wind and your best headings.</p>
+<p>Your speed depends on the angle between your heading and the wind. These are the old sailing terms the game uses, from slowest to fastest for the Swallow:</p>
+<ol>
+<li>Into the eye of the wind: pointing almost straight into it. The sails flap uselessly and the crew rows, about 1 or 2 leagues a watch. You hear the sails flapping.</li>
+<li>Close hauled: as close to the wind as the sails will work. Slow.</li>
+<li>Running before the wind: the wind straight behind you. Good, but not best.</li>
+<li>Beam reach: the wind on your side. Fast.</li>
+<li>Running broad reach and broad reach: the wind behind your shoulder. Very fast.</li>
+<li>Broad beam reach: the wind just behind your side. The Swallow&#x27;s best, up to 10 leagues a watch.</li>
+</ol>
+<p>A watch is four hours. A league is about two and a half miles. To go somewhere that lies into the wind, zigzag toward it, a few points to one side of the wind and then a few points to the other. Sailors call that tacking.</p>
+<h3 id="sea-5">Sails</h3>
+<p>Up Arrow raises sail one step: furled, half sail, full sail.</p>
+<p>Down Arrow lowers it one step.</p>
+<p>Furled sails stop the ship. Half sail moves at about half speed, useful near reefs and coasts.</p>
+<p>F turns fast time on or off. In fast time, days pass quickly. It turns itself off when a sail is sighted, when you reach a town, or when you hit a shoal or a coast.</p>
+<h3 id="sea-6">Finding Your Way</h3>
+<p>Space: a full report. Heading, point of sail, speed, sails, wind and time of day.</p>
+<p>N, where am I: how far you are, and in which direction, from the nearest town.</p>
+<p>L, lookout: the nearest coasts and how far away they are, and any ships in sight.</p>
+<p>T: pick a destination. The first press picks the nearest town, and each press after that picks the next nearest. Shift T goes back one.</p>
+<p>B: the bearing and distance to your destination, and how many points to turn left or right. If the course is into the wind, it suggests tacking.</p>
+<p>G: guide beacon on or off. A chime sounds every couple of seconds from the direction of your destination. When you are pointed right at it, the chime rings high and doubled. A lower chime means it is behind you.</p>
+<p>Sighted players see the destination as a dashed line on the chart. Z zooms the chart out to show the whole Caribbean, and Z again zooms back in.</p>
+<h3 id="sea-7">What You Hear</h3>
+<p>Waves: always there, under everything.</p>
+<p>Wind: grows louder with a stronger breeze.</p>
+<p>Hull: the rush of water past the hull grows with your speed, and timbers creak now and then.</p>
+<p>Surf: gets louder as you near a coast, and moves left or right to show which side the land is on.</p>
+<p>Flapping sails: you are pointed into the wind.</p>
+<p>Ship&#x27;s bell: the lookout has spotted a sail.</p>
+<p>Soft tick: a ship in sight. It comes from her direction, louder as she gets closer, and lower in pitch when she is behind you. A quick double tick means she is chasing you.</p>
+<p>Guide beacon: See <a href="#sea-6">Finding Your Way</a>.</p>
+<p>Scraping sand: you are crossing a shoal.</p>
+<p>A heavy thud: you have run up against a coast.</p>
+<p>Cannon: a fort or a ship is firing.</p>
+<h3 id="sea-8">Ships at Sea</h3>
+<p>Meeting a ship happens in stages:</p>
+<ol>
+<li>Sail ho. The lookout sees sails on the horizon and tells you which side, for example off the port bow, and how far. Port is left, starboard is right, the bow is the front and the quarter is behind your side.</li>
+<li>The lookout calls down the type of ship, for example a merchantman or a war galleon.</li>
+<li>When she is close, you see her colors, which means her flag and nation. Then you choose:</li>
+<li>Sail away.</li>
+<li>Close and hail her for news.</li>
+<li>Attack her.</li>
+</ol>
+<p>Press the number, or use Up and Down Arrow and Enter.</p>
+<p>Who you might meet:</p>
+<p>Merchantmen, Spanish. They will not give an English ship news.</p>
+<p>Cargo fluyts, Dutch. Neutral traders, happy to talk.</p>
+<p>Sloops, English, and barques, French. Friendly, with news.</p>
+<p>Spanish galleons. Slow and loaded, perhaps with treasure.</p>
+<p>Pirate sloops. Dangerous, and some will chase you.</p>
+<p>War galleons, Spanish pirate hunters with 32 guns. They chase English captains. Run, keeping the wind behind your shoulder, and the Swallow can outsail her.</p>
+<p>Frigates, English navy. Friendly.</p>
+<p>News from hailing a ship is about the Caribbean: wars, gold strikes, fever, the Treasure Fleet and the Silver Train. In later pieces this news will matter.</p>
+<p>Choosing Attack her starts a sea battle. So does hailing a pirate hunter, or letting a chasing ship catch you. See <a href="#sea-14">Ship Battles</a>.</p>
+<h3 id="sea-9">Towns</h3>
+<p>Sail close to a town and a choice comes up:</p>
+<ol>
+<li>Sail into the harbor.</li>
+<li>Attack the town, at any town that is not friendly. See <a href="#sea-18">Attacking Towns</a>.</li>
+<li>Sneak into town at night, at any town that is not friendly. See <a href="#sea-27">Sneaking Into Towns</a>.</li>
+<li>Sail on past.</li>
+</ol>
+<p>In a town that is friendly or neutral to you, you drop anchor and go ashore. See <a href="#sea-19">Visiting Towns</a>.</p>
+<p>In a town whose nation counts you as an enemy, the fort fires a warning shot and will not let you in. If the nation is only wary of you, the fort lets you in about half the time.</p>
+<p>The towns on the chart in 1660:</p>
+<p>English: Port Royal, St. Kitts, Barbados.</p>
+<p>French: Tortuga, Petit Goave, Martinique.</p>
+<p>Dutch: Curacao, St. Eustatius.</p>
+<p>Spanish: Havana, Santiago, Santo Domingo, San Juan, Cartagena, Maracaibo, Puerto Bello, Santa Marta, Rio de la Hacha, Campeche, Vera Cruz, St. Augustine, Trinidad.</p>
+<h3 id="sea-10">Land and Shoals</h3>
+<p>Land ahead: when a coast is close in front of you, the game warns you with its name and distance.</p>
+<p>Running into a coast: the ship stops with a thud. Turn away and you will get under way again. Going ashore comes in a later piece.</p>
+<p>Shoals: shallow reefs and sandbanks. The Swallow has a shallow draft, so she rides over them, but slowly. The shoals on the chart are the Great Bahama Bank, the Florida Keys, the Mosquito Banks, the Gardens of the Queen off southern Cuba, and the Campeche Bank. Bigger ships in later pieces will not be so lucky.</p>
+<h3 id="sea-11">Keys</h3>
+<h4>The helm</h4>
+<p>Left Arrow: turn left one point</p>
+<p>Right Arrow: turn right one point</p>
+<p>Up Arrow: raise sail</p>
+<p>Down Arrow: lower sail</p>
+<p>F: fast time on or off</p>
+<p>P: pause or resume</p>
+<h4>Reports</h4>
+<p>Space: full report</p>
+<p>W: wind and best headings</p>
+<p>N: where am I</p>
+<p>L: lookout</p>
+<p>R: repeat the last message</p>
+<h4>Navigation</h4>
+<p>T: next destination</p>
+<p>Shift T: previous destination</p>
+<p>B: bearing to destination</p>
+<p>G: guide beacon on or off</p>
+<p>Z: zoom the chart</p>
+<h4>Choices</h4>
+<ol>
+<li>2, 3: pick a choice</li>
+</ol>
+<p>Up and Down Arrow, then Enter: move through choices and pick one</p>
+<p>Escape: pick the first choice</p>
+<h4>Other</h4>
+<p>H: hear the keys</p>
+<p>M: sound on or off</p>
+<p>There are also on-screen buttons for every key, for phones, tablets and mice.</p>
+<h3 id="sea-12">Tips</h3>
+<ol>
+<li>Before a long voyage, press W and point the ship at one of the best headings it names.</li>
+<li>Use T and the guide beacon to find a town, and B to check how far off course you are.</li>
+<li>Heading east into the trade wind is slow. Tack, or plan routes that run west with the wind.</li>
+<li>If a war galleon chases you, turn so the wind is behind your shoulder and use full sail.</li>
+<li>Use half sail near coasts, so you have time to react to the land warning.</li>
+<li>Fast time is great for long open water passages. It stops by itself when anything happens.</li>
+</ol>
+<h3 id="sea-14">Ship Battles</h3>
+<p>The sea chart changes to a close up view of the two ships, and a Sea battle panel shows both ships.</p>
+<h4>How a battle starts</h4>
+<ol>
+<li>You choose Attack her when you meet a ship. She starts about 400 yards away. Traders and treasure galleons try to run.</li>
+<li>You hail a pirate hunter. She answers with a shot and attacks, from about 420 yards.</li>
+<li>A ship that is chasing you catches up. She starts only about 220 yards away.</li>
+</ol>
+<h4>The opening message</h4>
+<p>It tells you where she is, how far, her men and guns against yours, and whether your guns already bear or which way to turn.</p>
+<h4>Battle keys</h4>
+<p>Left Arrow and Right Arrow: turn one point. The ship swings round over a moment. After you stop, the game says your new heading and where she will be.</p>
+<p>Up Arrow: full sail. Faster, but hits do more damage while full sails are set.</p>
+<p>Down Arrow: battle sails. Every battle starts with battle sails. Slower, but harder to damage.</p>
+<p>While the crew changes sails, reloading stops for a few seconds.</p>
+<p>Space: fire a broadside.</p>
+<p>E: where is she. Her side and distance, her heading, whether your guns bear, and which way to turn if they do not. If she is upwind of you, it tells you how to zigzag toward her.</p>
+<p>S: both ships. Damage, men, guns, sails and whether you are loaded.</p>
+<p>W: wind. P: pause. R: repeat. H: keys. M: sound.</p>
+<p>L and B also tell you where she is, and C also gives the ship report.</p>
+<p>On a phone or with a mouse, the Sea battle panel has Fire, Where is she, Both ships and Full sail buttons.</p>
+<h4>Firing</h4>
+<p>Your guns are on the left, port, and right, starboard, sides. A broadside only fires when she is on your beam, from 50 to 130 degrees off your bow, about 2 to 6 compass points either side. If she is ahead or behind, Space tells you how many points to turn instead of wasting the shot.</p>
+<p>Range is 450 yards. Closer is far more accurate. Under 100 yards, nearly every gun counts.</p>
+<p>Half your guns fire, the ones on the side facing her. It takes 4 men to work each gun, so a small crew cannot fire them all.</p>
+<p>Reloading takes about 10 seconds, or 7 and a half with the Gunnery skill. Gunnery also hits more often.</p>
+<p>Bigger ships are easier to hit.</p>
+<h4>What you hear</h4>
+<p>A tick from her direction, faster as she gets closer, and doubled when she is coming for you.</p>
+<p>Distance calls every 100 yards inside 600.</p>
+<p>A two note call and &quot;Starboard guns bear!&quot; or &quot;Port guns bear!&quot; when she comes into your arc and you are loaded.</p>
+<p>A click and &quot;Guns loaded&quot; when you finish reloading.</p>
+<p>Your guns boom, then cracks of wood for hits and splashes for misses. The game reports hits, the men and guns she lost, and any new damage.</p>
+<h4>Her guns</h4>
+<p>Before she fires, you hear a drum roll and &quot;She&#x27;s running out her guns!&quot; You have about a second and a half. If you turn so you are no longer on her beam, her broadside falls wide. Warships, hunters and pirates reload fast. Merchants and fluyts are slow.</p>
+<h4>Damage</h4>
+<p>Each hit kills men and can knock out a gun. Damage builds in steps: sail damage, lost a mast, hull damage, hull leaking, and sinking. Each step slows the ship. A sinking ship that takes more hits goes down. Your ship keeps her damage after the battle and sails slower until a shipwright repairs her. Check her in the captain&#x27;s cabin with C.</p>
+<h4>How a battle ends</h4>
+<ol>
+<li>Boarding. Sail right into her. The ships crash together and you go to a sword duel against her captain, while the crews fight around you. See <a href="#sea-15">Boarding, Prizes and Your Fleet</a>.</li>
+<li>Surrender. If she is badly damaged, or her crew is small next to yours, she may strike her colors when you close within about 200 yards. You capture her just as if you had won the boarding.</li>
+<li>Sinking her. Her gold goes down with her, so it is usually better to board.</li>
+<li>Escape. If the ships get 1000 yards apart, the battle ends.</li>
+<li>Too few men. If your flagship&#x27;s crew falls under 4, you must strike your colors, and you are marooned. See <a href="#sea-17">Marooned</a>.</li>
+<li>Your flagship sinks. You are marooned, and your career is over. See <a href="#sea-17">Marooned</a>.</li>
+</ol>
+<h4>Ships in battle</h4>
+<p>Sloop, English trader: 6 guns, about 15 men. Runs.</p>
+<p>Barque, French trader: 6 guns, about 24 men. Runs.</p>
+<p>Cargo fluyt, Dutch: 8 guns, about 20 men. Slow to reload. Runs.</p>
+<p>Merchantman: 10 guns, about 30 men. Runs.</p>
+<p>Spanish galleon: 22 guns, about 150 men. Slow and clumsy, carrying 3000 to 8000 pieces of eight. Runs.</p>
+<p>Pirate sloop: 10 guns, about 60 men. Fights.</p>
+<p>Frigate: 26 guns, about 190 men. Fights.</p>
+<p>War galleon: 30 guns, about 250 men. Fights. Too big to board, so run unless she is badly hurt.</p>
+<h4>Tips</h4>
+<ol>
+<li>Keep her on your beam and fire as soon as you hear the guns bear.</li>
+<li>When you hear her drum roll, turn toward her or away from her to dodge.</li>
+<li>Damage her, then close in. She may surrender before you even board.</li>
+<li>Use battle sails while trading broadsides, and full sail to chase or run.</li>
+<li>A pirate hunter carries far more men and guns. Turn and run with the wind behind your shoulder.</li>
+<li>After a fight, visit the shipwright in a friendly town to repair your ships.</li>
+</ol>
+<h3 id="sea-15">Boarding, Prizes and Your Fleet</h3>
+<h4>Boarding</h4>
+<p>When the ships crash together, the game moves you to the sword duel, the same one you fought against your rival. This time you face her captain, for example Capitan de Soto or Kapitein Visser.</p>
+<p>The boarding screen tells you how the crews compare, then offers your blade choice and a button to fight her captain. Your difficulty level comes from the duel, one step harder against warships and pirates, and one step easier against merchants and fluyts.</p>
+<p>The crews fight while you duel. Your crew size against hers sets your starting morale. With twice her men you start around 7 of 10, about even starts at 5, and against a war galleon&#x27;s 250 you may start at 1 or 2, where a single hit could make you yield. Every hit you land lifts your morale and lowers his, just as before.</p>
+<p>When the duel ends, press Enter, or use the Back to your ship link, to return to the sea. On the sea page, press the Back aboard button to hear what happened.</p>
+<p>Win, and her captain yields and the ship is yours. A hard fight, with your health low, costs more men.</p>
+<p>Lose, or leap back to your own deck, and her crew drives yours off. You lose about half your flagship&#x27;s men, and they plunder most of your gold before the ships break apart.</p>
+<h4>When she boards you</h4>
+<p>A pirate or warship with a much bigger crew may run alongside and board you instead. The screen says Boarded by, and the story warns you that you are fighting for everything. Win, and you capture her just the same. Lose, or try to run, and her crew takes your ship and you are marooned.</p>
+<h4>What you win</h4>
+<p>When you beat her captain, or she surrenders:</p>
+<ol>
+<li>Treasure. All her gold.</li>
+<li>Men. Some of her crew join yours. Few men from a navy ship will join you.</li>
+<li>Supplies. Food from her stores, and from a trader, a cargo of goods like sugar, tobacco, hides, cacao or cloth. They go in your holds, as far as your fleet has room.</li>
+<li>The ship. She joins your fleet under a new name, like the Santa Rosa or the Eendracht, with her guns and any damage she took.</li>
+<li>Your flagship. If she is a bigger type of ship than your flagship, you move your flag to her and she becomes your new flagship. Your old ship sails on in the fleet.</li>
+</ol>
+<p>You can only keep her if you have enough men. Every ship besides the flagship needs a prize crew of 8 men. If you don&#x27;t have the men, or your fleet already has 8 ships, you strip her, take up to 2 of her guns, and let her go.</p>
+<h4>Ship types, smallest to largest</h4>
+<p>The flagship&#x27;s type decides how fast you sail and turn, how much damage she can take, and how many guns she can mount.</p>
+<ol>
+<li>Pinnace. Very fast and nimble, fragile. Up to 8 guns, 20 tons of cargo. Crosses shoals.</li>
+<li>Sloop, like the Swallow. Fast and nimble. Up to 12 guns, 40 tons. Crosses shoals.</li>
+<li>Barque. Small and handy. Up to 16 guns, 60 tons. Crosses shoals.</li>
+<li>Cargo fluyt. Slow and fragile, but a big hold. Up to 20 guns, 80 tons.</li>
+<li>Merchantman. Fairly fast with a good hold. Up to 24 guns, 100 tons.</li>
+<li>Frigate. A powerful warship. Up to 28 guns, 120 tons.</li>
+<li>War galleon. Very tough, slow to turn. Up to 32 guns, 140 tons.</li>
+<li>Spanish galleon. The biggest and toughest, and the slowest. Up to 36 guns, 160 tons.</li>
+</ol>
+<h4>Your fleet at sea</h4>
+<p>The whole fleet sails at the speed of its slowest ship, so a slow or badly damaged prize slows you down.</p>
+<p>Only small ships cross shoals. If your flagship is a fluyt or bigger, she touches bottom at the edge of a shoal. Turn away to get off.</p>
+<p>In battle, only your flagship fights. Her crew is your whole crew minus 8 men for each other ship, and it takes 4 men to work each gun.</p>
+<p>The shipwright in a friendly or neutral town repairs every ship in the fleet, for a price.</p>
+<p>Press C at sea to open the captain&#x27;s cabin. Its fleet report lists your flagship, each other ship and its damage, your men, your gold, and what is in your holds. See <a href="#sea-21">The Captain's Cabin</a>.</p>
+<h3 id="sea-16">Saving Your Voyage</h3>
+<p>The game saves your voyage by itself every 20 seconds while you sail, after every battle and boarding, and when you anchor in a harbor. That includes where you are, the wind, the time, your fleet, men, gold and holds.</p>
+<p>When you open the sailing game again, a Continue your voyage button picks up where you left off. The Start over from your home port button begins again with the ship, men and gold you first set sail with from the duel.</p>
+<p>Winning a new duel and setting sail starts a new career, with a fresh voyage.</p>
+<p>The save lives in your web browser, on this computer.</p>
+<h3 id="sea-17">Marooned</h3>
+<p>You can lose everything. You are marooned on a deserted island when:</p>
+<ol>
+<li>Your flagship sinks, in a sea battle or under a fort&#x27;s guns.</li>
+<li>An enemy boards you and you lose the duel, or try to run.</li>
+<li>Your flagship&#x27;s crew falls below 4 men, and you must strike your colors.</li>
+</ol>
+<p>The Marooned screen shows a lone sailor sitting under a palm tree on a tiny island, looking out to sea at the setting sun. You hear the waves, a few gulls and a sad tune. The screen tells you how it happened and gives a short summary of your career: your name and title, the period, the ships you captured and sank, the towns you sacked, and the gold that was lost with you.</p>
+<p>Your saved voyage is wiped, so there is no going back. Press Enter on Start a new career to go back to the duel and begin again.</p>
+<h3 id="sea-18">Attacking Towns</h3>
+<p>When you reach a Spanish town, or a Dutch one if you are not Dutch, the menu offers Attack the town. Friendly towns cannot be attacked.</p>
+<h4>First, the fort</h4>
+<p>The view changes to the town&#x27;s shore. The fort stands on the beach with the town behind it, and your ship starts about 520 yards offshore.</p>
+<ol>
+<li>The fort&#x27;s guns fire in every direction, out to 500 yards. Your guns reach 450, so you have to come inside its range to hurt it.</li>
+<li>Fire broadsides just as in a sea battle: turn so the fort is on your beam, then press Space. The fort is a big target, so it is easier to hit than a ship.</li>
+<li>Before each salvo you hear a drum and &quot;The fort&#x27;s gunners are laying their guns! Keep moving.&quot; A ship moving at speed is harder to hit, so don&#x27;t stop.</li>
+<li>The shore runs across in front of the fort. Don&#x27;t sail in closer than about 80 yards, or you hit the reef, scrape the hull and get pushed back.</li>
+<li>E tells you where the fort is, whether your guns bear, whether you are inside its range, and how far the shore is. S reports on your ship and the fort.</li>
+</ol>
+<p>The fort weakens in steps: walls cracked, guns knocked about, walls breached, crumbling, and silenced. Hits also kill its soldiers and knock out its guns.</p>
+<h4>Fort sizes</h4>
+<p>Small forts, like Rio de la Hacha or Trinidad: 10 guns. A sloop can take them.</p>
+<p>Stout forts, like Santiago, Maracaibo or Campeche: 18 guns.</p>
+<p>Strong forts, at Havana, Cartagena, Vera Cruz, Puerto Bello, Santo Domingo and San Juan: 30 guns. You will need a big ship, and luck.</p>
+<h4>Plunder</h4>
+<p>When the fort falls silent, its flag comes down and your men row ashore and storm the town. The garrison&#x27;s last stand costs you some men. Then you carry off the gold from the governor&#x27;s house, and food and goods from the warehouses, as far as your holds have room.</p>
+<p>Small towns hold about 800 to 2500 pieces of eight, stout towns 2500 to 6000, and strong towns 6000 to 12000.</p>
+<p>A sacked town has nothing worth taking for about two months.</p>
+<h4>Retreat and try again</h4>
+<p>If things go badly, sail out past 900 yards and you retreat. The town remembers the damage you did, its lost guns and soldiers. Its men repair the fort a little each day, so come back soon, after a shipwright has repaired your ship.</p>
+<p>If your flagship sinks under the fort&#x27;s guns, you are marooned.</p>
+<h3 id="sea-19">Visiting Towns</h3>
+<p>When you sail into a friendly or neutral harbor, you drop anchor and go ashore. The town menu lists the places you can visit. Use Up and Down Arrow and Enter, or press the number. Escape always takes you back out, to the town menu or to your ship.</p>
+<p>After you do something, the game tells you what happened and says Up and Down Arrow for choices, rather than reading the whole list again.</p>
+<h4>The town menu</h4>
+<ol>
+<li>The governor&#x27;s mansion.</li>
+<li>The tavern.</li>
+<li>The merchant.</li>
+<li>The shipwright.</li>
+<li>The bank. See <a href="#sea-22">Crew Morale, the Bank and Retiring</a>.</li>
+<li>The captain&#x27;s cabin, the same as C at sea. See <a href="#sea-21">The Captain's Cabin</a>.</li>
+<li>Leave town and return to your ship. Then raise sail with Up Arrow.</li>
+</ol>
+<p>If one of your lost relatives is held in this town, Search the town for your relative comes first. See <a href="#sea-24">Your Lost Family</a>.</p>
+<h4>The governor&#x27;s mansion</h4>
+<p>Visit the governor first. Each town has its own governor, such as Sir William Beeston in Port Royal. He can:</p>
+<ol>
+<li>Tell you about the wars. Spain is at war with England, France and Holland. Everyone hunts pirates.</li>
+<li>Sell you a letter of marque, for 400 pieces of eight. It makes you a privateer for his nation, an official right to take the ships and towns of its enemies. You lose it if you attack his nation&#x27;s ships, or the ships of a nation at peace with it.</li>
+<li>Promote you. With a letter of marque, every victory against his nation&#x27;s enemies counts to your credit: 2 for capturing a ship, 1 for sinking one, 3 for sacking a town. Come back with enough and he promotes you and grants you land. The ranks are Ensign, Captain, Major, Colonel and Admiral, then the titles Baron, Count, Marquis and Duke. A woman captain is named Baroness, Countess, Marquise and Duchess. Each step needs a little more than the last. Ask about promotion to hear how far you have to go.</li>
+<li>Sell you amnesty, if his nation is wary of you, to pardon your past attacks.</li>
+<li>Introduce his daughter, once you hold his letter of marque or a rank and have some reputation. Call on her on later visits. She shares what she hears at court, such as which nearby enemy town is weak or rich. Court her for a few visits, and once you are a Major or better with her nation, you can propose. If she says yes, visit your wife whenever you are in her town, for news. If your pirate is a woman, the governor introduces his son instead, and if he says yes, he becomes your husband. It works the same way.</li>
+<li>Tell you your standing with each nation, your land, and your reputation.</li>
+<li>Ask if he has any secret work. See <a href="#sea-26">Secret Missions</a>.</li>
+</ol>
+<h4>The tavern</h4>
+<ol>
+<li>Recruit sailors. How many join depends on the size of the town, your reputation, and how rich your crew looks. A big crew with a small strongbox finds few recruits. You can recruit in each town once every couple of weeks, up to what your ships can carry.</li>
+<li>Buy the bartender a drink, 5 pieces of eight, for gossip and news.</li>
+<li>Treat the barmaid, 20 pieces of eight. She tells you what the sailors say about nearby enemy towns, their forts and their wealth.</li>
+<li>Sometimes an old pirate offers a piece of a treasure map. See <a href="#sea-23">Treasure Maps</a>.</li>
+<li>Sometimes a scarred Spaniard watches you from a corner. Challenge him to learn where your family is held. See <a href="#sea-24">Your Lost Family</a>.</li>
+</ol>
+<p>Older captains find it harder to recruit. Past about 40, fewer sailors want to sign on.</p>
+<h4>The merchant</h4>
+<p>The merchant buys and sells food, sugar, tobacco, cacao, hides, cloth and rum. The list reads each item&#x27;s buying price, selling price per ton, and how much you have.</p>
+<p>Choose an item to trade it: sell all, sell 10 tons, sell 1 ton, buy as much as you can, buy 10 tons, or buy 1 ton.</p>
+<p>Prices differ from town to town and change every week. Each nation makes some goods cheaply and pays well for others:</p>
+<p>Spanish towns make cacao and hides cheaply, and pay well for cloth and rum.</p>
+<p>English towns make sugar and rum cheaply, and pay well for cloth and tobacco.</p>
+<p>French towns make tobacco and hides cheaply, and pay well for sugar and cloth.</p>
+<p>Dutch towns make cloth and rum cheaply, and pay well for sugar, tobacco and cacao.</p>
+<p>Big towns pay more for everything. Selling a lot of one thing in one town drives its price down.</p>
+<p>Your holds are shared across your fleet. Bigger ships carry more.</p>
+<h4>The shipwright</h4>
+<ol>
+<li>Repair your fleet. He tells you the price for all your ships at once. Repairs take three days.</li>
+<li>Sell a ship from your fleet, but never your flagship. Damaged ships fetch less. If her cargo will not fit in your other holds, it is left on the dock.</li>
+<li>Choose your flagship. Move your flag to any ship in your fleet.</li>
+<li>Sell a cannon from your flagship for 40 pieces of eight.</li>
+</ol>
+<p>You cannot buy ships or cannon. You have to capture them.</p>
+<h3 id="sea-20">Nations, Rank and Marriage</h3>
+<p>Your standing with each nation, worst to best: an enemy, wary, neutral, a letter of marque, then a rank or title.</p>
+<p>At the start, Spain counts English, French and Dutch captains as enemies. A Spanish captain is an enemy of England and France.</p>
+<p>Attacking a nation&#x27;s ships makes them wary of you, and attacking again makes them enemies. Sacking one of their towns does both at once. You also lose any letter of marque from them.</p>
+<p>Enemy towns fire on you and will not let you in. Wary towns let you in about half the time, and their governor will sell you amnesty.</p>
+<p>Your reputation grows with your victories: cowardly, promising, well known, famous, notorious and infamous. It helps you recruit and meet the governors&#x27; sons and daughters.</p>
+<p>If you are marooned, the summary also lists your ranks, your land and your husband or wife.</p>
+<h3 id="sea-21">The Captain&#x27;s Cabin</h3>
+<p>Press C at sea, or choose The captain&#x27;s cabin in a town, to check on your pirate and your career. The game pauses while you are in the cabin.</p>
+<p>On screen, the cabin shows a portrait of your pirate in his hat and eye patch, wearing his nation&#x27;s colors, beside a table of his status. His beard turns gray as he ages, and he looks pale and scarred when his health is poor.</p>
+<h4>The choices</h4>
+<ol>
+<li>Your personal status: your name and title, today&#x27;s date, your age and health, your reputation, your highest rank, your land, whether you are married, the gold in the strongbox, and your special skill.</li>
+<li>Standing with each nation: enemy, wary, neutral, letter of marque, or your rank, plus your land in each, and who is at war with your nation.</li>
+<li>Your fleet, crew and holds.</li>
+<li>The ship&#x27;s log: the last 8 events, newest first, each with its date. It records taking command, ships taken and sunk, towns sacked, letters of marque, promotions, marriage, recruiting, failed boardings and birthdays.</li>
+<li>Your career record: ships captured and sunk, towns sacked, fleet size, and how many of the ten pirate quests you have done.</li>
+<li>The ten pirate quests, each marked done or not yet. All ten can be done now.</li>
+<li>Your treasure maps, with the clues you have so far.</li>
+<li>Your lost family, and where each one is held, if you know.</li>
+<li>Your secret mission, if you have one.</li>
+<li>Rumors of Spanish treasure: the last few things you&#x27;ve heard about the Treasure Fleet and the Silver Train, newest first, with the date you heard them.</li>
+<li>Back to the helm, or back to town. Escape does the same.</li>
+</ol>
+<p>Personal status also tells you your banked fortune and your crew&#x27;s mood.</p>
+<h4>The date and your age</h4>
+<p>The calendar starts on the 1st of March in the year of your time period, and the time report with Space now gives the date. Your pirate starts at 20 years old and ages as the days pass at sea. The log notes each birthday.</p>
+<h4>Health</h4>
+<p>Health runs excellent, good, fair, poor and very poor.</p>
+<p>Wounds from a boarding duel hurt your health, the more so the harder the fight.</p>
+<p>After 30, the years wear you down a little, more after 40, and more again after 50. The Medicine skill halves this.</p>
+<p>When your health is fair or worse, enemy captains fight a step harder in boarding duels.</p>
+<h3 id="sea-22">Crew Morale, the Bank and Retiring</h3>
+<h4>Crew morale</h4>
+<p>Your crew is happy, pleased, unhappy or angry. You hear it in the cabin&#x27;s personal status, the fleet report and at the bank.</p>
+<p>They are happier the more gold each man can expect, so a big crew needs a big strongbox. They grow impatient as the months pass, so a voyage can&#x27;t go on forever.</p>
+<p>When they turn unhappy, you hear that the crew is grumbling. Unhappy men desert when you put into port.</p>
+<p>When they turn angry, you hear talk of mutiny. Then any day at sea, the angry men may rise. A ringleader comes aft with his followers, and you must beat him in a duel to stay captain. Your loyal men against his mutineers sets your starting morale. Win, and the mutineers are set adrift and the crew&#x27;s spirits lift. Lose, and you are marooned.</p>
+<p>To keep them happy, win them rich prizes, or divide the plunder at a bank.</p>
+<h4>The bank</h4>
+<p>Every town you can enter has a bank.</p>
+<ol>
+<li>Divide the plunder. Until you divide it, the gold in the strongbox belongs to the whole crew. When you divide, your share as captain and officer goes into the bank, safe forever. Your share depends on the difficulty level you chose in the duel: 7 percent at Apprentice, 12 at Journeyman, 17 at Adventurer and 22 at Swashbuckler. The backers take a tenth, and the crew splits the rest, including your extra ships and any cargo, so sell those first.</li>
+</ol>
+<p>Then the crew scatters. Three months pass while you refit with your first ship, the Swallow. Your backers stake you a tenth of the voyage&#x27;s profit, at least 200 pieces of eight, and a few loyal men stay with you. Then you can plan a new voyage or retire. Recruit in the tavern before you sail again.</p>
+<ol>
+<li>Retire from the sea. The plunder is divided first, then your career ends.</li>
+<li>Your treasure trove: how much you have banked, and what&#x27;s still in the strongbox.</li>
+</ol>
+<h4>Retiring</h4>
+<p>The retirement screen shows your old captain in a rocking chair on the porch of a house on a hill, with a cat at his feet and a little sloop at anchor in the bay below. It reads out how you spend the rest of your days, from a beggar on the docks up to an adviser to the King, or even a legend. Then it lists your points:</p>
+<p>Wealth: 1 point for every 500 pieces of eight banked.</p>
+<p>Rank and titles: 3 points for each rank, more for titles of nobility.</p>
+<p>Land: 1 point for every 50 acres.</p>
+<p>Reputation: 3 points for each step from cowardly to infamous.</p>
+<p>Marriage: 10 points.</p>
+<p>Quests: 5 points for each of the ten, and 50 more for all ten.</p>
+<p>Health: 5 points for good health or better, minus 5 for poor.</p>
+<p>If your health becomes very poor, your friends tell you no crew will sail with you any more. The next time you go ashore, you are forced to retire.</p>
+<p>After retiring, press Start a new career to begin again in the duel.</p>
+<h3 id="sea-23">Treasure Maps</h3>
+<p>Now and then an old pirate in a tavern offers a piece of a treasure map. The first piece costs 150 pieces of eight, and later pieces cost more. A map has 3 pieces, and each one sharpens the clue:</p>
+<p>1 piece: the treasure lies in a cove on a certain coast, such as Hispaniola or the Yucatan.</p>
+<p>2 pieces: which direction it lies from a certain town.</p>
+<p>3 pieces: about how many leagues from that town. With the map complete, T can pick the buried treasure as a destination, and B and G work for it like any town.</p>
+<p>To dig, sail close to the coast where you think it is, within a few leagues, press D to go ashore, and choose Search here for buried treasure. Your landing party searches for three days. If you are in the right place, within about 7 leagues, they dig up a chest worth 2000 to 6000 pieces of eight. If not, they find only crabs and sand.</p>
+<p>You can hold one treasure map at a time, plus the Incan map from your family.</p>
+<p>Press C and choose Your treasure maps to hear your clues again.</p>
+<h3 id="sea-24">Your Lost Family</h3>
+<p>Your sister, father, mother and uncle were taken from you long ago. Rescuing each of them is one of the ten pirate quests.</p>
+<h4>The evil spaniard</h4>
+<p>Now and then, a scarred Spaniard watches you from a corner of a tavern. Choose Challenge him, and you fight him in the duel. The screen is called The Evil Spaniard. When it ends, press Enter to go back to the tavern.</p>
+<p>Win, and with your sword at his throat he tells you which town holds one of your relatives. Lose, and he slips away, and you may meet him again in another tavern.</p>
+<h4>The rescue</h4>
+<p>If the town will let you in, go there and choose Search the town for your relative, the first choice on the town menu.</p>
+<p>If the town is an enemy&#x27;s, you must attack it, silence its fort and sack it. Your relative is freed with the plunder.</p>
+<h4>The incan treasure</h4>
+<p>Each relative you rescue gives you a piece of the map to the lost Incan treasure. With all four pieces, T can pick the Incan treasure as a destination. Sail there, press D to search, and you find a fortune of 12000 to 20000 pieces of eight, and complete one more quest. You can also search for it with fewer pieces, if you can work out the spot from the clues.</p>
+<h3 id="sea-25">The Treasure Fleet and the Silver Train</h3>
+<p>These are the two great Spanish treasures, and capturing each one is a pirate quest. Both follow the calendar, so the same thing happens at the same time every year.</p>
+<h4>The treasure fleet</h4>
+<p>Every year on the 1st of April, the Spanish Treasure Fleet sails from Trinidad. It works west along the Spanish Main, staying about ten days in each port: Trinidad, Rio de la Hacha, Santa Marta, Cartagena and Puerto Bello. Then it crosses to Havana, and in late July it heads north through the Florida Channel, home to Spain.</p>
+<p>Two ways to take it:</p>
+<ol>
+<li>At sea. When you sail near it, the lookout cries out that there are many sails, then that it&#x27;s the Spanish Treasure Fleet. Choose Attack her to fight its escort, a war galleon of 30 guns and about 250 men. Beat the escort, by sinking her, making her strike, or boarding her and winning the duel, and the treasure galleons surrender. Hailing the fleet only earns you a warning shot.</li>
+<li>In port. Attack the town where it lies at anchor. When the fort falls silent, the fleet is trapped in the harbor and it&#x27;s yours.</li>
+</ol>
+<p>The fleet carries 25000 to 40000 pieces of eight. Once you take it, it doesn&#x27;t sail again until next year.</p>
+<h4>The silver train</h4>
+<p>Every year on the 1st of February, a train of mules and soldiers carries silver overland between two ports on the Spanish Main. The route changes from year to year: Maracaibo to Rio de la Hacha, Santa Marta to Cartagena, or Rio de la Hacha to Santa Marta. It takes about 20 days on the road, then the silver waits in the second port for about 12 days.</p>
+<p>Two ways to take it:</p>
+<ol>
+<li>Ambush. While the train is on the road, sail close to the coast near where it is passing and press D. The ambush comes before the landing menu. Your men lie in wait and charge. You duel the captain of the guard, on a screen called The Silver Train. Win, and the silver is yours. Lose, and your men run for the boats.</li>
+<li>In port. While the silver waits in the second port, attack that town. When the fort falls, you find the silver in the governor&#x27;s storehouse.</li>
+</ol>
+<p>The silver is worth 15000 to 30000 pieces of eight.</p>
+<h4>The rumors</h4>
+<p>To find them, you need news.</p>
+<ol>
+<li>Passing ships. Hail a ship, and sometimes her captain tells you where the fleet was seen or where the silver mules are headed.</li>
+<li>The tavern. The bartender and the barmaid sometimes have the same kind of rumor.</li>
+<li>The governor&#x27;s daughter or son, and your wife or husband. They hear it at court, and they know it exactly: which port the fleet is in and the date it sails, or the date the silver train sets out and arrives.</li>
+</ol>
+<p>Every rumor you hear is kept in the captain&#x27;s cabin, under Rumors of Spanish treasure.</p>
+<h3 id="sea-26">Secret Missions</h3>
+<p>At the governor&#x27;s mansion, choose Ask if he has any secret work. You can ask each governor about once a month. Often he has a job for you, and tells you about it behind a closed door. Choose Accept or Decline. Declining annoys him a little.</p>
+<p>You can carry one mission at a time. The captain&#x27;s cabin has it under Your secret mission, with the days left.</p>
+<h4>The three kinds</h4>
+<ol>
+<li>Carry a secret message to the governor of another friendly town, within 60 days. When you get there, visit his governor and choose Deliver the secret message. He pays you on the spot.</li>
+<li>Rescue the governor&#x27;s niece, held in an enemy town, within 90 days. Sneak into that town and choose Search the town for her, or take the town by sea or by land and find her among the prisoners. Then bring her home to the governor who asked, and choose Bring his niece home.</li>
+<li>Hunt down a notorious pirate, such as Calico Ned Crane in the Sea Wolf, who raids the waters near a certain town, within 90 days. Sail near that town and he comes looking for you. Capture him or sink him, then report to the governor who asked.</li>
+</ol>
+<p>Rewards run from a few hundred pieces of eight for a message up to 3000 for a rescue, and each mission counts toward your next promotion with that nation.</p>
+<p>If time runs out, you hear that your mission has run out of time. Report your failure to the governor, and he won&#x27;t trust you as much, which sets back your next promotion.</p>
+<h3 id="sea-27">Sneaking Into Towns</h3>
+<p>You can sneak into any town that is not friendly, from the sea at night, or on foot from a landing party. Sneaking gets you into enemy towns whose forts won&#x27;t let you in.</p>
+<p>Inside, you can visit the tavern, the merchant, and the governor if his nation isn&#x27;t your enemy. You can search for lost relatives and kidnapped nieces. You cannot recruit, use the bank, or visit the shipwright while you&#x27;re hiding your face.</p>
+<p>The more famous you are, the more likely a sentry knows your face. If you are recognized, you must fight your way out, in a duel with a sergeant of the watch. Win, and you escape to your boats. Lose, and you spend a month in jail, until your crew bribes the jailer with half the strongbox.</p>
+<h3 id="sea-28">Landing Parties and Land Battles</h3>
+<h4>Going ashore</h4>
+<p>Sail within a few leagues of a coast and press D. The landing menu offers:</p>
+<ol>
+<li>Search here for buried treasure.</li>
+<li>March to a town on the same island or coast, within a few days&#x27; march. The menu tells you the direction and how many days.</li>
+<li>Stay aboard.</li>
+</ol>
+<p>Your landing party is your flagship&#x27;s crew, less 4 men who mind the ship.</p>
+<h4>Marching</h4>
+<p>Each day of marching eats food from your holds, about one ton for every 40 men a day. If the food runs out, your men go hungry and the crew turns unhappy. Marching back to the ship takes as long again.</p>
+<h4>At the town gates</h4>
+<ol>
+<li>March into town, if the town will have you. Inside, everything works as usual except the shipwright, since your ship isn&#x27;t in the harbor.</li>
+<li>Sneak into town. See <a href="#sea-27">Sneaking Into Towns</a>.</li>
+<li>Attack the town, if it isn&#x27;t friendly. This avoids the fort&#x27;s guns, but you must beat the garrison in the field.</li>
+<li>March back to your ship.</li>
+</ol>
+<h4>Land battles</h4>
+<p>The battle goes turn by turn. Each turn you choose what your men do, then the enemy answers, and you hear what happened and how both sides stand.</p>
+<p>Your choices, depending on the distance:</p>
+<p>At 300 yards: Advance to close range, or Fire a volley at long range.</p>
+<p>At 100 yards: Fire a volley, or Charge with cutlasses.</p>
+<p>Hand to hand: Fight on.</p>
+<p>At any time: Take cover in the woods, Fall back, or Retreat to the boats.</p>
+<p>Things to know:</p>
+<ol>
+<li>The soldiers are better shots than your sailors, and their volleys hurt most at close range in the open.</li>
+<li>Your sailors are much stronger hand to hand, and the Fencing skill helps them. A charge also shakes the enemy.</li>
+<li>Taking cover in the woods cuts their fire by more than half, and stops cavalry charges.</li>
+<li>Bigger towns have cavalry. In the open at 100 yards, cavalry may charge you and do terrible damage.</li>
+<li>Each side is eager, steady or shaken, and the enemy steady, wavering or close to breaking. A side that breaks runs.</li>
+</ol>
+<h4>How it ends</h4>
+<p>If the soldiers break after heavy losses, the town surrenders, and you plunder it just as from the sea, with any lost relative or kidnapped niece freed.</p>
+<p>If they break but many are still standing, they fall back to the gate, and you duel the captain of the guard. Win, and the town surrenders. Lose, and your men fall back.</p>
+<p>If your men break, or you retreat, you lose men on the way back to the boats. If your landing party is wiped out and too few men are left to sail, you are marooned.</p>
+<h3 id="sea-29">Difficulty</h3>
+<p>The difficulty you choose in the duel, Apprentice, Journeyman, Adventurer or Swashbuckler, also sets the whole game:</p>
+<ol>
+<li>Enemy swordsmen, in every duel.</li>
+<li>Enemy gunners at sea and in forts, and soldiers&#x27; aim on land. On Apprentice they miss a good deal more. On Swashbuckler they are deadly.</li>
+<li>Your crew&#x27;s patience. On Apprentice they stay happy much longer. On Swashbuckler they turn unruly fast.</li>
+<li>Your share of the plunder: 7, 12, 17 or 22 percent. Harder levels pay more and score more.</li>
+</ol>
+<p>The captain&#x27;s cabin tells you your difficulty in your personal status.</p>
+<h3 id="sea-30">Famous Expeditions</h3>
+<p>On the duel page, after the career choices, there is a Famous Expeditions section. Pick one and press Set sail on this expedition. You skip the duel and start at sea with the famous captain&#x27;s fleet, men and wars. The expedition uses the difficulty and special skill you chose above it. You play the real commander of the expedition, so these captains are always men.</p>
+<p>Each expedition ends when you divide the plunder at a bank. The end screen gives your share, your score, and what really happened in history.</p>
+<ol>
+<li>John Hawkins, 1569. English. A slow Spanish style galleon, the Jesus of Lubeck, the merchantman Minion, and four pinnaces, with 308 men and a cargo of cloth to trade. You start off Rio de la Hacha. Trade peacefully, or raid with almost nowhere friendly to sell.</li>
+<li>Francis Drake, 1573. English. The merchantman Pasha and the pinnace Swan, with 73 men. You start off Puerto Bello in January, and the Silver Train takes the road on the 1st of February. Very hard.</li>
+<li>Piet Heyn, 1628. Dutch, allied with England. Four fast galleons and two sloops, with 700 men. You start off Havana in June, late in the season. Catch the Treasure Fleet before it heads home.</li>
+<li>L&#x27;Olonnais, 1666. French, at war with Spain and England, allied with Holland. A sloop and five pinnaces, with 400 men. You start at Tortuga. Strong in men, weak in ships, so attack towns.</li>
+<li>Henry Morgan, 1671. English. A frigate, two merchantmen, a barque, two sloops and a pinnace, with 600 men. You start off Port Royal. Feed your men and keep them happy.</li>
+<li>Baron de Pointis, 1697. French, at war with Spain and England. Five frigates and a sloop, with 1200 men. You start off Petit Goave. The mightiest force ever seen on the Main. Try it on Swashbuckler.</li>
+</ol>
+<p>The fast galleon is a ship type added for Piet Heyn. It sits between the frigate and the war galleon: up to 28 guns, quick and handy for a galleon, but too deep for shoals.</p>
+<h3 id="sea-31">Playing with a Controller</h3>
+<p>Both games work with a game controller such as the 8BitDo M30. Connect it, open a game, and press any button. The full button list is in the controller guide, below.</p>
+<p>In short, at sea: the direction pad turns and sets the sails, A gives the ship report, B is fast time, C or X opens the captain&#x27;s cabin, and Y is the lookout. In battle, A fires a broadside. In menus, A chooses and B goes back. Press Select anywhere to hear the buttons.</p>
+</section>
+<section class="part" aria-labelledby="controller"><h2 id="controller">Controller Guide</h2>
+<p>For the 8BitDo M30 and other game controllers</p>
+<h4>Getting started</h4>
+<ol>
+<li>Connect the controller to your computer, by its USB cable, its 2.4 gigahertz dongle, or Bluetooth.</li>
+<li>Open the game in your web browser.</li>
+<li>Press any button. The game says &quot;Controller connected.&quot;</li>
+<li>Press Select at any time to hear what each button does where you are.</li>
+</ol>
+<p>If a button has no job where you are, the game tells you its number, for example &quot;Button 10, has no job at sea.&quot;</p>
+<h4>The buttons</h4>
+<p>The M30 has three buttons along the bottom, A, B and C, three along the top, X, Y and Z, plus Start, Select and the direction pad. Depending on its mode, C and Z can show up as shoulder buttons, so C, X and the right shoulder all do the same job in the game.</p>
+<h4>On menu and setup screens</h4>
+<p>Up and down on the direction pad move from one control to the next. A presses the button or picks the choice you are on. Start does the same as A.</p>
+<p>In menus at sea, such as towns and the captain&#x27;s cabin: up and down move through the choices, A chooses, B goes back.</p>
+<h4>In the sword fight</h4>
+<p>Left and right: step back and forward.</p>
+<p>A: thrust.</p>
+<p>B: slash.</p>
+<p>C or X: parry.</p>
+<p>Hold up on the direction pad while you press A, B or C to strike or parry high. Hold down for low. Press with neither for middle.</p>
+<p>Y: status.</p>
+<p>Left shoulder: hear the warning bells.</p>
+<p>Start: pause.</p>
+<p>When a duel ends, A goes on.</p>
+<h4>At sea</h4>
+<p>Left and right: turn. Hold to keep turning.</p>
+<p>Up and down: raise and lower sail.</p>
+<p>A: ship report.</p>
+<p>B: fast time.</p>
+<p>C or X: the captain&#x27;s cabin.</p>
+<p>Y: lookout.</p>
+<p>Left shoulder: pick a destination.</p>
+<p>Right shoulder: bearing to your destination.</p>
+<p>Left trigger: go ashore.</p>
+<p>Right trigger: guide beacon.</p>
+<p>Start: pause.</p>
+<p>Select: hear these again.</p>
+<h4>In a sea battle</h4>
+<p>Left and right: turn.</p>
+<p>Up: full sail. Down: battle sails.</p>
+<p>A: fire a broadside.</p>
+<p>B: switch between full sail and battle sails.</p>
+<p>C or X: where is she.</p>
+<p>Y: both ships.</p>
+<p>Start: pause.</p>
+<h4>The keyboard still works</h4>
+<p>Everything on the controller can also be done with the keyboard, so you can use both at once.</p>
+</section>
+  <a class="back" href="index.html">Back to the title screen</a>
+</main>
+
+</body></html>
