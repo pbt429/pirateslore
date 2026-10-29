@@ -1007,7 +1007,7 @@ a.primary { text-decoration: none; display: inline-block; }
       text = "Old Tom lowers his blade and grins. You read every blow, " + S.name + ". You're ready for " + foeName() + ". Press Enter to face him now.";
       $("again").textContent = "Face " + foeName() + " now";
       $("again-train").hidden = false;
-      say(text); $("endbox").hidden = false; return;
+      $("endbox").hidden = false; endStop(text); return;
     }
     if (BOARD) {
       if (how === "won") SFX.cheer(); else SFX.groan();
@@ -1024,24 +1024,34 @@ a.primary { text-decoration: none; display: inline-block; }
       $("again").hidden = true; $("change").hidden = true;
       $("back-aboard").href = returnLink(res); $("back-aboard").hidden = false;
       BOARD.result = res;
-      say(text); $("endbox").hidden = false; return;
+      $("endbox").hidden = false; endStop(text); return;
     }
     if (how === "won") {
       SFX.cheer();
-      text = S.foeName + " drops his cutlass and yields. The crew roars, Captain " + S.name + "! The Swallow is yours, with " + S.career.crew + " men and " + S.career.gold + " pieces of eight in her strongbox. Press S to set sail, or Enter to fight again.";
+      text = S.foeName + " drops his cutlass and yields. The crew roars, Captain " + S.name + "! The Swallow is yours, with " + S.career.crew + " men and " + S.career.gold + " pieces of eight in her strongbox. Your choices: Set sail in the Swallow, Fight again, or Change your choices. Up and down to pick, then A or Enter.";
       store("pirates-career-won", "1");
       $("sail").href = sailLink();
       $("sail").hidden = false;
     } else if (how === "lost") {
       SFX.groan();
-      text = "You go down on the planks. " + S.foeName + " laughs and the crew looks away. Press Enter to try again.";
+      text = "You go down on the planks. " + S.foeName + " laughs and the crew looks away. Your choices: Fight again, or Change your choices. Up and down to pick, then A or Enter.";
     } else {
       SFX.groan();
-      text = "You leap the rail and swim for the docks. You live, but no crew will follow you now. Press Enter to try again.";
+      text = "You leap the rail and swim for the docks. You live, but no crew will follow you now. Your choices: Fight again, or Change your choices. Up and down to pick, then A or Enter.";
     }
-    say(text);
     $("endbox").hidden = false;
+    endStop(text);
   }
+  // When a duel ends, everything stops: buttons pressed in the heat of the fight are ignored for a moment,
+  // and the screen reader lands on the first choice instead of the game starting again.
+  function endChoices() { return Array.prototype.filter.call($("endbox").querySelectorAll("a, button"), function (el) { return !el.hidden; }); }
+  function endStop(text) {
+    S.overAt = performance.now();
+    var first = endChoices()[0];
+    if (first) first.focus();
+    setTimeout(function () { say(text); }, 150);
+  }
+  function endReady() { return S && S.over && performance.now() - (S.overAt || 0) > 1500; }
 
   // ---------- Loop ----------
   function frame(t) {
@@ -1257,8 +1267,8 @@ a.primary { text-decoration: none; display: inline-block; }
     if (e.code === "KeyH") { e.preventDefault(); help(); return; }
     if (e.code === "KeyM") { e.preventDefault(); soundOn = !soundOn; sea(soundOn && S && !S.over && !S.paused); say(soundOn ? "Sound on." : "Sound off."); return; }
     if (e.code === "KeyS" && S && S.over === "won" && !BOARD) { e.preventDefault(); say("Setting sail."); setTimeout(function () { location.href = sailLink(); }, 400); return; }
-    if ((e.code === "Enter" || e.code === "NumpadEnter") && BOARD && BOARD.result && S && S.over) { e.preventDefault(); say("Back to your ship."); setTimeout(function () { location.href = returnLink(BOARD.result); }, 300); return; }
-    if (e.code === "Enter" || e.code === "NumpadEnter") { if (S && S.over) { e.preventDefault(); begin(S.over === "trained" ? "duel" : S.mode); } return; }
+    if ((e.code === "Enter" || e.code === "NumpadEnter") && BOARD && BOARD.result && S && S.over && endReady()) { e.preventDefault(); say("Back to your ship."); setTimeout(function () { location.href = returnLink(BOARD.result); }, 300); return; }
+    if (e.code === "Enter" || e.code === "NumpadEnter") { if (S && S.over) { e.preventDefault(); if (endReady()) { var f = endChoices()[0]; if (f) f.focus(); } } return; }
     var k = KEYS[e.code];
     if (!k) return;
     e.preventDefault();
@@ -1319,9 +1329,11 @@ a.primary { text-decoration: none; display: inline-block; }
     var hgt = st.up ? 0 : st.down ? 2 : 1;
     var TH = ["KeyQ", "KeyA", "KeyZ"], SL = ["KeyW", "KeyS", "KeyX"], PA = ["KeyE", "KeyD", "KeyC"];
     if (S && S.over) {
-      if (k === "A" || k === "Start") { if (document.activeElement && document.activeElement !== game && /BUTTON|A/.test(document.activeElement.tagName)) padActivate(); else padSend("Enter", game); }
-      else if (k === "up" || k === "left") padFocusMove(-1); else if (k === "down" || k === "right") padFocusMove(1);
-      else if (k === "Select") padHelp();
+      if (!endReady()) return;
+      var ch = endChoices(), at = ch.indexOf(document.activeElement);
+      if (k === "A" || k === "Start") { if (at >= 0) padActivate(); else if (ch[0]) ch[0].focus(); }
+      else if (k === "up" || k === "left" || k === "down" || k === "right") { if (ch.length) ch[(at + (k === "up" || k === "left" ? -1 : 1) + ch.length) % ch.length].focus(); }
+      else if (k === "Select") say("Up and down move through your choices. A picks one.");
       return;
     }
     if (k === "left") padSend("ArrowLeft", game);
