@@ -94,6 +94,11 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
 [hidden] { display: none !important; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
 @media (max-width: 520px) { .ctrls { grid-template-columns: repeat(2, 1fr); } }
+/* Touch screens: bigger buttons that stay in the same places. */
+body.touch .ctrls button { min-height: 56px; font-size: 1rem; touch-action: manipulation; }
+body.touch .menu-opts button { min-height: 52px; font-size: 1.05rem; touch-action: manipulation; }
+body.touch .focus-tip { display: none; }
+body.touch #game canvas { max-height: 40vh; object-fit: contain; }
 </style>
 
 <main>
@@ -170,6 +175,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
           <button type="button" data-k="KeyE" aria-label="Where is she">Where is she</button>
           <button type="button" data-k="KeyS" aria-label="Both ships report">Both ships</button>
           <button type="button" data-k="ArrowUp" aria-label="Full sail">Full sail</button>
+          <button type="button" data-k="ArrowDown" aria-label="Battle sails">Battle sails</button>
         </div>
         <p class="note">Space fires a broadside from the side facing her. E tells you where she is. S reports on both ships. Up Arrow full sail, Down Arrow battle sails. Sail into her to board.</p>
       </div>
@@ -187,6 +193,8 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
         <button type="button" data-k="KeyB" aria-label="Bearing to destination">Bearing</button>
         <button type="button" data-k="KeyG" aria-label="Guide beacon on or off">Beacon</button>
         <button type="button" data-k="KeyF" aria-label="Fast time on or off">Fast time</button>
+        <button type="button" data-k="KeyD" aria-label="Go ashore">Go ashore</button>
+        <button type="button" data-k="KeyC" aria-label="Captain's cabin">Cabin</button>
         <button type="button" data-k="KeyZ" aria-label="Zoom the chart in or out">Zoom chart</button>
         <button type="button" data-k="KeyR" aria-label="Repeat last message">Repeat</button>
         <button type="button" data-k="KeyP" aria-label="Pause or resume">Pause</button>
@@ -1030,7 +1038,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
       t: 0, fx: [], ended: false, band: Math.floor(d / 100), struckCheck: 0, sinkSaid: false, msgAt: 0
     };
     S.sails = Math.max(S.sails, 1);
-    $("battle").hidden = false;
+    $("battle").hidden = false; if (TOUCH) setTimeout(touchHome, 0);
     battlePanel();
     SFX.drum();
     var rel = adiff(brg, S.heading);
@@ -1649,7 +1657,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
       fs: fs, t: 0, fx: [], ended: false, band: Math.floor(d / 100), shoreSaid: 0, msgAt: 0
     };
     S.sails = Math.max(S.sails, 1);
-    $("battle").hidden = false;
+    $("battle").hidden = false; if (TOUCH) setTimeout(touchHome, 0);
     battlePanel();
     SFX.drum();
     var rel = adiff(norm(seaward + 180), S.heading);
@@ -3140,6 +3148,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     say(parts.join(". ") + ". " + (seen.length ? seen.join(". ") + "." : "No ships in sight."));
   }
   function help() {
+    if (TOUCH) { say("Touch buttons under the chart. First row: Turn left, Turn right, Raise sail, Lower sail. Then Report, Lookout, Where am I, Wind. Then Destination, Bearing, Beacon, Fast time. Then Go ashore, Cabin, Zoom chart, Repeat, Pause and Keys. When a menu opens, you land on its first choice. In a sea battle, Fire, Where is she, Both ships, Full sail and Battle sails sit above the ship buttons."); return; }
     say("Left and Right Arrows turn. Up raises sail, Down lowers it. Space report. C the captain's cabin, with your status, fleet and log. D go ashore: search for treasure or march to a town. W wind. N where am I. L lookout. T destination, B bearing, G beacon. F fast time. P pause. R repeat. M sound.");
   }
   function stopFast() { if (S && S.fast) { S.fast = false; } }
@@ -3157,9 +3166,10 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
       menuOpts.appendChild(b);
     });
     menuEl.hidden = false; markMenu();
+    if (TOUCH && menuOpts.firstChild) menuOpts.firstChild.focus();
     // Short menus read every choice. Longer ones name only the first, so the list never runs on: Up and Down move through it.
     if (o.brief) say((o.lead || "") + title + " " + opts.length + " choices. 1, " + opts[0].label + ".");
-    else if (opts.length > 3) say((o.lead || "") + title + " " + opts.length + " choices. 1, " + opts[0].label + ". Up and down for the others.");
+    else if (opts.length > 3) say((o.lead || "") + title + " " + opts.length + " choices. 1, " + opts[0].label + (TOUCH ? ". The choices are buttons, swipe or slide to the others." : ". Up and down for the others."));
     else say((o.lead || "") + title + " Choose: " + opts.map(function (x, i) { return (i + 1) + ", " + x.label; }).join(". ") + ".");
   }
   function markMenu() { Array.prototype.forEach.call(menuOpts.children, function (b, i) { b.classList.toggle("on", S.menu && i === S.menu.sel); }); }
@@ -3167,11 +3177,24 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     if (!S.menu || !S.menu.opts[i]) return;
     var o = S.menu.opts[i];
     S.menu = null; menuEl.hidden = true;
-    o.fn(); game.focus();
+    o.fn();
+    if (TOUCH) touchHome(); else game.focus();
+  }
+  // On touch screens, put VoiceOver or TalkBack on the button you most likely want next.
+  function touchHome() {
+    var el = null;
+    if (S && S.menu && menuOpts.firstChild) el = menuOpts.firstChild;
+    else if (!$("battle").hidden) el = document.querySelector('#battle button[data-k="Space"]');
+    else el = document.querySelector('.ctrls[aria-label="Ship controls"] button[data-k="ArrowUp"]');
+    if (el && el.offsetParent !== null) el.focus(); else game.focus();
   }
 
   // ---------- Input ----------
   var game = $("game");
+  var TOUCH = false;
+  try { TOUCH = (window.matchMedia && matchMedia("(pointer: coarse)").matches) || (navigator.maxTouchPoints > 0 && !(window.matchMedia && matchMedia("(pointer: fine)").matches)); } catch (e) {}
+  document.body.classList.toggle("touch", TOUCH);
+  window.addEventListener("touchstart", function () { if (!TOUCH) { TOUCH = true; document.body.classList.add("touch"); } }, { passive: true, capture: true });
   function key(code, shift) {
     if (!S) return;
     audioInit();
@@ -3232,7 +3255,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
         S.fast = !S.fast; SFX.chime(); say(S.fast ? "Fast time. Days pass quickly. Any sighting or danger stops it." : "Normal time."); return;
       case "KeyZ": S.zoomOut = !S.zoomOut; say(S.zoomOut ? "Chart zoomed out to the whole Caribbean." : "Chart zoomed in."); return;
       case "KeyR": say(lastSpoken || "Nothing to repeat yet."); return;
-      case "KeyP": S.paused = !S.paused; say(S.paused ? "Paused. Press P to sail on." : "Sailing on."); seaBed(); return;
+      case "KeyP": S.paused = !S.paused; say(S.paused ? (TOUCH ? "Paused. Tap Pause to sail on." : "Paused. Press P to sail on.") : "Sailing on."); seaBed(); return;
       case "KeyH": help(); return;
       case "KeyM": soundOn = !soundOn; seaBed(); say(soundOn ? "Sound on." : "Sound off."); return;
     }
@@ -3462,7 +3485,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     restoreVoyage(v);
     $("setup").hidden = true; $("sea").hidden = false;
     if (!running) { running = true; last = 0; requestAnimationFrame(frame); }
-    game.focus();
+    if (TOUCH) touchHome(); else game.focus();
     if (fromBoard) {
       var rb = RESUME.b || {}, rr = RESUME.r;
       RESUME = null;
@@ -3506,9 +3529,9 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     logEvent("Took command of the " + flag().name + " off " + HOME.label + ".");
     $("setup").hidden = true; $("sea").hidden = false;
     if (!running) { running = true; last = 0; requestAnimationFrame(frame); }
-    game.focus();
+    if (TOUCH) touchHome(); else game.focus();
     saveVoyage();
-    say("You take the helm, " + S.name + ". " + FlagName() + " lies just " + HOME.dir + " of " + HOME.label + ", heading " + pointName(S.heading) + ", sails furled, with " + S.crew + " men aboard. The wind is from the " + pointName(S.wind.from) + ", " + windStrName(S.wind.str) + ". Press Up Arrow to raise sail, T to pick a destination, H for keys.");
+    say("You take the helm, " + S.name + ". " + FlagName() + " lies just " + HOME.dir + " of " + HOME.label + ", heading " + pointName(S.heading) + ", sails furled, with " + S.crew + " men aboard. The wind is from the " + pointName(S.wind.from) + ", " + windStrName(S.wind.str) + ". " + (TOUCH ? "You are on Raise sail. Destination picks where to go, and Keys explains the buttons." : "Press Up Arrow to raise sail, T to pick a destination, H for keys."));
   }
   $("start").addEventListener("click", begin);
   applyCareer();
