@@ -1303,14 +1303,14 @@ a.primary { text-decoration: none; display: inline-block; }
   if (BOARD) setupBoarding();
   draw(0);
   function padHelp() {
-    say("Controller, sword fight. Left and right step. A thrusts, B slashes, C or X parries. Hold up for high, down for low, or neither for middle. Y, status. Left shoulder, hear the bells. Start pauses. After a duel, A goes on.");
+    say("Controller, sword fight. Left and right step. A thrusts, B slashes, C parries. Hold up for high, down for low, or neither for middle. Y, status. Z, hear the warning bells. Start pauses. After a duel, A goes on. Hold Select for two seconds to teach the buttons again.");
   }
   function padPress(k, st, repeat) {
     if (arena.hidden) {
       if (k === "up" || k === "left") padFocusMove(-1);
       else if (k === "down" || k === "right") padFocusMove(1);
-      else if (k === "b0" || k === "b9") padActivate();
-      else if (k === "b8") say("Controller. Up and down move between the choices, A picks one. In the fight: A thrusts, B slashes, C or X parries, with up for high and down for low.");
+      else if (k === "A" || k === "Start") padActivate();
+      else if (k === "Select") say("Controller. Up and down move between the choices, A picks one. In the fight: A thrusts, B slashes, C parries, with up for high and down for low. Hold Select for two seconds to teach the buttons again.");
       return;
     }
     audioInit();
@@ -1318,33 +1318,63 @@ a.primary { text-decoration: none; display: inline-block; }
     var hgt = st.up ? 0 : st.down ? 2 : 1;
     var TH = ["KeyQ", "KeyA", "KeyZ"], SL = ["KeyW", "KeyS", "KeyX"], PA = ["KeyE", "KeyD", "KeyC"];
     if (S && S.over) {
-      if (k === "b0" || k === "b9") { if (document.activeElement && document.activeElement !== game && /BUTTON|A/.test(document.activeElement.tagName)) padActivate(); else padSend("Enter", game); }
+      if (k === "A" || k === "Start") { if (document.activeElement && document.activeElement !== game && /BUTTON|A/.test(document.activeElement.tagName)) padActivate(); else padSend("Enter", game); }
       else if (k === "up" || k === "left") padFocusMove(-1); else if (k === "down" || k === "right") padFocusMove(1);
+      else if (k === "Select") padHelp();
       return;
     }
     if (k === "left") padSend("ArrowLeft", game);
     else if (k === "right") padSend("ArrowRight", game);
     else if (k === "up" || k === "down") return;
-    else if (k === "b0") padSend(TH[hgt], game);
-    else if (k === "b1") padSend(SL[hgt], game);
-    else if (k === "b2" || k === "b5" || k === "b7") padSend(PA[hgt], game);
-    else if (k === "b3") padSend("Space", game);
-    else if (k === "b4") padSend("KeyL", game);
-    else if (k === "b9") padSend("KeyP", game);
-    else if (k === "b8") padHelp();
-    else if (!repeat) say("Button " + k.slice(1) + (PADN[k.slice(1)] ? ", " + PADN[k.slice(1)] : "") + ", has no job in the duel.");
+    else if (k === "A") padSend(TH[hgt], game);
+    else if (k === "B") padSend(SL[hgt], game);
+    else if (k === "C") padSend(PA[hgt], game);
+    else if (k === "Y") padSend("Space", game);
+    else if (k === "Z") padSend("KeyL", game);
+    else if (k === "Start") padSend("KeyP", game);
+    else if (k === "Select") padHelp();
+    else if (!repeat) say(k.replace("Select+", "Select and ") + ", no job in the duel. Press Select to hear the buttons.");
   }
-  // ---------- Game controller (8BitDo M30 and other standard pads) ----------
-  // Six-button layout: A, B and C along the bottom, X, Y and Z along the top, Start, and the direction pad.
-  // Buttons are read through the browser's standard gamepad mapping. Any button that has no job says its number.
-  var PADN = { 0: "A", 1: "B", 2: "X", 3: "Y", 4: "left shoulder", 5: "right shoulder", 6: "left trigger", 7: "right trigger", 8: "Select", 9: "Start" };
-  var PAD = { prev: {}, holdAt: {}, id: "" };
+  // ---------- Game controller (8BitDo M30 and other pads) ----------
+  // Controllers number their buttons differently, so the game learns which button is which:
+  // the first time a controller connects it asks the player to press Start, A, B, C, X, Y, Z and Select in turn.
+  // The answers are saved for that controller. Holding Select for two seconds teaches the buttons again.
+  var PAD = { prev: {}, holdAt: {}, id: "", map: null, teach: null, selKey: "", selAt: 0, selUsed: false, std: false };
+  var LEARN = ["Start", "A", "B", "C", "X", "Y", "Z", "Select"];
+  function padLoad(id) { try { return JSON.parse(localStorage.getItem("pirates-pad:" + id) || "null"); } catch (e) { return null; } }
+  function padSave(id, m) { try { localStorage.setItem("pirates-pad:" + id, JSON.stringify(m)); } catch (e) {} }
+  function padUseMap(m) {
+    PAD.map = m; PAD.selKey = "";
+    Object.keys(m || {}).forEach(function (k) { if (m[k] === "Select") PAD.selKey = k; });
+  }
+  function teachStart() {
+    PAD.teach = { i: 0, map: {} }; PAD.selUsed = true;
+    say("Let's learn your controller buttons. Press each button as I name it. First, press Start.");
+  }
+  function teachPress(k) {
+    var T = PAD.teach, want = LEARN[T.i];
+    if (T.map[k]) {
+      if (T.map[k] === "Start" && want !== "Start") { teachNext("Skipped " + want + "."); return; }
+      say("That one is already " + T.map[k] + ". Press " + want + ", or press Start to skip it.");
+      return;
+    }
+    T.map[k] = want;
+    teachNext(want + ".");
+  }
+  function teachNext(lead) {
+    var T = PAD.teach;
+    T.i++;
+    if (T.i < LEARN.length) { say(lead + " Now press " + LEARN[T.i] + "."); return; }
+    padSave(PAD.id, T.map); padUseMap(T.map); PAD.teach = null; PAD.selUsed = true;
+    say(lead + " All done, your buttons are learned. Press Select any time to hear what each button does. Hold Select for two seconds to teach them again.");
+  }
+  function padIsDpad(k) { var n = +k.slice(1); return PAD.std && n >= 12 && n <= 15; }
   function padState(gp) {
     var st = {};
     gp.buttons.forEach(function (b, i) { st["b" + i] = b && (b.pressed || b.value > 0.5); });
     var ax = gp.axes || [];
-    var up = !!st.b12 || ax[1] < -0.5, down = !!st.b13 || ax[1] > 0.5, left = !!st.b14 || ax[0] < -0.5, right = !!st.b15 || ax[0] > 0.5;
-    // Some pads in DirectInput mode report the direction pad as a single hat axis.
+    var up = (PAD.std && !!st.b12) || ax[1] < -0.5, down = (PAD.std && !!st.b13) || ax[1] > 0.5, left = (PAD.std && !!st.b14) || ax[0] < -0.5, right = (PAD.std && !!st.b15) || ax[0] > 0.5;
+    // Some pads report the direction pad as a single hat axis.
     if (ax.length > 9 && ax[9] >= -1.05 && ax[9] <= 1.05) {
       var h = Math.round((ax[9] + 1) / (2 / 7));
       if (h === 0 || h === 1 || h === 7) up = true;
@@ -1355,9 +1385,9 @@ a.primary { text-decoration: none; display: inline-block; }
     st.up = up; st.down = down; st.left = left; st.right = right;
     return st;
   }
-  function padSend(code, target) {
+  function padSend(code, target, shift) {
     var el = target || document.activeElement || document.body;
-    el.dispatchEvent(new KeyboardEvent("keydown", { code: code, key: code, bubbles: true, cancelable: true }));
+    el.dispatchEvent(new KeyboardEvent("keydown", { code: code, key: code, shiftKey: !!shift, bubbles: true, cancelable: true }));
   }
   function padFocusMove(dir) {
     var list = Array.prototype.filter.call(document.querySelectorAll("button, a[href], input, [tabindex='0']"), function (el) {
@@ -1378,16 +1408,40 @@ a.primary { text-decoration: none; display: inline-block; }
     var gps = navigator.getGamepads ? navigator.getGamepads() : [], gp = null;
     for (var i = 0; i < gps.length; i++) if (gps[i] && gps[i].connected !== false) { gp = gps[i]; break; }
     if (!gp) { PAD.prev = {}; return; }
-    if (gp.id !== PAD.id) { PAD.id = gp.id; say("Controller connected. Press any button to start. Select hears the controller buttons."); }
-    var st = padState(gp), now = performance.now();
+    var now = performance.now();
+    if (gp.id !== PAD.id) {
+      PAD.id = gp.id; PAD.std = gp.mapping === "standard";
+      PAD.prev = padState(gp);
+      var m = padLoad(gp.id);
+      if (m) { padUseMap(m); say("Controller connected. Press Select to hear what each button does."); }
+      else teachStart();
+      return;
+    }
+    var st = padState(gp);
     Object.keys(st).forEach(function (k) {
-      var was = PAD.prev[k];
-      if (st[k] && !was) { PAD.holdAt[k] = now + 420; padPress(k, st); }
+      var was = PAD.prev[k], raw = /^b\d+$/.test(k);
+      if (PAD.teach) { if (raw && st[k] && !was && !padIsDpad(k)) teachPress(k); return; }
+      if (raw && padIsDpad(k)) return;
+      var lab = raw ? (PAD.map && PAD.map[k]) : k;
+      if (lab === "Select") {
+        if (st[k] && !was) { PAD.selAt = now; PAD.selUsed = false; }
+        else if (st[k] && was && !PAD.selUsed && now - PAD.selAt > 2000) { PAD.selUsed = true; teachStart(); }
+        else if (!st[k] && was && !PAD.selUsed) { window.PADUSED = true; padPress("Select", st); }
+        return;
+      }
+      if (st[k] && !was) {
+        PAD.holdAt[k] = now + 420;
+        if (!lab) { say("That button isn't taught yet. Hold Select for two seconds to teach the buttons."); return; }
+        window.PADUSED = true;
+        if (PAD.selKey && st[PAD.selKey] && lab.length === 1) { PAD.selUsed = true; padPress("Select+" + lab, st); }
+        else padPress(lab, st);
+      }
       else if (st[k] && was && (k === "left" || k === "right") && now >= PAD.holdAt[k]) { PAD.holdAt[k] = now + 260; padPress(k, st, true); }
     });
     PAD.prev = st;
   }
   window.addEventListener("gamepadconnected", function () { padPoll(); });
+  window.addEventListener("keydown", function (e) { if (e.isTrusted) window.PADUSED = false; }, true);
   setInterval(padPoll, 40);
 })();
 </script>
