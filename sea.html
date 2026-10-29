@@ -288,10 +288,12 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
         </dl>
       </div>
     </div>
-    <p class="note">What you hear: waves all around, wind that grows with the breeze, and surf that gets louder and moves left or right as you near a coast. A ship in sight sends a soft tick from her direction, lower when she is behind you. A fast double tick means she is chasing you. The guide beacon chimes from your destination's direction and rings high and doubled when you are pointed right at it.</p>
+    <p class="note">What you hear: waves all around, wind that grows with the breeze, and surf that gets louder and moves left or right as you near a coast. A ship in sight sends a soft tick from her direction, lower when she is behind you. A fast double tick means she is chasing you. The guide beacon chimes from your destination's direction and rings high and doubled when you are pointed right at it. In a strong wind a gust can knock your bow one point off course, and dark squalls bring rain, thunder and more gusts. The game tells you which way to turn to get back on course.</p>
   </section>
 </main>
 
+<script src="art.js"></script>
+<script src="art-scenes.js"></script>
 <script>
 (function () {
   "use strict";
@@ -549,6 +551,9 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     creak: function () { tone(rand(90, 140), 0.5, rand(-0.5, 0.5), 0.05, "sawtooth", 0, rand(70, 110)); },
     luff: function () { for (var i = 0; i < 3; i++) noise(0.08, 0, 0.12, "bandpass", 900, 0, 2, i * 0.13); },
     scrape: function () { noise(0.7, 0, 0.25, "lowpass", 400, 120, 1.5); tone(60, 0.6, 0, 0.15, "sawtooth"); },
+    gust: function () { noise(1.4, -0.3, 0.32, "bandpass", 300, 1500, 0.7); noise(1.2, 0.3, 0.2, "bandpass", 500, 1900, 0.9, 0.25); tone(140, 0.4, 0, 0.06, "sawtooth", 0.2, 90); },
+    thunder: function () { noise(2.6, rand(-0.6, 0.6), 0.45, "lowpass", 260, 60, 0.7); tone(42, 1.6, 0, 0.25, "sine"); },
+    march: function () { for (var i = 0; i < 4; i++) noise(0.09, (i % 2 ? 0.3 : -0.3), 0.12, "lowpass", 380, 0, 1, i * 0.32); },
     thud: function () { noise(0.4, 0, 0.4, "lowpass", 300, 80, 1); tone(55, 0.5, 0, 0.3, "sine"); },
     gun: function (pan, delay) { noise(0.9, pan, 0.45, "lowpass", 900, 80, 0.8, delay || 0); tone(48, 0.8, pan, 0.3, "sine", delay || 0); },
     drum: function (pan) { for (var i = 0; i < 3; i++) tone(90, 0.16, pan || 0, 0.22, "triangle", i * 0.14); },
@@ -687,7 +692,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     S.shown = S.heading; loadFlag(); S.nat = null; initNations();
     S.health = 100; S.journal = []; S.lastAgeDay = 0; S.stats = {};
     S.voyageStart = 0; S.voyageGold = S.gold; S.moraleBonus = CAREER.expedition ? 20 : 0; S.banked = 0; S.voyages = 0; S.map = null; S.incan = null; S.family = null; S.spaniard = {};
-    for (var i = 0; i < 14; i++) S.clouds.push({ x: rand(MAP.x0, MAP.x1), y: rand(MAP.y0, MAP.y1), r: rand(0.25, 0.6), dark: Math.random() < 0.2 });
+    for (var i = 0; i < 14; i++) S.clouds.push({ x: rand(MAP.x0, MAP.x1), y: rand(MAP.y0, MAP.y1), r: rand(0.25, 0.6), dark: Math.random() < 0.3, seed: i + 1 });
   }
 
   // ---------- Sailing model ----------
@@ -744,6 +749,28 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
       if (c.x < MAP.x0) c.x = MAP.x1; if (c.x > MAP.x1) c.x = MAP.x0; if (c.y < MAP.y0) c.y = MAP.y1; if (c.y > MAP.y1) c.y = MAP.y0;
     });
 
+    // Squalls: a dark cloud overhead brings rain, and gusts that knock the bow off course.
+    var sq = null;
+    S.clouds.forEach(function (c) { if (c.dark && dist(c.x, c.y, S.x, S.y) < c.r * 1.05) sq = c; });
+    if (sq && !S.squall) { S.squall = true; S.gustAt = S.hours + rand(1.5, 3); stopFast(); SFX.gust(); say("A squall sweeps over you! Rain lashes the deck and the wind gusts hard. Mind your heading."); }
+    else if (!sq && S.squall) { S.squall = false; S.gustAt = S.hours + rand(30, 70); sayQuiet("The squall passes and the rain stops."); }
+    S.clouds.forEach(function (c) {
+      if (!c.dark || S.squall) return;
+      var d = dist(c.x, c.y, S.x, S.y), rel = adiff(bearing(S.x, S.y, c.x, c.y), S.heading);
+      if (d < c.r + 0.9 && Math.abs(rel) < 60 && (!c.warned || S.hours - c.warned > 48)) { c.warned = S.hours; sayQuiet("Dark squall clouds " + relPhrase(rel) + ", about " + leagues(Math.max(0.05, d - c.r)) + "."); }
+    });
+    if (S.squall && S.hours > (S.boltAt || 0)) { S.boltAt = S.hours + rand(5, 12); S.flash = performance.now(); setTimeout(function () { if (S && soundOn) SFX.thunder(); }, rand(300, 1200)); }
+    if (S.gustAt === undefined) S.gustAt = S.hours + rand(30, 70);
+    if (S.sails && !S.aground && S.hours >= S.gustAt && (S.squall || S.wind.str > 0.6)) {
+      S.gustAt = S.hours + (S.squall ? rand(7, 12) : rand(30, 70));
+      var relW = adiff(S.heading, S.wind.from), knock = relW >= 0 ? 22.5 : -22.5;
+      if (Math.abs(relW) > 168) knock = Math.random() < 0.5 ? 22.5 : -22.5;
+      S.heading = norm(S.heading + knock);
+      SFX.gust();
+      say((S.squall ? "A gust! " : "A sudden gust of wind! ") + "It knocks the bow around to the " + pointName(S.heading) + ". Turn " + (knock > 0 ? "left" : "right") + " one point to get back on course.");
+    }
+    if (!S.squall && !(S.wind.str > 0.6) && S.gustAt < S.hours) S.gustAt = S.hours + rand(10, 20);
+
     // Move the ship.
     S.speed = speedNow();
     var dDeg = S.speed / 4 / LEAGUES_PER_DEG * hrs;
@@ -757,6 +784,8 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
         say("Breakers ahead! " + FlagName() + " comes up against " + S.aground + ". Turn away to get under way. Going ashore comes in a later piece.");
       } else {
         S.x = nx; S.y = ny;
+        var lee = (S.squall ? 0.045 : 0.008) * (0.4 + S.wind.str) * hrs * (S.sails === 2 ? 1 : 0.6) / LEAGUES_PER_DEG * 4;
+        if (!landAt(S.x + wdx * lee, S.y + wdy * lee)) { S.x += wdx * lee; S.y += wdy * lee; }
         if (!S.wake.length || dist(S.wake[S.wake.length - 1][0], S.wake[S.wake.length - 1][1], S.x, S.y) > 0.06) { S.wake.push([S.x, S.y]); if (S.wake.length > 60) S.wake.shift(); }
         var sh = shoalAt(S.x, S.y);
         if (sh && !PT().shallow) { S.x -= Math.sin(S.heading * Math.PI / 180) * dDeg * 1.5; S.y -= Math.cos(S.heading * Math.PI / 180) * dDeg * 1.5; S.aground = sh.name; S.speed = 0; SFX.scrape(); stopFast(); say("Shoal water, " + sh.name + "! " + FlagName() + " is too deep for it and touches bottom. Turn away to get off. Only small ships like sloops and barques can cross shoals."); return; }
@@ -1337,15 +1366,34 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     // Effects
     B.fx.forEach(function (f) {
       var age = (now - f.t) / 1600, o = f.who === "you" ? Y : F, ox = X(o.x), oy = Yp(o.y);
-      if (f.kind === "smoke") { ctx.fillStyle = "rgba(235,235,235," + (0.6 * (1 - age)) + ")"; for (var i = 0; i < 6; i++) { ctx.beginPath(); ctx.arc(ox + (i - 2.5) * 9, oy + Math.sin(i) * 6 - age * 20, 10 + age * 18, 0, Math.PI * 2); ctx.fill(); } }
+      if (f.kind === "smoke") {
+        var tg = f.who === "you" ? F : Y, ex = X(tg.x), ey = Yp(tg.y), bdx = ex - ox, bdy = ey - oy, bl = Math.hypot(bdx, bdy) || 1, nx2 = -bdy / bl, ny2 = bdx / bl;
+        var wsx = -Math.sin(S.wind.from * Math.PI / 180), wsy = Math.cos(S.wind.from * Math.PI / 180);
+        // Muzzle flashes along the side that faces her
+        if (now - f.t < 160) { ctx.fillStyle = "rgba(255,200,90,0.95)"; for (var mf = -2; mf <= 2; mf++) { ctx.beginPath(); ctx.arc(ox + nx2 * mf * 9 + bdx / bl * 16, oy + ny2 * mf * 9 + bdy / bl * 16, 7, 0, Math.PI * 2); ctx.fill(); } }
+        // Cannonballs in flight
+        var fl = (now - f.t) / 620;
+        if (fl < 1) for (var cb = -2; cb <= 2; cb++) {
+          var spread = cb * 10 * fl, bx2 = ox + bdx * fl + nx2 * (cb * 9 + spread * 0.4), by2 = oy + bdy * fl + ny2 * (cb * 9 + spread * 0.4);
+          ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(bx2 - bdx / bl * 14, by2 - bdy / bl * 14); ctx.lineTo(bx2, by2); ctx.stroke();
+          ctx.fillStyle = "#1a1a1a"; ctx.beginPath(); ctx.arc(bx2, by2, 3, 0, Math.PI * 2); ctx.fill();
+        }
+        // Gun smoke rolling away downwind
+        for (var i = 0; i < 7; i++) { ctx.fillStyle = "rgba(235,235,235," + (0.65 * (1 - age)) + ")"; ctx.beginPath(); ctx.arc(ox + nx2 * (i - 3) * 9 + bdx / bl * 20 + wsx * age * 60, oy + ny2 * (i - 3) * 9 + bdy / bl * 20 + wsy * age * 60, 9 + age * 20, 0, Math.PI * 2); ctx.fill(); }
+      }
       if (f.kind === "splash") { ctx.strokeStyle = "rgba(220,240,255," + (1 - age) + ")"; ctx.lineWidth = 2; for (var j = 0; j < 4; j++) { ctx.beginPath(); ctx.arc(ox + (j - 1.5) * 26, oy + ((j % 2) ? 22 : -22), 4 + age * 16, 0, Math.PI * 2); ctx.stroke(); } }
-      if (f.kind === "hit") { ctx.fillStyle = "rgba(255,150,60," + (0.9 * (1 - age)) + ")"; ctx.beginPath(); ctx.arc(ox, oy, 12 + age * 26, 0, Math.PI * 2); ctx.fill(); }
+      if (f.kind === "hit") {
+        ctx.fillStyle = "rgba(255,150,60," + (0.9 * (1 - age)) + ")"; ctx.beginPath(); ctx.arc(ox, oy, 12 + age * 26, 0, Math.PI * 2); ctx.fill();
+        // Splinters flying
+        ctx.strokeStyle = "rgba(120,80,40," + (1 - age) + ")"; ctx.lineWidth = 2;
+        for (var sp2 = 0; sp2 < 8; sp2++) { var sa = sp2 / 8 * Math.PI * 2 + f.t, sr = 10 + age * 50; ctx.beginPath(); ctx.moveTo(ox + Math.cos(sa) * sr, oy + Math.sin(sa) * sr); ctx.lineTo(ox + Math.cos(sa) * (sr + 6), oy + Math.sin(sa) * (sr + 6)); ctx.stroke(); }
+      }
     });
     if (!B.fort) {
       var fsize = 1.6 + (BTYPES[B.kind] ? BTYPES[B.kind].size : 1) * 1.1;
-      drawShip(X(F.x), Yp(F.y), F.h, fsize, NATION[B.nat] ? NATION[B.nat].flag : "#888", "#e8e2d2", 2);
+      ART.ship(ctx, X(F.x), Yp(F.y), F.h, fsize * 0.85, { masts: ART.mastsFor(B.kind), nation: natOf(B.nat), flag: NATION[B.nat] ? NATION[B.nat].flag : "#888", sails: 2, t: reduceMotion ? 0 : t, speed: 0.6, dmg: stageOf(F.dmg, B.T.hp), brace: Math.max(-0.5, Math.min(0.5, adiff(S.wind.from, F.h) * 0.006)) });
     }
-    drawShip(X(Y.x), Yp(Y.y), Y.h, 1.6 + PT().size * 1.1, "#d23b3b", "#fffaf0", Y.full ? 2 : 1);
+    ART.ship(ctx, X(Y.x), Yp(Y.y), Y.h, (1.6 + PT().size * 1.1) * 0.85, { masts: ART.mastsFor(flag().kind), nation: myNation(), sails: Y.full ? 2 : 1, t: reduceMotion ? 0 : t, speed: Math.min(1, (Y.speed || 0) / 30), dmg: stageOf(S.dmg, HP()), brace: Math.max(-0.5, Math.min(0.5, adiff(S.wind.from, Y.h) * 0.006)) });
     // Labels
     ctx.font = "15px 'Atkinson Hyperlegible', sans-serif"; ctx.textAlign = "center";
     ctx.fillStyle = "rgba(10,20,30,0.75)"; var lab = cap(B.kind) + "  " + Math.round(d) + " yd";
@@ -1844,6 +1892,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     townMenu(t, lead, true);
   }
   function townMenu(t, lead, full) {
+    setScene("town", t);
     var o = S.nat[t.n] || { st: 0 }, sneaking = S.townMode === "sneak", byLand = S.townMode === "land" || (sneaking && S.landTown === t.name);
     var opts = [
       { label: "The governor's mansion", fn: function () { governor(t); } },
@@ -1865,13 +1914,14 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
   }
   function leaveTown(t) {
     if (S.townMode === "land" || (S.townMode === "sneak" && S.landTown === t.name)) { S.townMode = null; S.landTown = null; marchBack(t, "You leave " + t.name + ". "); return; }
-    S.townMode = null;
+    S.townMode = null; S.scene = null;
     S.inTown = null; S.townCooldown = t.name; saveVoyage();
     say("You row back out to " + flagName() + ". Raise sail when you're ready. Up Arrow raises sail.");
   }
 
   // The governor
   function governor(t) {
+    setScene("governor", t);
     var o = S.nat[t.n], gname = governorOf(t), back = function (txt) { governor2(t, txt); };
     if (o.st < 0 && !(o.st === -1)) { townMenu(t, "The guards at the mansion turn you away. The " + t.n + " count you as an enemy. "); return; }
     var since = daysSince(lastVisit(t, "gov"));
@@ -1891,6 +1941,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     governor2(t, lead + rew, true);
   }
   function governor2(t, lead, full) {
+    setScene("governor", t);
     var o = S.nat[t.n], gname = governorOf(t), dname = daughterOf(t);
     var nation = t.n === "English" ? "England" : t.n === "French" ? "France" : t.n === "Dutch" ? "Holland" : "Spain";
     var opts = [];
@@ -1962,6 +2013,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     openMenu("The governor's mansion, " + gname + ".", opts, { lead: lead, esc: opts.length - 1, brief: !full });
   }
   function daughterVisit(t, dname) {
+    setScene("daughter", t);
     var d = S.daughters[t.name], o = S.nat[t.n], K = KIN_WORDS();
     d.fond = Math.min(5, (d.fond || 1) + 1);
     var opts = [
@@ -1978,6 +2030,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     openMenu("Calling on " + dname + ".", opts, { lead: dname + " is pleased to see you again. ", esc: 2 });
   }
   function daughterTalk(t, dname, lead) {
+    setScene("daughter", t);
     var K = KIN_WORDS();
     openMenu("Calling on " + dname + ".", [
       { label: "Ask what " + K.he + " has heard", fn: function () { daughterTalk(t, dname, dname + " lowers " + K.his + " voice: " + courtNews(t) + " "); } },
@@ -1999,6 +2052,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
 
   // The tavern
   function tavern(t, lead) {
+    setScene("tavern", t);
     var brief = !!lead; lead = lead || "The tavern is loud with sailors, smoke and music. ";
     var since = daysSince(lastVisit(t, "recruit"));
     var opts = [
@@ -2048,6 +2102,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
   }
   // The merchant
   function merchant(t, lead) {
+    setScene("merchant", t);
     var opts = GOODS_LIST.map(function (g) {
       var p = priceOf(t, g), have = S.holds[g] || 0;
       return { label: cap(g) + ": buy " + p.buy + ", sell " + sellPrice(t, g) + (have ? ", you have " + have + " tons" : ""), fn: function () { goodMenu(t, g, ""); } };
@@ -2056,6 +2111,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     openMenu("The merchant in " + t.name + ". You have " + S.gold + " pieces of eight and " + (holdSpace() - holdUsed()) + " tons of free space. Prices are per ton.", opts, { lead: lead || "", esc: opts.length - 1 });
   }
   function goodMenu(t, g, lead) {
+    setScene("merchant", t);
     var have = S.holds[g] || 0, room = holdSpace() - holdUsed(), buy = priceOf(t, g).buy;
     var maxBuy = Math.max(0, Math.min(room, Math.floor(S.gold / buy)));
     function trade(n) {
@@ -2092,6 +2148,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     return S.fleet.reduce(function (a, sh) { return a + Math.round((sh.dmg || 0) * 12); }, 0);
   }
   function shipwright(t, lead) {
+    setScene("shipwright", t);
     var cost = repairCost();
     var opts = [];
     opts.push({ label: cost ? "Repair your fleet, " + cost + " pieces of eight" : "Your fleet needs no repairs", fn: function () {
@@ -2115,6 +2172,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
   }
   function shipValue(sh) { var P = PTYPES[sh.kind] || PTYPES.sloop; return Math.round((SHIP_PRICE[sh.kind] || 1000) * Math.max(0.3, 1 - (sh.dmg || 0) / P.hp)); }
   function sellShipMenu(t) {
+    setScene("shipwright", t);
     syncFlag();
     var opts = S.fleet.slice(1).map(function (sh, i) {
       return { label: "The " + sh.name + ", " + sh.kind + ", " + shipValue(sh) + " pieces of eight", fn: function () {
@@ -2130,6 +2188,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     openMenu("Which ship will you sell? You can't sell your flagship.", opts, { esc: opts.length - 1 });
   }
   function flagMenu(t) {
+    setScene("shipwright", t);
     syncFlag();
     var opts = S.fleet.map(function (sh, i) {
       return { label: "The " + sh.name + ", " + sh.kind + ", " + sh.guns + " guns" + (i === 0 ? ", your flagship now" : ""), fn: function () {
@@ -2322,6 +2381,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
   function captainCut() { return (CUTS[level()] || 0.05) + 0.02; }
   function DIFF() { return { apprentice: 0.75, journeyman: 0.9, adventurer: 1.05, swashbuckler: 1.2 }[level()] || 0.9; }
   function bank(t, lead) {
+    setScene("bank", t);
     var cut = captainCut(), share = Math.round(S.gold * cut);
     var opts = [
       { label: "Divide the plunder", fn: function () {
@@ -2455,6 +2515,17 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     var near = scanLand(S.x, S.y, 0.3);
     if (!near.length) { say("There's no land close enough to row to. Sail within a few leagues of a coast, then press D."); return; }
     stopFast(); S.sails = 0;
+    var spot = landNear(S.x, S.y, 0.3);
+    if (spot && !S.trek) {
+      var ix = spot.x + (spot.x - S.x) * 0.6, iy = spot.y + (spot.y - S.y) * 0.6, inland = landAt(ix, iy);
+      if (!(inland && inland.pts)) { ix = spot.x; iy = spot.y; }
+      say("Your landing party rows ashore with picks and spades. Press Enter to skip ahead.");
+      startTrek(S.x, S.y, ix, iy, Math.min(12, partySize()), "Searching for treasure", function () { searchAshore2(near); });
+      return;
+    }
+    searchAshore2(near);
+  }
+  function searchAshore2(near) {
     S.hours += 72;
     var found = null;
     [S.map, S.incan].forEach(function (m) { if (m && m.pieces && dist(S.x, S.y, m.x, m.y) < 0.35) found = m; });
@@ -2761,7 +2832,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     if (S.battle) return;
     var near = landNear(S.x, S.y, 0.3);
     if (!near) { say("There's no land close enough to row to. Sail within a few leagues of a coast, then press D."); return; }
-    stopFast(); S.sails = 0;
+    stopFast(); S.sails = 0; S.landing = { x: near.x, y: near.y };
     var landName2 = landName(near.L, near.x, near.y);
     var towns = TOWNS.filter(function (t) { var tl = landNear(t.x, t.y, 0.25); return tl && tl.L === near.L && dist(near.x, near.y, t.x, t.y) < 3.2; })
       .sort(function (a, b) { return dist(near.x, near.y, a.x, a.y) - dist(near.x, near.y, b.x, b.y); }).slice(0, 4);
@@ -2786,9 +2857,13 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     var hungry = eatOnMarch(men, days);
     S.landTrip = { town: t.name, days: days };
     SFX.drum();
-    gates(t, "Your " + men + " men march for " + days + (days === 1 ? " day" : " days") + " through jungle and swamp, and come out of the trees before the walls of " + t.name + "." + hungry + " ");
+    var arrive = "Your " + men + " men march for " + days + (days === 1 ? " day" : " days") + " through jungle and swamp, and come out of the trees before the walls of " + t.name + "." + hungry + " ";
+    var from = S.landing || { x: S.x, y: S.y };
+    say("Your " + men + " men row ashore and set off inland for " + t.name + ". Press Enter to skip ahead.");
+    startTrek(from.x, from.y, t.x, t.y, men, "Marching to " + t.name, function () { gates(t, arrive); });
   }
   function gates(t, lead) {
+    setScene("gates", t);
     initNations();
     var rel = NATION[t.n].rel;
     var opts = [];
@@ -2805,9 +2880,12 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     var days = (S.landTrip && S.landTrip.days) || 2;
     S.hours += days * 24;
     var hungry = eatOnMarch(partySize(), days);
-    S.landTrip = null; S.inTown = null; S.townMode = null;
+    S.landTrip = null; S.inTown = null; S.townMode = null; S.scene = null;
     saveVoyage();
-    say((lead || "") + "Your men march " + days + (days === 1 ? " day" : " days") + " back to the boats and row out to " + flagName() + "." + hungry + " Up Arrow raises sail.");
+    var from = S.landing;
+    if (!from) { say((lead || "") + "Your men march " + days + (days === 1 ? " day" : " days") + " back to the boats and row out to " + flagName() + "." + hungry + " Up Arrow raises sail."); return; }
+    say((lead || "") + "Your men set off on the " + days + (days === 1 ? " day" : " days") + " march back to the boats. Press Enter to skip ahead.");
+    startTrek(t.x, t.y, from.x, from.y, partySize(), "Marching back to the boats", function () { S.landing = null; say("Your men reach the boats and row out to " + flagName() + "." + hungry + " Up Arrow raises sail."); });
   }
 
   // ---------- Land battles ----------
@@ -2820,7 +2898,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     var soldiers = Math.max(10, Math.round(rec.garrison * rand(0.8, 1.1)));
     var cav = BIG_TOWNS.indexOf(t.name) > -1 ? Math.round(soldiers * 0.2) : MID_TOWNS.indexOf(t.name) > -1 ? Math.round(soldiers * 0.12) : 0;
     var men = partySize();
-    S.land = { t: t, fs: fs, men: men, men0: men, morY: 65 + Math.min(20, fame()), sol: soldiers, cav: cav, foe0: soldiers + cav, morE: 68, range: 2, cover: false, round: 0 };
+    S.land = { fx: [], t: t, fs: fs, men: men, men0: men, morY: 65 + Math.min(20, fame()), sol: soldiers, cav: cav, foe0: soldiers + cav, morE: 68, range: 2, cover: false, round: 0 };
     deedAgainst(t.n, "attack");
     SFX.drum();
     landTurn("Your " + men + " men form up at the edge of the woods. Across the open ground, " + soldiers + " soldiers" + (cav ? " and " + cav + " cavalry" : "") + " come out to meet you. ");
@@ -2856,7 +2934,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     if (act === "cover") { L.cover = true; txt.push("Your men take cover among the trees."); }
     if (act === "volley") {
       var shoot = Math.round(L.men * 0.8), k = kills(shoot, L.range === 2 ? 0.04 : 0.1);
-      foeLost += k; L.sol = Math.max(0, L.sol - k); SFX.volley(0);
+      foeLost += k; L.sol = Math.max(0, L.sol - k); SFX.volley(0); L.fx.push({ who: "you", t: performance.now() });
       txt.push("Your men fire a ragged volley. " + (k ? k + " soldiers fall." : "Not one hits."));
     }
     if (act === "charge" || act === "melee") {
@@ -2871,7 +2949,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     if (L.range > 0 && L.sol > 0 && act !== "back") {
       var acc = (L.range === 2 ? 0.07 : 0.16) * (L.cover ? 0.4 : 1) * DIFF();
       var h = kills(Math.round(L.sol * 0.9), acc);
-      youLost += h; SFX.volley(0.3);
+      youLost += h; SFX.volley(0.3); (function (fx) { setTimeout(function () { fx.push({ who: "foe", t: performance.now() }); }, 500); })(L.fx);
       txt.push("The soldiers fire a crashing volley" + (L.cover ? " into the trees" : "") + ". " + (h ? "You lose " + h + " men." : "No one is hit."));
     }
     if (L.range === 1 && L.cav > 0 && !L.cover && Math.random() < 0.5) {
@@ -2923,6 +3001,86 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     var lost2 = Math.round(b.men * rand(0.3, 0.5)); S.crew = Math.max(0, S.crew - lost2);
     logEvent("Land attack on " + t.name + " failed at the gate.");
     return "The captain of the guard beats you at the gate, and your men fall back to the boats. You lose " + lost2 + " men." + wound((100 - r.hp) * 0.06);
+  }
+
+  // ---------- A landing party on the march, drawn on the chart ----------
+  function landPath(x0, y0, x1, y1) {
+    var step = 0.04, pad = 0.6;
+    var minx = Math.min(x0, x1) - pad, miny = Math.min(y0, y1) - pad, maxx = Math.max(x0, x1) + pad, maxy = Math.max(y0, y1) + pad;
+    var nx = Math.ceil((maxx - minx) / step) + 1, ny = Math.ceil((maxy - miny) / step) + 1;
+    if (nx * ny > 60000) return [[x0, y0], [x1, y1]];
+    var grid = new Int8Array(nx * ny);
+    function land(i, j) { var k = j * nx + i; if (!grid[k]) { var L = landAt(minx + i * step, miny + j * step); grid[k] = L && L.pts ? 1 : 2; } return grid[k] === 1; }
+    function cellOf(x, y) { return [Math.round((x - minx) / step), Math.round((y - miny) / step)]; }
+    function snap(c) {
+      if (land(c[0], c[1])) return c;
+      for (var r = 1; r < 14; r++) for (var di = -r; di <= r; di++) for (var dj = -r; dj <= r; dj++) {
+        if (Math.max(Math.abs(di), Math.abs(dj)) !== r) continue;
+        var i = c[0] + di, j = c[1] + dj; if (i >= 0 && j >= 0 && i < nx && j < ny && land(i, j)) return [i, j];
+      }
+      return null;
+    }
+    var a = snap(cellOf(x0, y0)), b = snap(cellOf(x1, y1));
+    if (!a || !b) return [[x0, y0], [x1, y1]];
+    var prev = new Int32Array(nx * ny).fill(-1), start = a[1] * nx + a[0], goal = b[1] * nx + b[0], q = [start], head = 0, found = false;
+    prev[start] = start;
+    while (head < q.length) {
+      var k = q[head++]; if (k === goal) { found = true; break; }
+      var i = k % nx, j = (k - i) / nx;
+      for (var di = -1; di <= 1; di++) for (var dj = -1; dj <= 1; dj++) {
+        if (!di && !dj) continue; var ii = i + di, jj = j + dj;
+        if (ii < 0 || jj < 0 || ii >= nx || jj >= ny) continue;
+        var kk = jj * nx + ii; if (prev[kk] !== -1 || !land(ii, jj)) continue;
+        prev[kk] = k; q.push(kk);
+      }
+    }
+    if (!found) return [[x0, y0], [x1, y1]];
+    var cells = [], c2 = goal; while (c2 !== prev[c2]) { cells.push(c2); c2 = prev[c2]; } cells.push(c2); cells.reverse();
+    var pts = [[x0, y0]];
+    cells.forEach(function (kk, idx) { if (idx % 3 === 0 || idx === cells.length - 1) { var i = kk % nx; pts.push([minx + i * step, miny + (kk - i) / nx * step]); } });
+    pts.push([x1, y1]);
+    return pts;
+  }
+  function startTrek(x0, y0, x1, y1, men, label, done) {
+    var path = landPath(x0, y0, x1, y1), len = 0;
+    for (var i = 1; i < path.length; i++) len += dist(path[i - 1][0], path[i - 1][1], path[i][0], path[i][1]);
+    stopFast();
+    S.trek = { path: path, len: Math.max(0.001, len), px: x0, py: y0, dir: 0, men: men, label: label, shipX: S.x, shipY: S.y,
+      start: performance.now(), dur: reduceMotion ? 1200 : Math.max(3000, Math.min(8000, 2500 + len * 2200)), done: done, half: false, stepAt: 0 };
+  }
+  function trekStep() {
+    var T = S.trek, now = performance.now(), f = Math.min(1, (now - T.start) / T.dur), want = f * T.len, acc = 0;
+    for (var i = 1; i < T.path.length; i++) {
+      var a = T.path[i - 1], b = T.path[i], seg = dist(a[0], a[1], b[0], b[1]);
+      if (acc + seg >= want || i === T.path.length - 1) {
+        var u = seg ? Math.min(1, (want - acc) / seg) : 1;
+        T.px = a[0] + (b[0] - a[0]) * u; T.py = a[1] + (b[1] - a[1]) * u;
+        if (seg) T.dir = Math.atan2(-(b[1] - a[1]), b[0] - a[0]);
+        break;
+      }
+      acc += seg;
+    }
+    if (now > T.stepAt && soundOn) { T.stepAt = now + 1300; SFX.march(); }
+    if (f >= 0.5 && !T.half && T.dur > 2000) { T.half = true; sayQuiet("Halfway there."); }
+    if (f >= 1) { S.trek = null; T.done(); }
+  }
+  function skipTrek() { if (S.trek) S.trek.start = performance.now() - S.trek.dur; }
+  // Which picture goes with the place you are visiting
+  function setScene(kind, t) { if (S) S.scene = { kind: kind, t: t }; }
+  function sceneInfo(t) {
+    initNations();
+    return { town: t.name, nation: t.n, size: townSize(t), hour: S.hours % 24, masts: ART.mastsFor(flag().kind), myNation: myNation(), fem: fem(),
+      sneak: S.townMode === "sneak", hostile: NATION[t.n] && NATION[t.n].rel === "hostile" };
+  }
+  function drawScene(t) {
+    var sc = S.scene, kind = sc.kind;
+    if (kind === "town") kind = S.townMode === "sneak" ? "sneak" : "harbor";
+    ART.scene(ctx, W, H, kind, sceneInfo(sc.t), reduceMotion ? 0 : t);
+    if (S.paused) { ctx.fillStyle = "rgba(5,10,15,0.55)"; ctx.fillRect(0, 0, W, H); ctx.fillStyle = "#f3e3c0"; ctx.textAlign = "center"; ctx.font = "44px 'IM Fell English SC', Georgia, serif"; ctx.fillText("Paused", W / 2, H / 2); }
+  }
+  function drawLandBattle(t) {
+    var L = S.land;
+    ART.landBattle(ctx, W, H, { men: L.men, sol: L.sol, cav: L.cav, range: L.range, cover: L.cover, fx: L.fx }, sceneInfo(L.t), reduceMotion ? 0 : t);
   }
 
   // ---------- Destination and beacon ----------
@@ -3028,6 +3186,12 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
       return;
     }
     if (S.battle) { battleKey(code); return; }
+    if (S.trek) {
+      if (code === "Enter" || code === "NumpadEnter" || code === "Space" || code === "Escape") { skipTrek(); return; }
+      if (code === "KeyR") { say(lastSpoken); return; }
+      if (code === "KeyP") { S.paused = !S.paused; if (!S.paused) S.trek.start = performance.now() - (S.trek.pausedAt || 0); else S.trek.pausedAt = performance.now() - S.trek.start; say(S.paused ? "Paused." : "On the march."); return; }
+      say(S.trek.label + ". Press Enter to skip ahead."); return;
+    }
     switch (code) {
       case "ArrowLeft": case "ArrowRight": {
         S.heading = norm(S.heading + (code === "ArrowRight" ? 22.5 : -22.5));
@@ -3098,68 +3262,117 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   function view() {
     if (S && S.zoomOut) { var s = Math.min(W / (MAP.x1 - MAP.x0), H / (MAP.y1 - MAP.y0)); return { s: s, cx: (MAP.x0 + MAP.x1) / 2, cy: (MAP.y0 + MAP.y1) / 2 }; }
-    var cx = S ? S.x : -76.8, cy = S ? S.y : 17.6;
-    return { s: 64, cx: cx, cy: cy };
+    var cx = S ? (S.trek ? S.trek.px : S.x) : -76.8, cy = S ? (S.trek ? S.trek.py : S.y) : 17.6;
+    return { s: S && S.trek ? 230 : 64, cx: cx, cy: cy };
   }
   function tx(v, x) { return (x - v.cx) * v.s + W / 2; }
   function ty(v, y) { return (v.cy - y) * v.s + H / 2; }
   function poly(v, pts) { ctx.beginPath(); pts.forEach(function (p, i) { var X = tx(v, p[0]), Y = ty(v, p[1]); i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); }); ctx.closePath(); }
+  var landBuilt = false;
+  function natOf(n) { return ART.NATS[n] ? n : null; }
+  function myNation() { var n = CAREER && (CAREER.nat || "").replace(/^./, function (c) { return c.toUpperCase(); }); return natOf(n) || "English"; }
   function draw(t) {
+    if (!landBuilt && window.ART) { landBuilt = true; ART.buildLand(LANDS, landAt, MAP); }
     if (S && S.battle) { drawBattle(t); return; }
+    if (S && S.land && typeof drawLandBattle === "function") { drawLandBattle(t); return; }
+    if (S && S.scene && S.menu && typeof drawScene === "function") { drawScene(t); return; }
     var v = view();
-    var night = S ? (function () { var h = S.hours % 24; return h < 5 || h >= 20 ? 0.35 : h < 7 || h >= 18 ? 0.15 : 0; })() : 0;
-    var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#0f3a56"); g.addColorStop(1, "#0b2c44");
+    var hr = S ? S.hours % 24 : 12;
+    var night = S ? (hr < 5 || hr >= 20 ? 0.38 : hr < 7 || hr >= 18 ? 0.16 : 0) : 0;
+    var g = ctx.createLinearGradient(0, 0, 0, H); g.addColorStop(0, "#15587e"); g.addColorStop(1, "#0f4264");
     ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
-    // Wave glints
-    ctx.strokeStyle = "rgba(170,210,230,0.10)"; ctx.lineWidth = 1.5;
-    var ph = reduceMotion ? 0 : t / 1400;
-    for (var r = 0; r < 18; r++) for (var c = 0; c < 10; c++) {
-      var wx = (c * 113 + r * 57 + ph * 20) % W, wy = (r * 37 + c * 11) % H;
-      ctx.beginPath(); ctx.moveTo(wx, wy); ctx.quadraticCurveTo(wx + 6, wy - 3, wx + 12, wy); ctx.stroke();
+    // Swells and whitecaps, fixed to the sea so they slide past as you sail, drifting downwind.
+    var wf = S ? S.wind.from : 90, wstr = S ? S.wind.str : 0.5, ph = reduceMotion ? 0 : t / 1000;
+    var wdx = -Math.sin(wf * Math.PI / 180), wdy = Math.cos(wf * Math.PI / 180);
+    var sp = 56, offX = v.cx * v.s - ph * wdx * 16, offY = -v.cy * v.s - ph * wdy * 16;
+    var c0 = Math.floor(offX / sp) - 1, r0 = Math.floor(offY / sp) - 1;
+    ctx.lineWidth = 1.5;
+    for (var r = 0; r < H / sp + 3; r++) for (var c = 0; c < W / sp + 3; c++) {
+      var ci = c0 + c, ri = r0 + r, hsh = (Math.imul(ci, 73856093) ^ Math.imul(ri, 19349663)) >>> 0;
+      var wx = ci * sp - offX + W / 2 + (hsh % 37) - 18, wy = ri * sp - offY + H / 2 + ((hsh >> 8) % 29) - 14;
+      ctx.strokeStyle = "rgba(170,215,235,0.13)";
+      ctx.beginPath(); ctx.moveTo(wx, wy); ctx.quadraticCurveTo(wx + 8, wy - 4, wx + 16, wy); ctx.stroke();
+      if (hsh % 4 === 0 && wstr > 0.45) {
+        var cap2 = Math.max(0, Math.sin(t / 500 + hsh % 97));
+        ctx.fillStyle = "rgba(255,255,255," + (cap2 * 0.45 * wstr) + ")";
+        ctx.beginPath(); ctx.ellipse(wx + 8, wy - 2, 4, 1.5, 0, 0, Math.PI * 2); ctx.fill();
+      }
     }
     // Grid
-    ctx.strokeStyle = "rgba(255,240,200,0.08)"; ctx.lineWidth = 1; ctx.font = "12px 'Atkinson Hyperlegible', sans-serif"; ctx.fillStyle = "rgba(255,240,200,0.35)"; ctx.textAlign = "left";
+    ctx.strokeStyle = "rgba(255,240,200,0.07)"; ctx.lineWidth = 1; ctx.font = "12px 'Atkinson Hyperlegible', sans-serif"; ctx.fillStyle = "rgba(255,240,200,0.4)"; ctx.textAlign = "left";
     for (var lo = -95; lo <= -60; lo += 5) { var X = tx(v, lo); ctx.beginPath(); ctx.moveTo(X, 0); ctx.lineTo(X, H); ctx.stroke(); ctx.fillText(-lo + "°W", X + 3, H - 6); }
     for (var la = 10; la <= 30; la += 5) { var Y = ty(v, la); ctx.beginPath(); ctx.moveTo(0, Y); ctx.lineTo(W, Y); ctx.stroke(); ctx.fillText(la + "°N", 4, Y - 3); }
-    // Shoals
-    SHOALS.forEach(function (sh) { poly(v, sh.pts); ctx.fillStyle = "rgba(120,205,210,0.22)"; ctx.fill(); ctx.setLineDash([3, 4]); ctx.strokeStyle = "rgba(160,225,230,0.5)"; ctx.stroke(); ctx.setLineDash([]); });
-    // Land
-    LANDS.forEach(function (L) { poly(v, L.pts); ctx.fillStyle = "#c2ab72"; ctx.fill(); ctx.lineWidth = 2; ctx.strokeStyle = "#6e5b2f"; ctx.stroke(); });
-    // Clouds
+    // Shoals: pale turquoise reef water
+    SHOALS.forEach(function (sh) { poly(v, sh.pts); ctx.fillStyle = "rgba(110,215,205,0.30)"; ctx.fill(); ctx.setLineDash([2, 5]); ctx.strokeStyle = "rgba(200,245,235,0.6)"; ctx.lineWidth = 1.5; ctx.stroke(); ctx.setLineDash([]); });
+    // Land with beaches, jungle, hills and mountains
+    ART.drawLand(ctx, v, W, H, t, { still: reduceMotion });
+    // Clouds and squalls, with their shadows on the sea
     if (S) S.clouds.forEach(function (cl) {
       var X = tx(v, cl.x), Y = ty(v, cl.y), R = cl.r * v.s;
-      ctx.fillStyle = cl.dark ? "rgba(60,70,80,0.35)" : "rgba(255,255,255,0.18)";
-      ctx.beginPath(); ctx.arc(X, Y, R, 0, Math.PI * 2); ctx.arc(X + R * 0.8, Y + R * 0.2, R * 0.7, 0, Math.PI * 2); ctx.arc(X - R * 0.8, Y + R * 0.25, R * 0.6, 0, Math.PI * 2); ctx.fill();
+      if (X < -R * 2 || X > W + R * 2 || Y < -R * 2 || Y > H + R * 2) return;
+      ART.cloud(ctx, X, Y, R, cl.dark, reduceMotion ? 0 : t, cl.seed || 1);
     });
     // Destination line
     if (S && S.dest) {
-      ctx.setLineDash([6, 6]); ctx.strokeStyle = "rgba(255,220,140,0.7)"; ctx.lineWidth = 2;
+      ctx.setLineDash([6, 6]); ctx.strokeStyle = "rgba(255,220,140,0.75)"; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(tx(v, S.x), ty(v, S.y)); ctx.lineTo(tx(v, S.dest.x), ty(v, S.dest.y)); ctx.stroke(); ctx.setLineDash([]);
     }
-    // Towns
-    ctx.font = (S && S.zoomOut ? "11px" : "14px") + " 'Atkinson Hyperlegible', sans-serif"; ctx.textAlign = "left";
+    // A treasure map, once it is complete, marks the spot with an X
+    if (S) [S.map, S.incan].forEach(function (m) {
+      if (!m || !m.pieces || m.pieces < (m.kind === "incan" ? 4 : 3)) return;
+      var X = tx(v, m.x), Y = ty(v, m.y);
+      ctx.strokeStyle = "#b3302b"; ctx.lineWidth = 4; ctx.lineCap = "round";
+      ctx.beginPath(); ctx.moveTo(X - 8, Y - 8); ctx.lineTo(X + 8, Y + 8); ctx.moveTo(X + 8, Y - 8); ctx.lineTo(X - 8, Y + 8); ctx.stroke(); ctx.lineCap = "butt";
+    });
+    // Towns: houses, church, a star fort and the flag
+    var small = S && S.zoomOut;
+    ctx.font = (small ? "11px" : "14px") + " 'Atkinson Hyperlegible', sans-serif"; ctx.textAlign = "left";
     TOWNS.forEach(function (tw) {
       var X = tx(v, tw.x), Y = ty(v, tw.y);
-      if (X < -60 || X > W + 60 || Y < -30 || Y > H + 30) return;
-      ctx.fillStyle = "#2a1d0e"; ctx.fillRect(X - 6, Y - 6, 12, 12);
-      ctx.fillStyle = NATION[tw.n].flag; ctx.fillRect(X - 4, Y - 4, 8, 8);
-      ctx.fillStyle = "rgba(10,20,30,0.75)"; var wTxt = ctx.measureText(tw.name).width; ctx.fillRect(X + 9, Y - 10, wTxt + 8, 18);
-      ctx.fillStyle = "#f6ead0"; ctx.fillText(tw.name, X + 13, Y + 4);
+      if (X < -80 || X > W + 80 || Y < -40 || Y > H + 40) return;
+      var zk = S && S.trek ? 2.2 : 1;
+      ctx.save(); ctx.translate(X, Y); ctx.scale(zk, zk); X = 0; Y = 0;
+      ART.mapTown(ctx, X, Y, townSize(tw), tw.n, reduceMotion ? 0 : t, tw.name, small, function (hx, hy) { var sx2 = tx(v, tw.x) + hx * zk, sy2 = ty(v, tw.y) + hy * zk; var L = landAt(v.cx + (sx2 - W / 2) / v.s, v.cy - (sy2 - H / 2) / v.s); return !!(L && L.pts); });
+      ctx.restore(); X = tx(v, tw.x); Y = ty(v, tw.y);
+      ctx.fillStyle = "rgba(10,20,30,0.78)"; var wTxt = ctx.measureText(tw.name).width;
+      var lx = X + (small ? 7 : 16 * zk), ly = Y + (small ? 4 : 10 * zk);
+      ctx.fillRect(lx, ly - 13, wTxt + 8, 18);
+      ctx.fillStyle = "#f6ead0"; ctx.fillText(tw.name, lx + 4, ly + 1);
     });
     if (!S) return;
+    var tt = reduceMotion ? 0 : t;
     // Other ships
     S.ships.forEach(function (s) {
       if (s.stage < 1) return;
-      drawShip(tx(v, s.x), ty(v, s.y), s.h, s.stage >= 2 ? 0.8 : 0.55, s.stage >= 3 ? NATION[s.T.n].flag : null, s.stage >= 2 ? "#e8e2d2" : "rgba(232,226,210,0.5)", 1);
-      if (s.chasing) { ctx.strokeStyle = "rgba(255,90,70,0.8)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(tx(v, s.x), ty(v, s.y), 16, 0, Math.PI * 2); ctx.stroke(); }
+      ctx.globalAlpha = s.stage >= 2 ? 1 : 0.55;
+      ART.ship(ctx, tx(v, s.x), ty(v, s.y), s.h, (s.stage >= 2 ? 0.75 : 0.55) * (small ? 0.7 : 1), { masts: ART.mastsFor(s.T.kind), nation: s.stage >= 3 ? s.T.n : null, sails: 2, t: tt, speed: 0.5, brace: Math.max(-0.5, Math.min(0.5, adiff(S.wind.from, s.h) * 0.006)) });
+      ctx.globalAlpha = 1;
+      if (s.chasing) { ctx.strokeStyle = "rgba(255,90,70,0.85)"; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(tx(v, s.x), ty(v, s.y), 22, 0, Math.PI * 2); ctx.stroke(); }
     });
-    // Wake
-    ctx.strokeStyle = "rgba(255,255,255,0.35)"; ctx.lineWidth = 2; ctx.beginPath();
-    S.wake.forEach(function (p, i) { var X = tx(v, p[0]), Y = ty(v, p[1]); i ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); });
-    ctx.lineTo(tx(v, S.x), ty(v, S.y)); ctx.stroke();
-    // The Swallow
+    // Wake: a fading trail of foam
+    var pts = S.wake.concat([[S.x, S.y]]);
+    ctx.lineCap = "round";
+    for (var i = 1; i < pts.length; i++) {
+      var f2 = i / pts.length;
+      ctx.strokeStyle = "rgba(255,255,255," + (0.05 + f2 * 0.45) + ")"; ctx.lineWidth = 1 + (1 - f2) * 5;
+      ctx.beginPath(); ctx.moveTo(tx(v, pts[i - 1][0]), ty(v, pts[i - 1][1])); ctx.lineTo(tx(v, pts[i][0]), ty(v, pts[i][1])); ctx.stroke();
+    }
+    ctx.lineCap = "butt";
+    // Your ship, or your ship at anchor while the landing party is ashore
     S.shown = norm(S.shown + adiff(S.heading, S.shown) * (reduceMotion ? 1 : 0.2));
-    drawShip(tx(v, S.x), ty(v, S.y), S.shown, S.zoomOut ? 0.8 : 1.15, "#d23b3b", "#fffaf0", S.sails);
+    var mine = { masts: ART.mastsFor(flag().kind), nation: myNation(), sails: S.sails, t: tt, speed: Math.min(1, S.speed / 12), dmg: stageOf(S.dmg, HP()), brace: Math.max(-0.5, Math.min(0.5, adiff(S.wind.from, S.heading) * 0.006)) };
+    if (S.trek) {
+      ART.ship(ctx, tx(v, S.trek.shipX), ty(v, S.trek.shipY), S.shown, 2.2, Object.assign({}, mine, { sails: 0, speed: 0 }));
+      var T = S.trek, px = tx(v, T.px), py = ty(v, T.py);
+      ctx.setLineDash([3, 5]); ctx.strokeStyle = "rgba(255,230,170,0.7)"; ctx.lineWidth = 2; ctx.beginPath();
+      T.path.forEach(function (p, k) { var X = tx(v, p[0]), Y = ty(v, p[1]); k ? ctx.lineTo(X, Y) : ctx.moveTo(X, Y); }); ctx.stroke(); ctx.setLineDash([]);
+      ART.party(ctx, px, py, T.men, T.dir, tt, null, true);
+    } else {
+      ART.ship(ctx, tx(v, S.x), ty(v, S.y), S.shown, small ? 0.6 : 1.1, mine);
+    }
+    // Squall: rain and lightning over everything
+    if (S.squall) ART.rain(ctx, W, H, 0.8, -wdx, tt);
+    if (S.flash) { var fa = 1 - (performance.now() - S.flash) / 350; if (fa > 0) ART.lightning(ctx, W, H, fa); else S.flash = 0; }
     // Compass and wind
     drawCompass(W - 78, 78);
     // Scale bar
@@ -3167,23 +3380,22 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
     ctx.textAlign = "left";
     ctx.fillStyle = "rgba(10,20,30,0.7)"; ctx.fillRect(14, H - 46, bar + 20, 30);
     ctx.fillStyle = "#f6ead0"; ctx.fillRect(24, H - 26, bar, 4); ctx.font = "12px 'Atkinson Hyperlegible', sans-serif"; ctx.fillText("20 leagues", 24, H - 32);
-    if (night) { ctx.fillStyle = "rgba(5,10,30," + night + ")"; ctx.fillRect(0, 0, W, H); }
+    if (S.trek) {
+      ctx.font = "20px 'IM Fell English SC', Georgia, serif"; ctx.fillStyle = "rgba(10,20,30,0.75)"; var lab = S.trek.label; var lw = ctx.measureText(lab).width + 20;
+      ctx.fillRect(W / 2 - lw / 2, 12, lw, 32); ctx.fillStyle = "#f3e3c0"; ctx.textAlign = "center"; ctx.fillText(lab, W / 2, 35); ctx.textAlign = "left";
+    }
+    if (night) {
+      ctx.fillStyle = "rgba(5,10,30," + night + ")"; ctx.fillRect(0, 0, W, H);
+      // Lit windows in the towns at night
+      TOWNS.forEach(function (tw) { var X = tx(v, tw.x), Y = ty(v, tw.y); if (X < -20 || X > W + 20 || Y < -20 || Y > H + 20) return; var gl = ctx.createRadialGradient(X, Y, 1, X, Y, 26); gl.addColorStop(0, "rgba(255,200,110," + night + ")"); gl.addColorStop(1, "rgba(255,200,110,0)"); ctx.fillStyle = gl; ctx.fillRect(X - 26, Y - 26, 52, 52); });
+    }
     if (S.paused) {
       ctx.fillStyle = "rgba(5,10,15,0.55)"; ctx.fillRect(0, 0, W, H);
       ctx.fillStyle = "#f3e3c0"; ctx.textAlign = "center"; ctx.font = "44px 'IM Fell English SC', Georgia, serif"; ctx.fillText("Paused", W / 2, H / 2);
     }
   }
-  function drawShip(X, Y, h, sc, flag, sail, sails) {
-    ctx.save(); ctx.translate(X, Y); ctx.rotate(h * Math.PI / 180); ctx.scale(sc, sc);
-    ctx.fillStyle = "#4a2f18"; ctx.beginPath(); ctx.moveTo(0, -18); ctx.quadraticCurveTo(9, -4, 7, 14); ctx.lineTo(-7, 14); ctx.quadraticCurveTo(-9, -4, 0, -18); ctx.fill();
-    ctx.strokeStyle = "#1e1208"; ctx.lineWidth = 1.5; ctx.stroke();
-    if (sails) {
-      ctx.fillStyle = sail; var span = sails === 1 ? 9 : 14;
-      ctx.beginPath(); ctx.moveTo(-span, -2); ctx.quadraticCurveTo(0, -10, span, -2); ctx.lineTo(span * 0.8, 3); ctx.quadraticCurveTo(0, -3, -span * 0.8, 3); ctx.closePath(); ctx.fill();
-    }
-    ctx.fillStyle = "#2a1a0c"; ctx.fillRect(-1, -6, 2, 14);
-    if (flag) { ctx.fillStyle = flag; ctx.fillRect(1, 8, 6, 4); }
-    ctx.restore();
+  function drawShip(X, Y, h, sc, flagC, sail, sails) {
+    ART.ship(ctx, X, Y, h, sc * 0.85, { flag: flagC, sails: sails, t: reduceMotion ? 0 : performance.now() });
   }
   function drawCompass(cx, cy) {
     ctx.fillStyle = "rgba(10,20,30,0.7)"; ctx.beginPath(); ctx.arc(cx, cy, 62, 0, Math.PI * 2); ctx.fill();
@@ -3231,7 +3443,7 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
   function frame(t) {
     if (!running) return;
     var dt = last ? Math.min(0.1, (t - last) / 1000) : 0.016; last = t;
-    if (S && !S.paused && !S.menu) { if (S.battle) battleStep(dt); else step(dt); }
+    if (S && !S.paused && !S.menu) { if (S.battle) battleStep(dt); else if (S.trek) trekStep(); else step(dt); }
     if (S && t > hudAt) { hud(); seaBed(); hudAt = t + 250; }
     draw(t);
     requestAnimationFrame(frame);

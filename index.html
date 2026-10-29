@@ -48,20 +48,7 @@ p { margin: 0; max-width: 62ch; }
   </header>
   <p class="tag">A pirate's life in the Caribbean, built from the start to be played by ear.</p>
 
-  <svg class="horizon" viewBox="0 0 760 170" role="img" aria-label="A small sloop under full sail on the horizon at sunset, a distant island to the left.">
-    <rect width="760" height="170" fill="var(--sky)"/>
-    <circle cx="590" cy="104" r="34" fill="var(--brass)" opacity="0.55"/>
-    <rect y="104" width="760" height="66" fill="var(--sea)"/>
-    <path d="M40 104 q40 -26 90 -14 q30 -16 60 14 z" fill="var(--sea)" opacity="0.8"/>
-    <g transform="translate(330 58)" fill="var(--ink)">
-      <path d="M0 46 h88 l-12 14 h-64 z"/>
-      <path d="M44 46 v-50" stroke="var(--ink)" stroke-width="2.5"/>
-      <path d="M46 -2 q30 22 26 46 h-26 z" opacity="0.85"/>
-      <path d="M42 2 q-22 18 -20 42 h20 z" opacity="0.7"/>
-      <path d="M44 -4 l12 4 l-12 4 z" fill="var(--brass)"/>
-    </g>
-    <path d="M0 132 q60 -8 120 0 t120 0 t120 0 t120 0 t120 0 t120 0 t120 0" stroke="var(--sky)" stroke-width="2" fill="none" opacity="0.5"/>
-  </svg>
+  <canvas class="horizon" id="title-art" width="960" height="320" role="img" aria-label="A tall ship under full sail at sunset, a pirate sloop with a black flag giving chase, palm islands on the horizon."></canvas>
 
   <p>Win your first ship in a sword fight. Then sail where you like: trade, take prizes, sack Spanish towns, court the governor's daughter, hunt for buried treasure and your lost family, and chase the Treasure Fleet. When you're old and rich, or broke and marooned, the game tells you how your life turned out.</p>
 
@@ -93,4 +80,39 @@ p { margin: 0; max-width: 62ch; }
 })();
 </script>
 
+<script src="art.js"></script>
+<script src="art-scenes.js"></script>
+<script>
+(function () {
+  var c = document.getElementById("title-art"); if (!c || !window.ART) return;
+  var ctx = c.getContext("2d"), W = c.width, H = c.height, A = window.ART;
+  var still = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  function frame(t) {
+    if (still) t = 4000;
+    var horizon = H * 0.58;
+    var g = ctx.createLinearGradient(0, 0, 0, horizon); g.addColorStop(0, "#2a3566"); g.addColorStop(0.55, "#c9677a"); g.addColorStop(1, "#f6b26b");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, horizon);
+    var sx = W * 0.72, sy = horizon - 18, sg = ctx.createRadialGradient(sx, sy, 10, sx, sy, 160); sg.addColorStop(0, "rgba(255,230,160,0.9)"); sg.addColorStop(1, "rgba(255,230,160,0)");
+    ctx.fillStyle = sg; ctx.fillRect(sx - 160, sy - 160, 320, 320); ctx.fillStyle = "#ffe2a0"; ctx.beginPath(); ctx.arc(sx, sy, 34, 0, Math.PI * 2); ctx.fill();
+    // Islands
+    ctx.fillStyle = "#3a3048"; ctx.beginPath(); ctx.moveTo(30, horizon); ctx.quadraticCurveTo(110, horizon - 46, 200, horizon - 10); ctx.quadraticCurveTo(240, horizon - 26, 300, horizon); ctx.fill();
+    A.palm(ctx, 120, horizon - 30, 56, t, 0.3); A.palm(ctx, 150, horizon - 26, 44, t, -0.2);
+    // Sea with the sun's path
+    var sg2 = ctx.createLinearGradient(0, horizon, 0, H); sg2.addColorStop(0, "#c9805e"); sg2.addColorStop(0.25, "#3d5f86"); sg2.addColorStop(1, "#1b3150");
+    ctx.fillStyle = sg2; ctx.fillRect(0, horizon, W, H - horizon);
+    ctx.fillStyle = "rgba(255,220,150,0.35)"; for (var i = 0; i < 9; i++) { var w = 60 - i * 5 + Math.sin(t / 400 + i) * 8; ctx.fillRect(sx - w / 2, horizon + 6 + i * 11, w, 3); }
+    ctx.strokeStyle = "rgba(255,255,255,0.18)"; ctx.lineWidth = 1.5;
+    for (var r = 0; r < 6; r++) for (var x = -60 + ((t / 30 + r * 50) % 120); x < W; x += 120) { var yy = horizon + 18 + r * 22; ctx.beginPath(); ctx.moveTo(x, yy); ctx.quadraticCurveTo(x + 12, yy - 4, x + 26, yy); ctx.stroke(); }
+    // The pirate sloop giving chase, far behind
+    A.sideShip(ctx, W * 0.86 - ((t / 90) % 40), horizon + 30, 0.42, { masts: 1, sails: true, nation: "Pirate", t: t + 900 });
+    // The tall ship running before the wind
+    A.sideShip(ctx, W * 0.4 + Math.sin(t / 3000) * 14, H * 0.86, 1.12, { masts: 3, sails: true, nation: "English", t: t });
+    // Gulls
+    ctx.strokeStyle = "#2a2030"; ctx.lineWidth = 2;
+    for (var k = 0; k < 3; k++) { var gx = (t / (22 + k * 6) + k * 280) % (W + 80) - 40, gy = 50 + k * 22 + Math.sin(t / 600 + k) * 8, f = Math.sin(t / 160 + k) * 4; ctx.beginPath(); ctx.moveTo(gx - 9, gy - f); ctx.quadraticCurveTo(gx - 4, gy - 6, gx, gy); ctx.quadraticCurveTo(gx + 4, gy - 6, gx + 9, gy - f); ctx.stroke(); }
+    if (!still) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+})();
+</script>
 </body></html>
