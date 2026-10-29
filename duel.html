@@ -1498,4 +1498,14 @@ a.primary { text-decoration: none; display: inline-block; }
 })();
 </script>
 
+<script>
+// Put the screen reader straight on the first choice, so it doesn't read the whole page out loud when the page opens.
+window.addEventListener("load", function () {
+  setTimeout(function () {
+    if (location.hash) return;
+    var r = document.querySelector('input[name="nation"]:checked') || document.querySelector('input[name="nation"]');
+    if (r && r.offsetParent !== null && (!document.activeElement || document.activeElement === document.body)) r.focus();
+  }, 300);
+});
+</script>
 </body></html>

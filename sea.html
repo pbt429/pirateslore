@@ -3745,4 +3745,16 @@ button { font-family: var(--body); font-size: 1rem; cursor: pointer; }
 })();
 </script>
 
+<script>
+// Put the screen reader straight on the main button, so it doesn't read the whole page out loud when the page opens.
+window.addEventListener("load", function () {
+  setTimeout(function () {
+    var setup = document.getElementById("setup");
+    if (!setup || setup.hidden) return;
+    var c = document.getElementById("continue"), s = document.getElementById("start");
+    var t = c && !c.hidden ? c : s;
+    if (t && (!document.activeElement || document.activeElement === document.body)) t.focus();
+  }, 300);
+});
+</script>
 </body></html>
