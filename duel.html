@@ -131,6 +131,8 @@ body.touch .moves button { min-height: 56px; font-size: 1rem; touch-action: mani
 body.touch #game canvas { max-height: 34vh; object-fit: contain; }
 body.touch .focus-tip { display: none; }
 .ctrl-h { margin: 14px 0 6px; font-size: 1.05rem; }
+/* While you play, only the game and its buttons show. */
+body.playing #expeditions, body.playing .keys-panel, body.touch .keys-panel { display: none !important; }
 /* Keep the message box one size so the buttons below never jump. */
 body.touch #announce { height: 6.6em; min-height: 0; overflow: hidden; font-size: 1.05rem; }
 .touch-only { display: none; }
@@ -310,18 +312,18 @@ body.touch .keys-only { display: none; }
       <div role="group" aria-label="Touch and mouse controls">
         <div class="pad">
           <span></span>
-          <span class="colhead">Parry</span><span class="colhead">Thrust</span><span class="colhead">Slash</span><span class="colhead">Parry back</span>
-          <span class="rowlabel">High</span>
+          <span class="colhead" aria-hidden="true">Parry</span><span class="colhead" aria-hidden="true">Thrust</span><span class="colhead" aria-hidden="true">Slash</span><span class="colhead" aria-hidden="true">Parry back</span>
+          <span class="rowlabel" aria-hidden="true">High</span>
           <button type="button" data-a="parry" data-h="high" aria-label="Parry high">Parry</button>
           <button type="button" data-a="thrust" data-h="high" aria-label="Thrust high">Thrust</button>
           <button type="button" data-a="slash" data-h="high" aria-label="Slash high">Slash</button>
           <button type="button" data-a="parryBack" data-h="high" aria-label="Parry high and step back">Back</button>
-          <span class="rowlabel">Middle</span>
+          <span class="rowlabel" aria-hidden="true">Middle</span>
           <button type="button" data-a="parry" data-h="mid" aria-label="Parry middle">Parry</button>
           <button type="button" data-a="thrust" data-h="mid" aria-label="Thrust middle">Thrust</button>
           <button type="button" data-a="slash" data-h="mid" aria-label="Slash middle">Slash</button>
           <button type="button" data-a="parryBack" data-h="mid" aria-label="Parry middle and step back">Back</button>
-          <span class="rowlabel">Low</span>
+          <span class="rowlabel" aria-hidden="true">Low</span>
           <button type="button" data-a="parry" data-h="low" aria-label="Parry low">Parry</button>
           <button type="button" data-a="thrust" data-h="low" aria-label="Thrust low">Thrust</button>
           <button type="button" data-a="slash" data-h="low" aria-label="Slash low">Slash</button>
@@ -341,7 +343,7 @@ body.touch .keys-only { display: none; }
     </div>
   </section>
 
-  <section class="panel" aria-labelledby="keys-h">
+  <section class="panel keys-panel" aria-labelledby="keys-h">
     <h2 id="keys-h">Keys</h2>
     <p class="note">Your rival always warns you before he strikes. You hear a bell: a quick high double ring means high, one middle ring means middle, a low buzz means low. A rushing whoosh before the bell means a slash. Parry at the same height to block him, then strike back while he recovers.</p>
     <div class="keys">
@@ -378,8 +380,6 @@ body.touch .keys-only { display: none; }
         </dl>
       </div>
     </div>
-    <h3>Phones and tablets</h3>
-    <p class="note">Under the deck are three rows of big buttons: high at the top, middle, and low at the bottom. Each row goes Parry, Thrust, Slash, and Back, which parries and steps back. Below them are Step back, Step forward, Status and Pause. Sighted players just tap. With VoiceOver or TalkBack, slide one finger over the rows to find a button, then double tap anywhere. Because the buttons never move, you can learn where they are, the way you learn keys. Choose Relaxed or Very relaxed fight speed to give yourself time. A Bluetooth keyboard or controller also works.</p>
     <p class="note">If JAWS keeps the number pad for itself, use the letter keys instead. Every hit you land lifts your crew's morale and lowers his. When a fighter's morale runs out, the next hit makes him yield.</p>
   </section>
 </main>
@@ -1343,16 +1343,16 @@ body.touch .keys-only { display: none; }
     audioInit();
     demoTimers.forEach(clearTimeout); demoTimers = [];
     newFight(mode === "train" ? "train" : "duel");
-    game.setAttribute("aria-label", "Duel on the deck. " + (S.mode === "train" ? "Old Tom" : S.career.foeTitle) + " is to your right. Press H for keys, Space for status.");
-    setup.hidden = true; arena.hidden = false; $("endbox").hidden = true;
+    game.setAttribute("aria-label", "Duel on the deck. " + (S.mode === "train" ? "Old Tom" : S.career.foeTitle) + " is to your right." + tx(" Press H for keys, Space for status.", ""));
+    setup.hidden = true; arena.hidden = false; $("endbox").hidden = true; document.body.classList.add("playing");
     updateHud(); sea(true);
     if (!running) { running = true; last = 0; requestAnimationFrame(frame); }
     var firstPad = arena.querySelector('button[data-a="parry"][data-h="mid"]');
     if (TOUCH && firstPad) { firstPad.focus(); try { firstPad.scrollIntoView({ block: "center" }); } catch (e) {} }
     else game.focus();
     if (S.mode === "train") say("Old Tom faces you " + pacesText(dist()) + " to your right. Steady, " + S.name + ". Lesson one. I'll tell you every blow before I swing. Parry at the height I name, then strike back. No real wounds here, lad.");
-    else if (BOARD) say("En garde, " + S.name + "! " + BOARD.captainTitle.charAt(0).toUpperCase() + BOARD.captainTitle.slice(1) + " stands " + pacesText(dist()) + " to your right, cutlass drawn. Your morale is " + S.you.morale + ", his is " + S.foe.morale + ". " + tx("Right Arrow steps toward him. H for keys.", "You are on Parry middle. Help explains the buttons."));
-    else say("En garde, " + S.name + "! " + S.foeName + " stands " + pacesText(dist()) + " to your right, cutlass drawn. " + tx("Right Arrow steps toward him. H for keys.", "You are on Parry middle. Step forward to close in, or wait for him. Help explains the buttons."));
+    else if (BOARD) say("En garde, " + S.name + "! " + BOARD.captainTitle.charAt(0).toUpperCase() + BOARD.captainTitle.slice(1) + " stands " + pacesText(dist()) + " to your right, cutlass drawn. Your morale is " + S.you.morale + ", his is " + S.foe.morale + ". " + tx("Right Arrow steps toward him. H for keys.", "You are on Parry middle."));
+    else say("En garde, " + S.name + "! " + S.foeName + " stands " + pacesText(dist()) + " to your right, cutlass drawn. " + tx("Right Arrow steps toward him. H for keys.", "You are on Parry middle."));
   }
   $("start").addEventListener("click", function () { begin("duel"); });
   $("exp-go").addEventListener("click", function () { location.href = expeditionLink(); });
@@ -1363,6 +1363,7 @@ body.touch .keys-only { display: none; }
   $("again").addEventListener("click", function () { begin(S && S.over === "trained" ? "duel" : S ? S.mode : "duel"); });
   $("again-train").addEventListener("click", function () { begin("train"); });
   $("change").addEventListener("click", function () {
+    document.body.classList.remove("playing");
     if (S) S.over = S.over || "stopped";
     sea(false);
     arena.hidden = true; setup.hidden = false; $("start").focus();

@@ -99,6 +99,8 @@ body.touch .ctrls button { min-height: 56px; font-size: 1rem; touch-action: mani
 body.touch .menu-opts button { min-height: 52px; font-size: 1.05rem; touch-action: manipulation; }
 body.touch .focus-tip { display: none; }
 .ctrl-h { margin: 14px 0 6px; font-size: 1.05rem; }
+/* While you play, only the game and its buttons show. */
+body.playing .keys-panel, body.touch .keys-panel { display: none !important; }
 .touch-only { display: none; }
 body.touch .touch-only { display: block; }
 body.touch .keys-only { display: none; }
@@ -264,14 +266,7 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
     </div>
   </section>
 
-  <section class="panel touch-only" aria-labelledby="touch-h">
-    <h2 id="touch-h">Sailing on a phone or tablet</h2>
-    <p class="note">Everything is done with the buttons under the heading "Ship controls", just below the sea chart. With VoiceOver or TalkBack, swipe right to move through them, or slide your finger over them, and double tap to use one. The buttons stay in the same places, four across on a tablet and two across on a phone.</p>
-    <p class="note">To get going: tap Raise sail, once for half sail and again for full sail. Tap Destination to pick a port, and tap it again for the next nearest. Bearing tells you which way to steer, and Turn left and Turn right turn you one compass point at a time. Beacon makes a chime that sounds from the direction of your destination. Report, Lookout, Where am I and Wind tell you about your ship and the sea. Go ashore lands you on the nearest coast, and Cabin opens your status, fleet and log. Fast time speeds up long voyages.</p>
-    <p class="note">When a menu opens, such as a port or a ship you meet, its choices appear as buttons above the ship controls, and VoiceOver is placed on the first one. In a sea battle, Fire, Where is she, Both ships, Full sail and Battle sails appear above the ship controls. Steer with Turn left and Turn right to bring your guns to bear.</p>
-  </section>
-
-  <section class="panel" aria-labelledby="keys-h">
+  <section class="panel keys-panel" aria-labelledby="keys-h">
     <h2 id="keys-h">Keys</h2>
     <p class="note">Steering works in compass points. There are 16 points around the compass, so one press of an arrow turns you about the width of a clock's hour hand. Your speed depends on the angle between your heading and the wind. Straight into the wind you can only row, and slowly. With the wind behind your shoulder, the Swallow flies.</p>
     <div class="keys">
@@ -485,7 +480,7 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
     [/Press Enter to skip ahead/g, "Tap Report to skip ahead"],
     [/then press D\./g, "then tap Go ashore."],
     [/Press C for the captain's cabin/g, "Tap Cabin for the captain's cabin"],
-    [/Press C for your fleet, H for keys/g, "Tap Cabin for your fleet, or Keys for help"],
+    [/Press C for your fleet, H for keys/g, "Tap Cabin for your fleet, or Help"],
     [/Press T again for the next nearest/g, "Tap Destination again for the next nearest"],
     [/Press P to sail on/g, "Tap Pause to sail on"]
   ];
@@ -3171,7 +3166,7 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
     say(parts.join(". ") + ". " + (seen.length ? seen.join(". ") + "." : "No ships in sight."));
   }
   function help() {
-    if (TOUCH) { say("The ship buttons are under the heading Ship controls, below the chart. In order: Turn left, Turn right, Raise sail, Lower sail, Report, Lookout, Where am I, Wind, Destination, Bearing, Beacon, Fast time, Go ashore, Cabin, Zoom chart, Repeat, Pause and Keys. When a menu opens, you land on its first choice. In a sea battle, Fire, Where is she, Both ships, Full sail and Battle sails sit above the ship buttons."); return; }
+    if (TOUCH) { say("The ship buttons are under the heading Ship controls, below the chart. In order: Turn left, Turn right, Raise sail, Lower sail, Report, Lookout, Where am I, Wind, Destination, Bearing, Beacon, Fast time, Go ashore, Cabin, Zoom chart, Repeat, Pause and Help. When a menu opens, you land on its first choice. In a sea battle, Fire, Where is she, Both ships, Full sail and Battle sails sit above the ship buttons."); return; }
     say("Left and Right Arrows turn. Up raises sail, Down lowers it. Space report. C the captain's cabin, with your status, fleet and log. D go ashore: search for treasure or march to a town. W wind. N where am I. L lookout. T destination, B bearing, G beacon. F fast time. P pause. R repeat. M sound.");
   }
   function stopFast() { if (S && S.fast) { S.fast = false; } }
@@ -3217,7 +3212,9 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
   var TOUCH = false;
   try { TOUCH = (window.matchMedia && matchMedia("(pointer: coarse)").matches) || (navigator.maxTouchPoints > 0 && !(window.matchMedia && matchMedia("(pointer: fine)").matches)); } catch (e) {}
   document.body.classList.toggle("touch", TOUCH);
-  window.addEventListener("touchstart", function () { if (!TOUCH) { TOUCH = true; document.body.classList.add("touch"); } }, { passive: true, capture: true });
+  function touchLabels() { var k = document.querySelector('.ctrls button[data-k="KeyH"]'); if (k && TOUCH) { k.textContent = "Help"; k.setAttribute("aria-label", "Help"); } if (TOUCH) game.setAttribute("aria-label", "The sea chart."); }
+  touchLabels();
+  window.addEventListener("touchstart", function () { if (!TOUCH) { TOUCH = true; document.body.classList.add("touch"); touchLabels(); } }, { passive: true, capture: true });
   function key(code, shift) {
     if (!S) return;
     audioInit();
@@ -3506,7 +3503,7 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
     newVoyage();
     var v = fromBoard ? RESUME.v : savedVoyage();
     restoreVoyage(v);
-    $("setup").hidden = true; $("sea").hidden = false;
+    $("setup").hidden = true; $("sea").hidden = false; document.body.classList.add("playing");
     if (!running) { running = true; last = 0; requestAnimationFrame(frame); }
     if (TOUCH) touchHome(); else game.focus();
     if (fromBoard) {
@@ -3550,11 +3547,11 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
     if (!(snap && (snap.t || 0) === (CAREER.t || 0))) { saveCareer(); store("pirates-career-start", store("pirates-career")); }
     store("pirates-voyage", "");
     logEvent("Took command of the " + flag().name + " off " + HOME.label + ".");
-    $("setup").hidden = true; $("sea").hidden = false;
+    $("setup").hidden = true; $("sea").hidden = false; document.body.classList.add("playing");
     if (!running) { running = true; last = 0; requestAnimationFrame(frame); }
     if (TOUCH) touchHome(); else game.focus();
     saveVoyage();
-    say("You take the helm, " + S.name + ". " + FlagName() + " lies just " + HOME.dir + " of " + HOME.label + ", heading " + pointName(S.heading) + ", sails furled, with " + S.crew + " men aboard. The wind is from the " + pointName(S.wind.from) + ", " + windStrName(S.wind.str) + ". " + (TOUCH ? "You are on Raise sail, under the heading Ship controls. Destination picks where to go, and Keys explains the buttons." : "Press Up Arrow to raise sail, T to pick a destination, H for keys."));
+    say("You take the helm, " + S.name + ". " + FlagName() + " lies just " + HOME.dir + " of " + HOME.label + ", heading " + pointName(S.heading) + ", sails furled, with " + S.crew + " men aboard. The wind is from the " + pointName(S.wind.from) + ", " + windStrName(S.wind.str) + ". " + (TOUCH ? "You are on Raise sail." : "Press Up Arrow to raise sail, T to pick a destination, H for keys."));
   }
   $("start").addEventListener("click", begin);
   applyCareer();
