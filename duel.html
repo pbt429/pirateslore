@@ -130,6 +130,7 @@ body.touch .pad button[data-a="parry"] { border-width: 2px; border-color: var(--
 body.touch .moves button { min-height: 56px; font-size: 1rem; touch-action: manipulation; }
 body.touch #game canvas { max-height: 34vh; object-fit: contain; }
 body.touch .focus-tip { display: none; }
+.ctrl-h { margin: 14px 0 6px; font-size: 1.05rem; }
 /* Keep the message box one size so the buttons below never jump. */
 body.touch #announce { height: 6.6em; min-height: 0; overflow: hidden; font-size: 1.05rem; }
 .touch-only { display: none; }
@@ -305,6 +306,7 @@ body.touch .keys-only { display: none; }
         <button class="secondary" type="button" id="change">Change nation, period, blade or difficulty</button>
       </div>
 
+      <h3 class="ctrl-h" id="fight-h">Fight buttons</h3>
       <div role="group" aria-label="Touch and mouse controls">
         <div class="pad">
           <span></span>
