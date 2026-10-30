@@ -132,7 +132,15 @@ body.touch #game canvas { max-height: 34vh; object-fit: contain; }
 body.touch .focus-tip { display: none; }
 .ctrl-h { margin: 14px 0 6px; font-size: 1.05rem; }
 /* While you play, only the game and its buttons show. */
-body.playing #expeditions, body.playing .keys-panel, body.touch .keys-panel { display: none !important; }
+body.playing #expeditions { display: none !important; }
+/* While you play, the controls list stays hidden until you open it with Help. */
+body.playing:not(.showctl) .keys-panel, body.touch:not(.showctl) .keys-panel { display: none !important; }
+.keys-panel h3 { margin: 18px 0 6px; }
+.keys-panel h4 { margin: 0 0 6px; font-size: 1rem; }
+#keys-h:focus { outline: 3px solid var(--focus); outline-offset: 3px; }
+.padlist { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; }
+.padlist dt { font-weight: 700; }
+.padlist dd { margin: 0; color: var(--muted); }
 /* Keep the message box one size so the buttons below never jump. */
 body.touch #announce { height: 6.6em; min-height: 0; overflow: hidden; font-size: 1.05rem; }
 .touch-only { display: none; }
@@ -338,17 +346,30 @@ body.touch .keys-only { display: none; }
       </div>
       <div class="moves" role="group" aria-label="Practice">
         <button type="button" data-a="bells" aria-label="Hear the warning bells">Hear the bells</button>
-        <button type="button" data-a="help" aria-label="How the buttons work">Help</button>
+        <button type="button" data-a="help" aria-label="Help, list all controls">Help</button>
       </div>
     </div>
   </section>
 
   <section class="panel keys-panel" aria-labelledby="keys-h">
-    <h2 id="keys-h">Keys</h2>
+    <h2 id="keys-h" tabindex="-1">Controls</h2>
+    <h3>Touch screen</h3>
+    <p class="note">Under the deck are three rows of fight buttons: high at the top, middle, and low at the bottom. Each row goes Parry, Thrust, Slash, then Back, which parries and steps back. Below them are Step back, Step forward, Status, Pause, Hear the bells and Help. With VoiceOver or TalkBack, slide your finger to a button and double tap.</p>
+    <h3>Controller</h3>
+    <dl class="padlist">
+      <dt>Left and Right</dt><dd>Step back and forward</dd>
+      <dt>A, B, C</dt><dd>Thrust, slash, parry. Hold Up for high or Down for low, neither for middle</dd>
+      <dt>Y</dt><dd>Status</dd>
+      <dt>Z</dt><dd>Hear the warning bells</dd>
+      <dt>Start</dt><dd>Pause</dd>
+      <dt>Select</dt><dd>Hear the controller buttons</dd>
+      <dt>Hold Start or Select</dt><dd>Teach the controller its buttons again</dd>
+    </dl>
+    <h3>Keyboard</h3>
     <p class="note">Your rival always warns you before he strikes. You hear a bell: a quick high double ring means high, one middle ring means middle, a low buzz means low. A rushing whoosh before the bell means a slash. Parry at the same height to block him, then strike back while he recovers.</p>
     <div class="keys">
       <div>
-        <h3>Letter keys</h3>
+        <h4>Letter keys</h4>
         <dl>
           <dt>Q, A, Z</dt><dd>Thrust high, middle, low</dd>
           <dt>W, S, X</dt><dd>Slash high, middle, low</dd>
@@ -357,7 +378,7 @@ body.touch .keys-only { display: none; }
         </dl>
       </div>
       <div>
-        <h3>Number pad</h3>
+        <h4>Number pad</h4>
         <dl>
           <dt>7, 4, 1</dt><dd>Thrust high, middle, low</dd>
           <dt>Slash, Star, Minus</dt><dd>Slash high, middle, low</dd>
@@ -366,7 +387,7 @@ body.touch .keys-only { display: none; }
         </dl>
       </div>
       <div>
-        <h3>Everything else</h3>
+        <h4>Everything else</h4>
         <dl>
           <dt>Right Arrow</dt><dd>Step toward your rival</dd>
           <dt>Left Arrow</dt><dd>Step back. Back off the deck edge to flee</dd>
@@ -381,6 +402,7 @@ body.touch .keys-only { display: none; }
       </div>
     </div>
     <p class="note">If JAWS keeps the number pad for itself, use the letter keys instead. Every hit you land lifts your crew's morale and lowers his. When a fighter's morale runs out, the next hit makes him yield.</p>
+      <p><button class="secondary" type="button" id="ctl-close">Close controls and play on</button></p>
   </section>
 </main>
 
@@ -823,7 +845,7 @@ body.touch .keys-only { display: none; }
     if (a === "bells") return bellDemo();
     if (a === "status") return status();
     if (a === "pause") return togglePause();
-    if (a === "help") return help();
+    if (a === "help") return openControls();
     if (S.over || S.paused) return;
     var y = S.you;
     if (a === "parry" || a === "parryBack") {
@@ -872,8 +894,23 @@ body.touch .keys-only { display: none; }
     if (S.mode === "train") { say(pacesText(d) + " apart. Lesson " + S.train.stage + " of 3. " + S.train.blocks + " of " + TRAIN.done + " blocks." + (S.paused ? " Paused." : "")); return; }
     say(pacesText(d) + " apart. You: health " + Math.max(0, Math.round(y.hp)) + ", morale " + y.morale + ". " + S.foeName + ": health " + Math.max(0, Math.round(f.hp)) + ", morale " + f.morale + "." + (S.paused ? " Paused." : ""));
   }
+  // ---------- Controls list, opened with the Help button ----------
+  var ctlFrom = null;
+  function openControls() {
+    ctlFrom = document.activeElement;
+    if (S && !S.over && !S.paused) { S.paused = true; S.ctlPaused = true; sea(false); }
+    document.body.classList.add("showctl");
+    var h = $("keys-h"); h.focus(); try { h.scrollIntoView({ block: "start" }); } catch (e) {}
+  }
+  function closeControls() {
+    document.body.classList.remove("showctl");
+    if (S && S.ctlPaused) { S.ctlPaused = false; if (S.paused && !S.over) { S.paused = false; sea(true); } }
+    var back = ctlFrom && ctlFrom.offsetParent !== null ? ctlFrom : (TOUCH ? arena.querySelector('button[data-a="parry"][data-h="mid"]') : game);
+    if (back) { back.focus(); try { back.scrollIntoView({ block: "center" }); } catch (e) {} }
+  }
+  $("ctl-close").addEventListener("click", closeControls);
   function help() {
-    if (TOUCH) { say("Touch buttons under the deck. Three rows: high at the top, middle, low at the bottom. Each row goes Parry, Thrust, Slash, then Back, which parries and steps back. Below them: Step back, Step forward, Status, Pause. Listen for his bell, parry at that height, then thrust or slash while he recovers."); return; }
+    if (TOUCH) { openControls(); return; }
     say("Q A Z thrust high, middle, low. W S X slash. E D C parry. R F V parry and step back. Arrows step. Space status. L bells. P pause. M sound.");
   }
   function togglePause() {

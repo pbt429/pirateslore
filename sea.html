@@ -100,7 +100,14 @@ body.touch .menu-opts button { min-height: 52px; font-size: 1.05rem; touch-actio
 body.touch .focus-tip { display: none; }
 .ctrl-h { margin: 14px 0 6px; font-size: 1.05rem; }
 /* While you play, only the game and its buttons show. */
-body.playing .keys-panel, body.touch .keys-panel { display: none !important; }
+/* While you play, the controls list stays hidden until you open it with Help. */
+body.playing:not(.showctl) .keys-panel, body.touch:not(.showctl) .keys-panel { display: none !important; }
+.keys-panel h3 { margin: 18px 0 6px; }
+.keys-panel h4 { margin: 0 0 6px; font-size: 1rem; }
+#keys-h:focus { outline: 3px solid var(--focus); outline-offset: 3px; }
+.padlist { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; }
+.padlist dt { font-weight: 700; }
+.padlist dd { margin: 0; color: var(--muted); }
 .touch-only { display: none; }
 body.touch .touch-only { display: block; }
 body.touch .keys-only { display: none; }
@@ -206,7 +213,7 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
         <button type="button" data-k="KeyZ" aria-label="Zoom the chart in or out">Zoom chart</button>
         <button type="button" data-k="KeyR" aria-label="Repeat last message">Repeat</button>
         <button type="button" data-k="KeyP" aria-label="Pause or resume">Pause</button>
-        <button type="button" data-k="KeyH" aria-label="Hear the keys">Keys</button>
+        <button type="button" data-k="KeyH" data-ctl="1" aria-label="Help, list all controls">Help</button>
       </div>
     </div>
   </section>
@@ -267,11 +274,31 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
   </section>
 
   <section class="panel keys-panel" aria-labelledby="keys-h">
-    <h2 id="keys-h">Keys</h2>
+    <h2 id="keys-h" tabindex="-1">Controls</h2>
+    <h3>Touch screen</h3>
+    <p class="note">The buttons under the heading Ship controls: Turn left, Turn right, Raise sail, Lower sail, Report, Lookout, Where am I, Wind, Destination, Bearing, Beacon, Fast time, Go ashore, Cabin, Zoom chart, Repeat, Pause and Help. Menus and sea battle buttons appear just above them when needed. With VoiceOver or TalkBack, slide your finger to a button and double tap.</p>
+    <h3>Controller</h3>
+    <dl class="padlist">
+      <dt>Left and Right</dt><dd>Turn</dd>
+      <dt>Up and Down</dt><dd>Raise and lower sail</dd>
+      <dt>A</dt><dd>Ship report</dd>
+      <dt>B</dt><dd>Fast time</dd>
+      <dt>C</dt><dd>Captain's cabin</dd>
+      <dt>X</dt><dd>Next destination</dd>
+      <dt>Y</dt><dd>Lookout</dd>
+      <dt>Z</dt><dd>Bearing to your destination</dd>
+      <dt>Start</dt><dd>Pause</dd>
+      <dt>Select with A, B, C</dt><dd>Go ashore, guide beacon, where am I</dd>
+      <dt>Select with X, Y, Z</dt><dd>Previous destination, the wind, repeat</dd>
+      <dt>Select alone</dt><dd>Hear the controller buttons</dd>
+      <dt>In menus</dt><dd>Up and down move, A chooses, B goes back</dd>
+      <dt>In a sea battle</dt><dd>Left and right turn, Up full sail, Down battle sails, A fires, C where is she, Y both ships</dd>
+    </dl>
+    <h3>Keyboard</h3>
     <p class="note">Steering works in compass points. There are 16 points around the compass, so one press of an arrow turns you about the width of a clock's hour hand. Your speed depends on the angle between your heading and the wind. Straight into the wind you can only row, and slowly. With the wind behind your shoulder, the Swallow flies.</p>
     <div class="keys">
       <div>
-        <h3>The helm</h3>
+        <h4>The helm</h4>
         <dl>
           <dt>Left Arrow</dt><dd>Turn left one point. Hold to keep turning</dd>
           <dt>Right Arrow</dt><dd>Turn right one point</dd>
@@ -282,7 +309,7 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
         </dl>
       </div>
       <div>
-        <h3>Reports</h3>
+        <h4>Reports</h4>
         <dl>
           <dt>Space</dt><dd>Heading, point of sail, speed, sails, wind and day</dd>
           <dt>W</dt><dd>Wind direction and strength, and your best headings</dd>
@@ -292,7 +319,7 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
         </dl>
       </div>
       <div>
-        <h3>Navigation</h3>
+        <h4>Navigation</h4>
         <dl>
           <dt>T</dt><dd>Pick the next destination, nearest town first</dd>
           <dt>Shift T</dt><dd>Previous destination</dd>
@@ -306,6 +333,7 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
       </div>
     </div>
     <p class="note">What you hear: waves all around, wind that grows with the breeze, and surf that gets louder and moves left or right as you near a coast. A ship in sight sends a soft tick from her direction, lower when she is behind you. A fast double tick means she is chasing you. The guide beacon chimes from your destination's direction and rings high and doubled when you are pointed right at it. In a strong wind a gust can knock your bow one point off course, and dark squalls bring rain, thunder and more gusts. The game tells you which way to turn to get back on course.</p>
+      <p><button class="secondary" type="button" id="ctl-close">Close controls and play on</button></p>
   </section>
 </main>
 
@@ -3212,7 +3240,7 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
   var TOUCH = false;
   try { TOUCH = (window.matchMedia && matchMedia("(pointer: coarse)").matches) || (navigator.maxTouchPoints > 0 && !(window.matchMedia && matchMedia("(pointer: fine)").matches)); } catch (e) {}
   document.body.classList.toggle("touch", TOUCH);
-  function touchLabels() { var k = document.querySelector('.ctrls button[data-k="KeyH"]'); if (k && TOUCH) { k.textContent = "Help"; k.setAttribute("aria-label", "Help"); } if (TOUCH) game.setAttribute("aria-label", "The sea chart."); }
+  function touchLabels() { var k = document.querySelector('.ctrls button[data-k="KeyH"]'); if (TOUCH) game.setAttribute("aria-label", "The sea chart."); }
   touchLabels();
   window.addEventListener("touchstart", function () { if (!TOUCH) { TOUCH = true; document.body.classList.add("touch"); touchLabels(); } }, { passive: true, capture: true });
   function key(code, shift) {
@@ -3289,8 +3317,23 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
     key(e.code, e.shiftKey);
   });
   game.addEventListener("pointerdown", function () { audioInit(); game.focus(); });
+  // ---------- Controls list, opened with the Help button ----------
+  var ctlFrom = null;
+  function openControls() {
+    ctlFrom = document.activeElement;
+    if (S && !S.paused) { S.paused = true; S.ctlPaused = true; seaBed(); }
+    document.body.classList.add("showctl");
+    var h = $("keys-h"); h.focus(); try { h.scrollIntoView({ block: "start" }); } catch (e) {}
+  }
+  function closeControls() {
+    document.body.classList.remove("showctl");
+    if (S && S.ctlPaused) { S.ctlPaused = false; S.paused = false; seaBed(); }
+    if (ctlFrom && ctlFrom.offsetParent !== null) { ctlFrom.focus(); try { ctlFrom.scrollIntoView({ block: "center" }); } catch (e) {} }
+    else if (TOUCH) touchHome(); else game.focus();
+  }
+  $("ctl-close").addEventListener("click", closeControls);
   document.querySelectorAll(".ctrls button[data-k]").forEach(function (b) {
-    b.addEventListener("click", function () { key(b.getAttribute("data-k"), false); });
+    b.addEventListener("click", function () { if (b.getAttribute("data-ctl")) { openControls(); return; } key(b.getAttribute("data-k"), false); });
   });
   document.addEventListener("visibilitychange", function () { if (document.hidden && S && !S.paused) { S.paused = true; seaBed(); } });
 
