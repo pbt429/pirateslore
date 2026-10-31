@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pirateslore.com/sitemap.xml
