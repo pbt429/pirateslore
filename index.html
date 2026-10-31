@@ -37,6 +37,8 @@ p { margin: 0; max-width: 62ch; }
 .notes h2 { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; }
 .notes p { font-size: 0.98rem; }
 .by { color: var(--muted); font-size: 0.95rem; }
+.support { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid var(--line); padding-top: 18px; }
+.support h2 { font-size: 0.8rem; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin: 0; }
 [hidden] { display: none !important; }
 </style>
 
@@ -63,6 +65,12 @@ p { margin: 0; max-width: 62ch; }
     <div><h2>Built for screen readers</h2><p>Every sight on screen is also a sound or a spoken line. Made and tested with JAWS, and works with NVDA and VoiceOver.</p></div>
     <div><h2>Play your way</h2><p>Keyboard, touch, mouse, or a game controller such as the 8BitDo M30. Headphones help: ships and coasts sound from their direction.</p></div>
     <div><h2>Your game is saved</h2><p>Your voyage saves itself in this browser on this device, so you can stop and come back.</p></div>
+  </section>
+
+  <section class="support" aria-labelledby="support-h">
+    <h2 id="support-h">Support Pirates Lore</h2>
+    <p>Pirates Lore is free to play. If you enjoy it, a donation of any amount helps keep new voyages coming. $5 is suggested.</p>
+    <a class="way" href="https://pbt429.itch.io/pirates-lore/purchase"><b>Donate on itch.io</b><span>Safe checkout through itch.io. Any amount is welcome.</span></a>
   </section>
 
   <p class="by">A game by Paul Trujillo Jr.</p>
