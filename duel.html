@@ -135,6 +135,7 @@ body.touch .focus-tip { display: none; }
 .ctrl-h { margin: 14px 0 6px; font-size: 1.05rem; }
 /* While you play, only the game and its buttons show. */
 body.playing #expeditions { display: none !important; }
+.fe-tag { font-size: 0.8em; font-weight: 700; color: var(--accent); margin-left: 0.4em; }
 /* While you play, the controls list stays hidden until you open it with Help. */
 body.playing:not(.showctl) .keys-panel, body.touch:not(.showctl) .keys-panel { display: none !important; }
 .keys-panel h3 { margin: 18px 0 6px; }
@@ -281,6 +282,7 @@ body.touch .keys-only { display: none; }
       </div>
     </fieldset>
     <div class="endbox"><button class="primary" id="exp-go" type="button">Set sail on this expedition</button></div>
+    <p class="note fe-only" id="exp-fe-note" hidden>The Famous Expeditions are part of the Full Edition. <a id="exp-buy" href="https://pbt429.itch.io/pirates-lore">Get the Full Edition on itch.io</a>.</p>
   </section>
 
   <section id="arena" aria-labelledby="arena-h" hidden>
@@ -408,6 +410,7 @@ body.touch .keys-only { display: none; }
   </section>
 </main>
 
+<script src="edition.js"></script>
 <script>
 (function () {
   "use strict";
@@ -461,6 +464,7 @@ body.touch .keys-only { display: none; }
     var n = (document.querySelector('input[name="nation"]:checked') || {}).value || "english";
     var e = (document.querySelector('input[name="era"]:checked') || {}).value || "1660";
     if (n === "dutch" && e === "1560") e = "1600";
+    if (!eraOpen(e)) e = "1660";
     var N = NATIONS[n], E = ERAS[e];
     var title = (n === "spanish" && e === "1680") ? "Spanish Costa Guarda" : N.title;
     return { nation: n, era: e, title: title, eraName: E.name, port: N.ports[e], foe: N.foe, foeTitle: N.foeTitle, ship: N.ship,
@@ -655,7 +659,39 @@ body.touch .keys-only { display: none; }
     if (v) { var el = document.querySelector('input[name="' + n + '"][value="' + v + '"]'); if (el) el.checked = true; }
   });
   if (store("duel-voice") === "1") $("voice").checked = true;
+  // ---------- Demo and Full Edition ----------
+  var EDITION = window.PL_EDITION || { full: true };
+  function eraOpen(e) { var E = window.PL_EDITION || { full: true }; return E.full || (E.demoEras || []).indexOf(String(e)) > -1; }
+  var lastEra = (document.querySelector('input[name="era"]:checked') || {}).value || "1660";
+  if (!eraOpen(lastEra)) { lastEra = "1660"; document.querySelector('input[name="era"][value="1660"]').checked = true; }
+  if (!EDITION.full) {
+    document.querySelectorAll('input[name="era"]').forEach(function (r) {
+      if (eraOpen(r.value)) return;
+      var b = r.parentNode.querySelector("b");
+      var tag = document.createElement("span"); tag.className = "fe-tag"; tag.textContent = ", Full Edition";
+      if (b) b.appendChild(tag);
+    });
+    document.querySelectorAll('input[name="exp"]').forEach(function (r) {
+      var b = r.parentNode.querySelector("b");
+      var tag = document.createElement("span"); tag.className = "fe-tag"; tag.textContent = ", Full Edition";
+      if (b) b.appendChild(tag);
+    });
+    $("exp-fe-note").hidden = false;
+    if (EDITION.buyUrl) $("exp-buy").href = EDITION.buyUrl;
+    $("exp-go").textContent = "Set sail on this expedition, Full Edition";
+  }
+  function fullEditionMsg(what) {
+    return what + " is part of the Full Edition. The free version has 1640, War for Profit, and 1660, The Buccaneer Heroes. You can get the Full Edition on itch.io" + (EDITION.price ? " for " + EDITION.price : "") + ".";
+  }
   function eraRules(announce) {
+    var picked = document.querySelector('input[name="era"]:checked');
+    if (picked && !eraOpen(picked.value)) {
+      var nm = picked.value + ", " + ERAS[picked.value].name;
+      picked.checked = false;
+      document.querySelector('input[name="era"][value="' + lastEra + '"]').checked = true;
+      if (announce) say(fullEditionMsg(nm) + " Your time period is still " + lastEra + ", " + ERAS[lastEra].name + ".");
+    }
+    lastEra = (document.querySelector('input[name="era"]:checked') || {}).value || lastEra;
     var dutch = ((document.querySelector('input[name="nation"]:checked') || {}).value === "dutch");
     var e1560 = $("era-1560");
     e1560.disabled = dutch;
@@ -1394,7 +1430,10 @@ body.touch .keys-only { display: none; }
     else say("En garde, " + S.name + "! " + S.foeName + " stands " + pacesText(dist()) + " to your right, cutlass drawn. " + tx("Right Arrow steps toward him. H for keys.", "You are on Parry middle."));
   }
   $("start").addEventListener("click", function () { begin("duel"); });
-  $("exp-go").addEventListener("click", function () { location.href = expeditionLink(); });
+  $("exp-go").addEventListener("click", function () {
+    if (!EDITION.full) { say("The Famous Expeditions are part of the Full Edition. You can get it on itch.io" + (EDITION.price ? " for " + EDITION.price : "") + ". The link is just below this button."); return; }
+    location.href = expeditionLink();
+  });
   $("train").addEventListener("click", function () { begin("train"); });
   $("bells").addEventListener("click", function () { bellDemo(); });
   $("suggest").addEventListener("click", suggestName);

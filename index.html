@@ -71,7 +71,7 @@ p { margin: 0; max-width: 62ch; }
   <nav class="ways" aria-label="Start playing">
     <a class="way first" href="duel.html" id="w-new"><b>Start a new career</b><span>Choose your nation, time period and skill, then win the Swallow in a duel.</span></a>
     <a class="way" href="sea.html" id="w-continue" hidden><b>Continue your voyage</b><span id="w-continue-note">Pick up where you left off.</span></a>
-    <a class="way" href="duel.html#expeditions" id="w-exp"><b>Famous Expeditions</b><span>Sail with Drake, Morgan, Piet Heyn and other captains from history.</span></a>
+    <a class="way" href="duel.html#expeditions" id="w-exp"><b>Famous Expeditions</b><span id="w-exp-note">Sail with Drake, Morgan, Piet Heyn and other captains from history.</span></a>
     <a class="way" href="manual.html" id="w-manual"><b>How to play</b><span>The full guide to the duel, the sea, towns, battles and the controller.</span></a>
   </nav>
 
@@ -83,13 +83,31 @@ p { margin: 0; max-width: 62ch; }
 
   <section class="support" aria-labelledby="support-h">
     <h2 id="support-h">Support Pirates Lore</h2>
+    <div id="support-free">
     <p>Pirates Lore is free to play. If you enjoy it, a donation of any amount helps keep new voyages coming. $5 is suggested.</p>
     <a class="way" href="https://pbt429.itch.io/pirates-lore/purchase"><b>Donate on itch.io</b><span>Safe checkout through itch.io. Any amount is welcome.</span></a>
+    </div>
+    <div id="support-demo" hidden>
+    <p>You're playing the free version, with two time periods: 1640, War for Profit, and 1660, The Buccaneer Heroes. The Full Edition opens all six time periods, the Famous Expeditions with Drake, Morgan and other captains from history, and special missions found nowhere else.</p>
+    <a class="way first" id="buy-full" href="https://pbt429.itch.io/pirates-lore"><b id="buy-title">Get the Full Edition, $9.99</b><span>Safe checkout through itch.io. Download it for your computer, or play it in your browser on itch.io.</span></a>
+    </div>
   </section>
 
   <p class="by">A game by Paul Trujillo Jr. Also on <a href="https://pbt429.itch.io/pirates-lore">itch.io</a>, with a version you can download.</p>
 </main>
 
+<script src="edition.js"></script>
+<script>
+(function () {
+  var E = window.PL_EDITION; if (!E || E.full) return;
+  document.getElementById("support-free").hidden = true;
+  document.getElementById("support-demo").hidden = false;
+  document.getElementById("support-h").textContent = "The Full Edition";
+  if (E.buyUrl) document.getElementById("buy-full").href = E.buyUrl;
+  if (E.price) document.getElementById("buy-title").textContent = "Get the Full Edition, " + E.price;
+  document.getElementById("w-exp-note").textContent = "Full Edition. Sail with Drake, Morgan, Piet Heyn and other captains from history.";
+})();
+</script>
 <script>
 (function () {
   try {
