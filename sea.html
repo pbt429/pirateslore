@@ -3151,7 +3151,7 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
     if (!S.destList || performance.now() - S.destTimer > 5000) { S.destList = sortedTowns(); S.destIdx = -1; }
     S.destTimer = performance.now();
     S.destIdx = (S.destIdx + dir + S.destList.length) % S.destList.length;
-    S.dest = S.destList[S.destIdx];
+    S.dest = S.destList[S.destIdx]; S.destMark = null;
     var t = S.dest, d = dist(S.x, S.y, t.x, t.y);
     say("Destination " + t.name + ", " + t.n + ", to the " + pointName(bearing(S.x, S.y, t.x, t.y)) + ", " + leagues(d) + "." + (S.destIdx === 0 ? " Press " + (window.PADUSED ? "X" : "T") + " again for the next nearest." : ""));
   }
@@ -3170,7 +3170,17 @@ body.touch #game canvas { max-height: 40vh; object-fit: contain; }
       SFX.beacon(adiff(bearing(S.x, S.y, S.dest.x, S.dest.y), S.heading));
       S.beaconAt = performance.now() + 1800;
     }
-    if (d < 0.22 && S.townCooldown === S.dest.name) { sayQuiet("Arrived at " + S.dest.name + "."); S.dest = null; S.beacon = false; }
+    if (d < 0.22 && S.townCooldown === S.dest.name) { sayQuiet("Arrived at " + S.dest.name + "."); S.dest = null; S.beacon = false; S.destMark = null; return; }
+    // Call out the distance as it changes: every 20 leagues when far, every 10, then every 5 when close.
+    var L = d * LEAGUES_PER_DEG, stepL = L > 60 ? 20 : L > 20 ? 10 : 5, mark = Math.ceil(L / stepL) * stepL;
+    if (S.destMark === null || S.destMark === undefined || S.destFor !== S.dest.name) { S.destMark = mark; S.destFor = S.dest.name; S.destLastL = L; return; }
+    if (mark !== S.destMark && !S.battle && !S.menu && !S.trek && performance.now() > (S.destSaidAt || 0) + 6000) {
+      var closer = L < S.destLastL, brg = bearing(S.x, S.y, S.dest.x, S.dest.y), pts = Math.round(adiff(brg, S.heading) / 22.5);
+      var shown = Math.max(1, Math.round(L));
+      var turn = !S.speed ? "" : pts === 0 ? " You're on course." : Math.abs(pts) >= 8 ? " It's behind you." : " Turn " + (pts > 0 ? "right " : "left ") + Math.abs(pts) + (Math.abs(pts) === 1 ? " point." : " points.");
+      sayQuiet(S.dest.name + ", " + shown + (shown === 1 ? " league" : " leagues") + " to the " + pointName(brg) + ". " + (closer ? "Getting closer." : "Getting farther away.") + turn);
+      S.destMark = mark; S.destLastL = L; S.destSaidAt = performance.now();
+    }
   }
 
   // ---------- Reports ----------
